@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #f4f7f6; padding: 20px; color: #333; }
+        .header { background: linear-gradient(135deg, #1a1a3e, #2d2d6b); color: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap:10px; }
+        .header h1 { font-size: 24px; }
+        select, button { padding: 10px 15px; border-radius: 8px; border: none; cursor: pointer; font-family: inherit; }
+        select { background: white; color: #333; font-weight: 600; border: 1px solid #ccc; }
+        .btn-export { background: #28a745; color: white; }
+        .btn-reset { background: #dc3545; color: white; }
+        .btn-back { background: rgba(255,255,255,0.2); color: white; text-decoration: none; display: inline-block; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .full-width { grid-column: span 2; }
+        .card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .card h3 { font-size: 18px; margin-bottom: 15px; color: #1a1a3e; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .avg-score { text-align: center; font-size: 50px; font-weight: 700; color: #1a1a3e; }
+        .avg-label { text-align: center; color: #666; font-size: 14px; margin-top: -10px; }
+        .top-container { display: flex; gap: 20px; }
+        .top-box { flex: 1; background: #f8f9fa; border-radius: 10px; padding: 15px; }
+        .rank-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding: 8px; background: white; border-radius: 8px; }
+        .medal { font-size: 20px; width: 30px; text-align: center; }
+        .rank-info { flex: 1; }
+        .rank-info strong { display: block; font-size: 14px; }
+        .rank-info span { font-size: 12px; color: #666; }
+        .chart-container { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+        .bar-row { display: flex; align-items: center; gap: 10px; }
+        .bar-label { width: 140px; font-size: 13px; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .bar-area { flex: 1; background: #eee; height: 20px; border-radius: 10px; overflow: hidden; }
+        .bar-fill { height: 100%; display: flex; align-items: center; justify-content: flex-end; padding-right: 5px; color: white; font-size: 11px; border-radius: 10px; transition: width 1s; }
+        .bg-gold { background: linear-gradient(90deg, #ffd700, #fdb931); }
+        .bg-green { background: #2ecc71; }
+        .bg-blue { background: #3498db; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
+        th { background: #f8f9fa; color: #555; }
+        @media (max-width: 768px) { .dashboard-grid { grid-template-columns: 1fr; } .top-container { flex-direction: column; } }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div>
+        <img src="logo.png" alt="Logo" style="width:60px; margin-right:10px; vertical-align:middle;">
+<h1 style="display:inline;">Concordia Celes Hotel - Admin</h1>
+    </div>
+    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <select id="timeFilter" onchange="renderDashboard()">
+            <option value="daily">Son 24 Saat</option>
+            <option value="weekly">Son 7 Gun</option>
+            <option value="monthly" selected>Son 30 Gun</option>
+            <option value="yearly">Son 365 Gun</option>
+            <option value="all">Tum Zamanlar</option>
+        </select>
+        <button class="btn-export" onclick="exportData()">Indir</button>
+        <button class="btn-reset" onclick="clearData()">Temizle</button>
+        <a href="index.html" class="btn-back">Anket</a>
+    </div>
+</div>
+
+<div class="dashboard-grid">
+    <div class="card">
+        <h3>Genel Ortalama</h3>
+        <div class="avg-score" id="generalAvg">0</div>
+        <div class="avg-label">1-100 Olcegi</div>
+    </div>
+    <div class="card full-width">
+        <h3>Performans Odulleri</h3>
+        <div class="top-container">
+            <div class="top-box"><h4>En Iyi 3 Departman</h4><div id="topDepts"></div></div>
+            <div class="top-box"><h4>En Cok Ovulen 3 Personel</h4><div id="topStaff"></div></div>
+        </div>
+    </div>
+    <div class="card">
+        <h3>Departman Ortalamalari</h3>
+        <div class="chart-container" id="deptChart"></div>
+    </div>
+    <div class="card">
+        <h3>Departman Detay Analizi</h3>
+        <select id="deptSelect" style="width:100%; margin-bottom:10px;" onchange="renderDeptDetail()">
+            <option value="">-- Departman Seciniz --</option>
+            <option value="frontOffice">On Buro ve Resepsiyon</option>
+            <option value="guestRelation">Guest Relation</option>
+            <option value="housekeeping">Kat Hizmetleri</option>
+            <option value="foodServices">Yiyecek Hizmetleri</option>
+            <option value="barsServices">Barlar</option>
+            <option value="restaurantServices">Restaurant Hizmetleri</option>
+            <option value="technicalService">Teknik Servis</option>
+            <option value="entertainmentServices">Eglence Hizmetleri</option>
+            <option value="otherServices">Diger Hizmetler</option>
+        </select>
+        <div class="chart-container" id="deptDetailChart"></div>
+    </div>
+    <div class="card">
+        <h3>Ulke Analizi</h3>
+        <div class="chart-container" id="countryChart"></div>
+    </div>
+    <div class="card">
+        <h3>En Cok Ovgu Alan Personel</h3>
+        <div class="chart-container" id="staffChart"></div>
+    </div>
+    <div class="card full-width">
+        <h3>Son Yorumlar</h3>
+        <div id="quickComments" style="max-height:150px; overflow-y:auto;"></div>
+    </div>
+    <div class="card full-width">
+        <h3>Ham Veri Tablosu</h3>
+        <div style="overflow-x:auto;">
+            <table id="rawDataTable">
+                <thead><tr><th>Tarih</th><th>Ad</th><th>Oda</th><th>Puan</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

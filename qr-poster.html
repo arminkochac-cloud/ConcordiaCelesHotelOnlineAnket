@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>QR Kod Poster</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Arial', sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            background: white;
+        }
+        .poster {
+            width: 600px;
+            text-align: center;
+            padding: 40px;
+            border: 3px solid #1a1a3e;
+            border-radius: 20px;
+        }
+        .poster img.logo {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+        .poster h1 {
+            color: #1a1a3e;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .poster h2 {
+            color: #666;
+            font-size: 20px;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+        .qr-box {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .qr-box img {
+            width: 300px;
+            height: 300px;
+        }
+        .instruction {
+            font-size: 18px;
+            color: #333;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+        .languages {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .lang-tag {
+            background: #1a1a3e;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .footer {
+            margin-top: 25px;
+            color: #999;
+            font-size: 13px;
+        }
+        @media print {
+            body { background: white; }
+            .poster { border: 2px solid #333; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="poster">
+    <!-- LOGO -->
+    <img src="logo.png" alt="Hotel Logo" class="logo">
+    
+    <h1>Concordia Celes Hotel</h1>
+    <h2>Misafir Memnuniyet Anketi</h2>
+    <h2>Guest Satisfaction Survey</h2>
+
+    <!-- QR KOD ALANI -->
+    <div class="qr-box">
+        <!-- https://radiant-blini-b787d6.netlify.app/ -->
+        <img src="qrcode.png" alt="QR Code">
+    </div>
+
+    <p class="instruction">
+        📱 QR kodu telefonunuzla okutun<br>
+        Scan the QR code with your phone
+    </p>
+
+    <!-- DESTEKLENEN DILLER -->
+    <div class="languages">
+        <div class="lang-tag">🇹🇷 Türkçe</div>
+        <div class="lang-tag">🇬🇧 English</div>
+        <div class="lang-tag">🇩🇪 Deutsch</div>
+        <div class="lang-tag">🇷🇺 Русский</div>
+        <div class="lang-tag">🇵🇱 Polski</div>
+        <div class="lang-tag">🇷🇴 Română</div>
+    </div>
+
+    <div class="footer">
+        <p>Görüşleriniz bizim için çok değerlidir.</p>
+        <p>Your feedback is very valuable to us.</p>
+    </div>
+</div>
+
+</body>
+</html>
