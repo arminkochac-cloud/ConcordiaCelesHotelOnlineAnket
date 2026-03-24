@@ -259,9 +259,12 @@ def dept_avg(df, metric):
             score = float(
                 vals.mean(axis=1, skipna=True).mean(skipna=True)
             )
+        # 5'ten 100'e çevir
+        score_100 = round((score / 5) * 100, 1) \
+            if pd.notna(score) else 0.0
         rows.append({
             "Departman": dep,
-            "Skor": score if pd.notna(score) else 0.0
+            "Skor": score_100
         })
 
     if not rows:
@@ -270,8 +273,6 @@ def dept_avg(df, metric):
     return pd.DataFrame(rows).sort_values(
         "Skor", ascending=False
     ).reset_index(drop=True)
-
-
 def question_avg(df, dep, metric):
     keys = [
         k for k in DEPARTMENTS.get(dep, [])
@@ -457,8 +458,13 @@ with col3:
     if "willReturn" in df.columns:
         donus = df["willReturn"].astype(str).str.lower()
         evet = donus.isin(["evet", "yes", "да"]).sum()
+        hayir = donus.isin(["hayır", "hayir", "no", "нет"]).sum()
         oran = int((evet / len(df) * 100)) if len(df) > 0 else 0
-        st.metric(label="🔄 Tekrar Gelir", value=f"%{oran}")
+        st.metric(
+            label="🔄 Tekrar Gelir",
+            value=f"%{oran}",
+            delta=f"✅ {evet} Evet | ❌ {hayir} Hayır"
+        )
     else:
         st.metric(label="🔄 Tekrar Gelir", value="N/A")
 
@@ -466,13 +472,19 @@ with col4:
     if "wouldRecommend" in df.columns:
         tav = df["wouldRecommend"].astype(str).str.lower()
         evet2 = tav.isin(["evet", "yes", "да"]).sum()
+        hayir2 = tav.isin(
+            ["hayır", "hayir", "no", "нет"]
+        ).sum()
         oran2 = int(
             (evet2 / len(df) * 100)
         ) if len(df) > 0 else 0
-        st.metric(label="👍 Tavsiye Eder", value=f"%{oran2}")
+        st.metric(
+            label="👍 Tavsiye Eder",
+            value=f"%{oran2}",
+            delta=f"✅ {evet2} Evet | ❌ {hayir2} Hayır"
+        )
     else:
         st.metric(label="👍 Tavsiye Eder", value="N/A")
-
 st.divider()
 
 # 2) EN İYİ DEPARTMAN & PERSONEL
@@ -499,11 +511,10 @@ with col_a:
                     <b>{medals[i]} {row.Departman}</b>
                     <span style='float:right;
                     font-weight:bold;'>
-                        {row.Skor:.2f}
+                        {row.Skor:.1f}/100
                     </span>
                 </div>
             """, unsafe_allow_html=True)
-
 with col_b:
     st.markdown("### 👤 En Çok Övülen 3 Personel")
     if staff_df.empty:
