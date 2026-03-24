@@ -282,9 +282,12 @@ def question_avg(df, dep, metric):
         s = df[k].replace(0, pd.NA)
         v = s.sum(skipna=True) if metric == "Toplam" \
             else s.mean(skipna=True)
+        # 5'ten 100'e çevir
+        v_100 = round((float(v) / 5) * 100, 1) \
+            if pd.notna(v) else 0.0
         rows.append({
             "Soru": QUESTION_LABELS.get(k, k),
-            "Skor": float(v) if pd.notna(v) else 0.0
+            "Skor": v_100
         })
 
     if not rows:
