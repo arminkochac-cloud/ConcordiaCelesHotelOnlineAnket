@@ -1,3 +1,4 @@
+import pytz
 import pandas as pd
 import streamlit as st
 import plotly.express as px
@@ -420,10 +421,12 @@ with st.sidebar:
         st.rerun()
     st.markdown("---")
     st.markdown(f"📋 **Toplam Anket:** {len(df_all)}")
-    st.markdown(
-        f"🕐 **Son Güncelleme:** "
-        f"{datetime.now().strftime('%H:%M:%S')}"
-    )
+    turkey_tz = pytz.timezone('Europe/Istanbul')
+turkey_time = datetime.now(turkey_tz)
+st.markdown(
+    f"🕐 **Son Güncelleme:** "
+    f"{turkey_time.strftime('%H:%M:%S')}"
+)
 
 df = filter_by_time(df_all, time_mode).copy()
 rating_cols = get_rating_cols(df)
@@ -485,6 +488,50 @@ with col4:
         )
     else:
         st.metric(label="👍 Tavsiye Eder", value="N/A")
+st.divider()
+# Repeat Guest kartı
+col5, col6 = st.columns(2)
+
+with col5:
+    if "previousStay" in df.columns:
+        prev = df["previousStay"].astype(str).str.lower()
+        evet_prev = prev.isin(
+            ["evet", "yes", "да"]
+        ).sum()
+        hayir_prev = prev.isin(
+            ["hayır", "hayir", "no", "нет"]
+        ).sum()
+        oran_prev = int(
+            (evet_prev / len(df) * 100)
+        ) if len(df) > 0 else 0
+        st.metric(
+            label="🏨 Daha Önce Geldi mi?",
+            value=f"%{oran_prev}",
+            delta=f"✅ {evet_prev} Evet | ❌ {hayir_prev} Hayır"
+        )
+    else:
+        st.metric(label="🏨 Daha Önce Geldi mi?", value="N/A")
+
+with col6:
+    if "previousStay" in df.columns:
+        prev = df["previousStay"].astype(str).str.lower()
+        repeat = prev.isin(["evet", "yes", "да"]).sum()
+        new_guest = prev.isin(
+            ["hayır", "hayir", "no", "нет"]
+        ).sum()
+        st.markdown(f"""
+            <div style='background:#e8f5e9;
+            border-left:4px solid #4CAF50;
+            padding:15px; border-radius:5px;'>
+                <b>🔄 Repeat Guest Analizi</b><br><br>
+                ✅ <b>Repeat Guest:</b> {repeat} kişi<br>
+                🆕 <b>Yeni Misafir:</b> {new_guest} kişi<br>
+                📊 <b>Repeat Oranı:</b> 
+                %{int((repeat/len(df)*100)) 
+                if len(df) > 0 else 0}
+            </div>
+        """, unsafe_allow_html=True)
+
 st.divider()
 
 # 2) EN İYİ DEPARTMAN & PERSONEL
