@@ -1,129 +1,185 @@
-import json
-import urllib.request
 import pandas as pd
 import streamlit as st
 import plotly.express as px
 from datetime import datetime, timedelta
 
 # ============================================================
-# 🔧 AYARLAR - SADECE BURASI DEĞİŞTİRİLECEK
-# ============================================================
-# ESKİ
-SHEET_ID = "BURAYA_GOOGLE_SHEETS_ID_YAZIN"
-
-# YENİ ✅
 SHEET_ID = "1P3UY9PEFN8csOUPjWMKZHJRhqReLPajZfLdg7jJQ54k"
 # ============================================================
 
 DEPARTMENTS = {
     "ÖN BÜRO RESEPSİYON": [
-        "girisKarsilama", "checkInIslem", "tesisBilgi",
-        "onBuroNezaket", "bellboy"
+        "welcomeGreeting", "checkInProcess", "facilityInfo",
+        "frontDeskCare", "bellboyService"
     ],
     "GUEST RELATION": [
-        "grKararlama", "sorunCozum", "misafirTakip"
+        "grWelcomeQuality", "problemSolving", "guestFollowUp"
     ],
     "KAT HİZMETLERİ": [
-        "katIlkTemizlik", "katGorunum", "katGunlukTemizlik",
-        "minibar", "genelAlan", "sahilHavuz", "katNezaket"
+        "initialRoomCleaning", "roomAppearance", "dailyRoomCleaning",
+        "minibarService", "publicAreaCleaning", "beachPoolCleaning",
+        "housekeepingStaffCare"
     ],
     "YİYECEK HİZMETLERİ & MUTFAK": [
-        "kahvaltiCesit", "kahvaltiSunum",
-        "ogleCesit", "ogleSunum",
-        "aksamCesit", "aksamSunum",
-        "alacartYemek", "mutfakHijyen", "yiyecekNezaket"
+        "breakfastVariety", "breakfastQuality",
+        "lunchVariety", "lunchQuality",
+        "dinnerVariety", "dinnerQuality",
+        "alacarteQuality", "kitchenHygiene", "foodStaffCare"
     ],
     "SERVİS ve BARLAR": [
-        "pollBar", "lobbyBar", "snackBar",
-        "ickiKalite", "barHijyen", "barNezaket"
+        "poolBarQuality", "lobbyBarQuality", "snackBarQuality",
+        "drinkQuality", "barHygiene", "barStaffCare"
     ],
     "RESTAURANT HİZMETLERİ": [
-        "restDuzen", "restYer", "restHijyen",
-        "snackRest", "alacartRest", "restNezaket"
+        "restaurantLayout", "restaurantCapacity", "restaurantHygiene",
+        "snackbarRestaurant", "alacarteRestaurant", "restaurantStaffCare"
     ],
     "TEKNİK SERVİS": [
-        "teknikSistem", "ariza",
-        "cevreAydinlatma", "havuzSu", "teknikNezaket"
+        "roomTechnicalSystems", "maintenanceResponse",
+        "environmentLighting", "poolWaterCleaning", "technicalStaffCare"
     ],
     "EĞLENCE HİZMETLERİ": [
-        "animasyonGunduz", "sporAlan", "showlar",
-        "miniclub", "eglenceNezaket"
+        "daytimeActivities", "sportsAreas", "eveningShows",
+        "miniclubActivities", "entertainmentStaffCare"
     ],
     "DİĞER HİZMETLER": [
-        "peyzaj", "spa", "esnaf", "fiyatKalite"
+        "landscaping", "spaServices", "shopBehavior", "priceQuality"
     ],
 }
 
 QUESTION_LABELS = {
-    "girisKarsilama": "Giriş Karşılama",
-    "checkInIslem": "Check-In İşlemleri",
-    "tesisBilgi": "Tesis Hakkında Bilgilendirme",
-    "onBuroNezaket": "Personelin İlgi ve Nezaketi",
-    "bellboy": "Bellboy Hizmetleri",
-    "grKararlama": "Karşılama Kalitesi",
-    "sorunCozum": "Sorunları Çözüme Kavuşturma",
-    "misafirTakip": "Misafir Takibi",
-    "katIlkTemizlik": "İlk Varışta Oda Temizliği",
-    "katGorunum": "Oda Fiziki Görünümü ve Konforu",
-    "katGunlukTemizlik": "Konaklama Süresince Oda Temizliği",
-    "minibar": "Minibar Hizmeti",
-    "genelAlan": "Genel Alan Temizliği",
-    "sahilHavuz": "Sahil ve Havuz Çevre Temizliği",
-    "katNezaket": "Personelin İlgi ve Nezaketi",
-    "kahvaltiCesit": "Kahvaltı Büfesi Çeşitliliği",
-    "kahvaltiSunum": "Kahvaltı Büfesi Sunumu ve Kalitesi",
-    "ogleCesit": "Öğle Yemeği Büfesi Çeşitliliği",
-    "ogleSunum": "Öğle Yemeği Sunumu ve Kalitesi",
-    "aksamCesit": "Akşam Yemeği Büfesi Çeşitliliği",
-    "aksamSunum": "Akşam Yemeği Sunumu ve Kalitesi",
-    "alacartYemek": "Alacart Yemek Sunumu ve Kalitesi",
-    "mutfakHijyen": "Mutfağın Hijyen ve Temizliği",
-    "yiyecekNezaket": "Personelin İlgi ve Nezaketi",
-    "pollBar": "Pool Bar Servis Kalitesi",
-    "lobbyBar": "Lobby Bar Servis Kalitesi",
-    "snackBar": "Snack Bar Servis Kalitesi",
-    "ickiKalite": "İçki Kalitesi ve Sunumu",
-    "barHijyen": "Barların Hijyen ve Temizliği",
-    "barNezaket": "Personelin İlgi ve Nezaketi",
-    "restDuzen": "Restaurant Düzeni ve Kalitesi",
-    "restYer": "Restaurant Yer Yeterliliği",
-    "restHijyen": "Restaurant Hijyen ve Temizliği",
-    "snackRest": "Snackbar Restaurant Hizmeti",
-    "alacartRest": "Alacart Restaurant Hizmeti",
-    "restNezaket": "Personelin İlgi ve Nezaketi",
-    "teknikSistem": "Oda Teknik Sistemleri",
-    "ariza": "Arıza Bildirimi ve Giderme",
-    "cevreAydinlatma": "Çevre Aydınlatma ve Düzeni",
-    "havuzSu": "Havuz Suyu Temizliği",
-    "teknikNezaket": "Personelin İlgi ve Nezaketi",
-    "animasyonGunduz": "Gündüz Aktiviteleri",
-    "sporAlan": "Spor Alanları ve Ekipmanları",
-    "showlar": "Akşam Showları",
-    "miniclub": "Miniclub Aktiviteleri",
-    "eglenceNezaket": "Personelin İlgi ve Nezaketi",
-    "peyzaj": "Genel Düzenleme / Peyzaj",
-    "spa": "Sauna-Hamam Hizmetleri",
-    "esnaf": "Hotel Genel Esnaf Davranışları",
-    "fiyatKalite": "Fiyat Kalitesi ve İlişkisi",
+    "welcomeGreeting": "Giriş Karşılama",
+    "checkInProcess": "Check-In İşlemleri",
+    "facilityInfo": "Tesis Hakkında Bilgilendirme",
+    "frontDeskCare": "Personelin İlgi ve Nezaketi",
+    "bellboyService": "Bellboy Hizmetleri",
+    "grWelcomeQuality": "Karşılama Kalitesi",
+    "problemSolving": "Sorunları Çözüme Kavuşturma",
+    "guestFollowUp": "Misafir Takibi",
+    "initialRoomCleaning": "İlk Varışta Oda Temizliği",
+    "roomAppearance": "Oda Fiziki Görünümü ve Konforu",
+    "dailyRoomCleaning": "Konaklama Süresince Oda Temizliği",
+    "minibarService": "Minibar Hizmeti",
+    "publicAreaCleaning": "Genel Alan Temizliği",
+    "beachPoolCleaning": "Sahil ve Havuz Çevre Temizliği",
+    "housekeepingStaffCare": "Personelin İlgi ve Nezaketi",
+    "breakfastVariety": "Kahvaltı Büfesi Çeşitliliği",
+    "breakfastQuality": "Kahvaltı Büfesi Sunumu ve Kalitesi",
+    "lunchVariety": "Öğle Yemeği Büfesi Çeşitliliği",
+    "lunchQuality": "Öğle Yemeği Sunumu ve Kalitesi",
+    "dinnerVariety": "Akşam Yemeği Büfesi Çeşitliliği",
+    "dinnerQuality": "Akşam Yemeği Sunumu ve Kalitesi",
+    "alacarteQuality": "Alacart Yemek Sunumu ve Kalitesi",
+    "kitchenHygiene": "Mutfağın Hijyen ve Temizliği",
+    "foodStaffCare": "Personelin İlgi ve Nezaketi",
+    "poolBarQuality": "Pool Bar Servis Kalitesi",
+    "lobbyBarQuality": "Lobby Bar Servis Kalitesi",
+    "snackBarQuality": "Snack Bar Servis Kalitesi",
+    "drinkQuality": "İçki Kalitesi ve Sunumu",
+    "barHygiene": "Barların Hijyen ve Temizliği",
+    "barStaffCare": "Personelin İlgi ve Nezaketi",
+    "restaurantLayout": "Restaurant Düzeni ve Kalitesi",
+    "restaurantCapacity": "Restaurant Yer Yeterliliği",
+    "restaurantHygiene": "Restaurant Hijyen ve Temizliği",
+    "snackbarRestaurant": "Snackbar Restaurant Hizmeti",
+    "alacarteRestaurant": "Alacart Restaurant Hizmeti",
+    "restaurantStaffCare": "Personelin İlgi ve Nezaketi",
+    "roomTechnicalSystems": "Oda Teknik Sistemleri",
+    "maintenanceResponse": "Arıza Bildirimi ve Giderme",
+    "environmentLighting": "Çevre Aydınlatma ve Düzeni",
+    "poolWaterCleaning": "Havuz Suyu Temizliği",
+    "technicalStaffCare": "Personelin İlgi ve Nezaketi",
+    "daytimeActivities": "Gündüz Aktiviteleri",
+    "sportsAreas": "Spor Alanları ve Ekipmanları",
+    "eveningShows": "Akşam Showları",
+    "miniclubActivities": "Miniclub Aktiviteleri",
+    "entertainmentStaffCare": "Personelin İlgi ve Nezaketi",
+    "landscaping": "Genel Düzenleme / Peyzaj",
+    "spaServices": "Sauna-Hamam Hizmetleri",
+    "shopBehavior": "Hotel Genel Esnaf Davranışları",
+    "priceQuality": "Fiyat Kalitesi ve İlişkisi",
+}
+
+COL_MAP = {
+    'girisKarsilama': 'welcomeGreeting',
+    'checkInIslem': 'checkInProcess',
+    'tesisBilgi': 'facilityInfo',
+    'onBuroNezaket': 'frontDeskCare',
+    'bellboy': 'bellboyService',
+    'grKararlama': 'grWelcomeQuality',
+    'sorunCozum': 'problemSolving',
+    'misafirTakip': 'guestFollowUp',
+    'katIlkTemizlik': 'initialRoomCleaning',
+    'katGorunum': 'roomAppearance',
+    'katGunlukTemizlik': 'dailyRoomCleaning',
+    'minibar': 'minibarService',
+    'genelAlan': 'publicAreaCleaning',
+    'sahilHavuz': 'beachPoolCleaning',
+    'katNezaket': 'housekeepingStaffCare',
+    'kahvaltiCesit': 'breakfastVariety',
+    'kahvaltiSunum': 'breakfastQuality',
+    'ogleCesit': 'lunchVariety',
+    'ogleSunum': 'lunchQuality',
+    'aksamCesit': 'dinnerVariety',
+    'aksamSunum': 'dinnerQuality',
+    'alacartYemek': 'alacarteQuality',
+    'mutfakHijyen': 'kitchenHygiene',
+    'yiyecekNezaket': 'foodStaffCare',
+    'pollBar': 'poolBarQuality',
+    'lobbyBar': 'lobbyBarQuality',
+    'snackBar': 'snackBarQuality',
+    'ickiKalite': 'drinkQuality',
+    'barHijyen': 'barHygiene',
+    'barNezaket': 'barStaffCare',
+    'restDuzen': 'restaurantLayout',
+    'restYer': 'restaurantCapacity',
+    'restHijyen': 'restaurantHygiene',
+    'snackRest': 'snackbarRestaurant',
+    'alacartRest': 'alacarteRestaurant',
+    'restNezaket': 'restaurantStaffCare',
+    'teknikSistem': 'roomTechnicalSystems',
+    'ariza': 'maintenanceResponse',
+    'cevreAydinlatma': 'environmentLighting',
+    'havuzSu': 'poolWaterCleaning',
+    'teknikNezaket': 'technicalStaffCare',
+    'animasyonGunduz': 'daytimeActivities',
+    'sporAlan': 'sportsAreas',
+    'showlar': 'eveningShows',
+    'miniclub': 'miniclubActivities',
+    'eglenceNezaket': 'entertainmentStaffCare',
+    'peyzaj': 'landscaping',
+    'spa': 'spaServices',
+    'esnaf': 'shopBehavior',
+    'fiyatKalite': 'priceQuality',
+    'onceGeldiniz': 'previousStay',
+    'tekrarGelir': 'willReturn',
+    'tavsiye': 'wouldRecommend',
 }
 
 
-# ============================================================
-# 📊 VERİ YÜKLEME - GOOGLE SHEETS
-# ============================================================
 @st.cache_data(ttl=60)
 def load_data() -> pd.DataFrame:
     try:
         url = (
             f"https://docs.google.com/spreadsheets/d/"
-            f"{SHEET_ID}/export?format=csv&gid=0"
+            f"{SHEET_ID}/export?format=csv"
         )
-        df = pd.read_csv(url)
+        df = pd.read_csv(url, on_bad_lines='skip')
 
         if df.empty:
             return df
 
-        # Tarih kolonunu bul ve düzenle
+        # Sütun adlarını düzelt
+        df = df.rename(columns=COL_MAP)
+
+        # Başlık satırını temizle
+        # (bazen "A1: tarih" gibi gelir)
+        df.columns = [
+            c.split(': ')[-1] if ': ' in str(c) else c
+            for c in df.columns
+        ]
+
+        # Tarih kolonunu bul
         for col in ["tarih", "date", "submittedAt", "created_at"]:
             if col in df.columns:
                 df["dt"] = pd.to_datetime(
@@ -140,10 +196,7 @@ def load_data() -> pd.DataFrame:
         return pd.DataFrame()
 
 
-# ============================================================
-# 🛠️ YARDIMCI FONKSİYONLAR
-# ============================================================
-def get_rating_cols(df: pd.DataFrame) -> list:
+def get_rating_cols(df):
     cols = []
     for keys in DEPARTMENTS.values():
         for k in keys:
@@ -152,13 +205,13 @@ def get_rating_cols(df: pd.DataFrame) -> list:
     return list(set(cols))
 
 
-def to_numeric(df: pd.DataFrame, cols: list) -> pd.DataFrame:
+def to_numeric(df, cols):
     for c in cols:
         df[c] = pd.to_numeric(df[c], errors="coerce").fillna(0)
     return df
 
 
-def get_max_score(df: pd.DataFrame, cols: list) -> float:
+def get_max_score(df, cols):
     if not cols:
         return 5.0
     mx = df[cols].max().max()
@@ -171,29 +224,27 @@ def get_max_score(df: pd.DataFrame, cols: list) -> float:
     return 100.0
 
 
-def scale100(value: float, max_score: float) -> int:
+def scale100(value, max_score):
     if not value or pd.isna(value) or value <= 0:
         return 0
     return int(round((value / max_score) * 100))
 
 
-def filter_by_time(df: pd.DataFrame, mode: str) -> pd.DataFrame:
+def filter_by_time(df, mode):
     if df.empty or "dt" not in df.columns:
         return df
     now = pd.Timestamp.now()
     limits = {
-        "Günlük": 1,
-        "Haftalık": 7,
-        "Aylık": 30,
-        "Yıllık": 365,
+        "Günlük": 1, "Haftalık": 7,
+        "Aylık": 30, "Yıllık": 365
     }
     if mode in limits:
         start = now - timedelta(days=limits[mode])
         return df[df["dt"] >= start]
-    return df  # Tümü
+    return df
 
 
-def dept_avg(df: pd.DataFrame, metric: str) -> pd.DataFrame:
+def dept_avg(df, metric):
     rows = []
     for dep, keys in DEPARTMENTS.items():
         present = [k for k in keys if k in df.columns]
@@ -201,27 +252,50 @@ def dept_avg(df: pd.DataFrame, metric: str) -> pd.DataFrame:
             continue
         vals = df[present].replace(0, pd.NA)
         if metric == "Toplam":
-            score = float(vals.sum(axis=1, skipna=True).sum(skipna=True))
+            score = float(
+                vals.sum(axis=1, skipna=True).sum(skipna=True)
+            )
         else:
-            score = float(vals.mean(axis=1, skipna=True).mean(skipna=True))
-        rows.append({"Departman": dep, "Skor": score if pd.notna(score) else 0.0})
-    return pd.DataFrame(rows).sort_values("Skor", ascending=False)
+            score = float(
+                vals.mean(axis=1, skipna=True).mean(skipna=True)
+            )
+        rows.append({
+            "Departman": dep,
+            "Skor": score if pd.notna(score) else 0.0
+        })
+
+    if not rows:
+        return pd.DataFrame(columns=["Departman", "Skor"])
+
+    return pd.DataFrame(rows).sort_values(
+        "Skor", ascending=False
+    ).reset_index(drop=True)
 
 
-def question_avg(df: pd.DataFrame, dep: str, metric: str) -> pd.DataFrame:
-    keys = [k for k in DEPARTMENTS.get(dep, []) if k in df.columns]
+def question_avg(df, dep, metric):
+    keys = [
+        k for k in DEPARTMENTS.get(dep, [])
+        if k in df.columns
+    ]
     rows = []
     for k in keys:
         s = df[k].replace(0, pd.NA)
-        v = s.sum(skipna=True) if metric == "Toplam" else s.mean(skipna=True)
+        v = s.sum(skipna=True) if metric == "Toplam" \
+            else s.mean(skipna=True)
         rows.append({
             "Soru": QUESTION_LABELS.get(k, k),
             "Skor": float(v) if pd.notna(v) else 0.0
         })
-    return pd.DataFrame(rows).sort_values("Skor", ascending=False)
+
+    if not rows:
+        return pd.DataFrame(columns=["Soru", "Skor"])
+
+    return pd.DataFrame(rows).sort_values(
+        "Skor", ascending=False
+    ).reset_index(drop=True)
 
 
-def top_staff(df: pd.DataFrame, n: int = 10) -> pd.DataFrame:
+def top_staff(df, n=10):
     if "praisedStaff" not in df.columns:
         return pd.DataFrame(columns=["Personel", "Övgü Sayısı"])
     s = df["praisedStaff"].fillna("").astype(str).str.strip()
@@ -236,25 +310,28 @@ def top_staff(df: pd.DataFrame, n: int = 10) -> pd.DataFrame:
     return vc
 
 
-def country_avg(df: pd.DataFrame, metric: str, cols: list) -> pd.DataFrame:
+def country_avg(df, metric, cols):
     if "nationality" not in df.columns or not cols:
         return pd.DataFrame(columns=["Ülke", "Skor"])
     tmp = df.copy()
-    tmp["Ülke"] = tmp["nationality"].fillna("Bilinmiyor").astype(str)
-    tmp["_avg"] = tmp[cols].replace(0, pd.NA).mean(axis=1, skipna=True)
+    tmp["Ülke"] = tmp["nationality"].fillna(
+        "Bilinmiyor"
+    ).astype(str)
+    tmp["_avg"] = tmp[cols].replace(
+        0, pd.NA
+    ).mean(axis=1, skipna=True)
     if metric == "Toplam":
         g = tmp.groupby("Ülke")["_avg"].sum(min_count=1)
     else:
         g = tmp.groupby("Ülke")["_avg"].mean()
-    return g.reset_index().rename(columns={"_avg": "Skor"}).sort_values(
-        "Skor", ascending=False
-    )
+    return g.reset_index().rename(
+        columns={"_avg": "Skor"}
+    ).sort_values("Skor", ascending=False)
 
 
-def time_trend(df: pd.DataFrame, mode: str, metric: str) -> pd.DataFrame:
+def time_trend(df, mode, metric):
     rows = []
     df = df.copy()
-
     fmt = {
         "Günlük": lambda s: s.dt.strftime("%Y-%m-%d"),
         "Haftalık": lambda s: s.dt.to_period("W").astype(str),
@@ -263,7 +340,6 @@ def time_trend(df: pd.DataFrame, mode: str, metric: str) -> pd.DataFrame:
         "Tümü": lambda s: s.dt.to_period("M").astype(str),
     }
     df["Bucket"] = fmt.get(mode, fmt["Aylık"])(df["dt"])
-
     for dep, keys in DEPARTMENTS.items():
         present = [k for k in keys if k in df.columns]
         if not present:
@@ -271,21 +347,26 @@ def time_trend(df: pd.DataFrame, mode: str, metric: str) -> pd.DataFrame:
         vals = df[present].replace(0, pd.NA)
         if metric == "Toplam":
             df["_s"] = vals.sum(axis=1, skipna=True)
-            g = df.groupby("Bucket")["_s"].sum(min_count=1).reset_index()
+            g = df.groupby("Bucket")["_s"].sum(
+                min_count=1
+            ).reset_index()
         else:
             df["_s"] = vals.mean(axis=1, skipna=True)
             g = df.groupby("Bucket")["_s"].mean().reset_index()
         g["Departman"] = dep
         g = g.rename(columns={"_s": "Skor"})
         rows.append(g)
-
     if not rows:
-        return pd.DataFrame(columns=["Bucket", "Skor", "Departman"])
-    return pd.concat(rows, ignore_index=True).sort_values(["Bucket", "Departman"])
+        return pd.DataFrame(
+            columns=["Bucket", "Skor", "Departman"]
+        )
+    return pd.concat(rows, ignore_index=True).sort_values(
+        ["Bucket", "Departman"]
+    )
 
 
 # ============================================================
-# 🎨 STREAMLIT ARAYÜZ
+# ARAYÜZ
 # ============================================================
 st.set_page_config(
     page_title="🏨 Otel Yönetim Paneli",
@@ -293,7 +374,6 @@ st.set_page_config(
     layout="wide"
 )
 
-# Başlık
 st.markdown("""
     <h1 style='text-align:center; color:#1a73e8;'>
         🏨 Concordia Celes Hotel
@@ -304,15 +384,12 @@ st.markdown("""
     <hr>
 """, unsafe_allow_html=True)
 
-# Veri yükle
 df_all = load_data()
 
 if df_all.empty:
-    st.warning("⚠️ Henüz veri yok veya Google Sheets bağlantısı kurulamadı.")
-    st.info("👆 SHEET_ID değişkenini doğru girdiğinizden emin olun.")
+    st.warning("⚠️ Henüz veri yok!")
     st.stop()
 
-# dt boş olanları at
 if "dt" in df_all.columns:
     df_all = df_all[df_all["dt"].notna()].copy()
 
@@ -320,43 +397,36 @@ rating_cols_all = get_rating_cols(df_all)
 df_all = to_numeric(df_all, rating_cols_all)
 max_score = get_max_score(df_all, rating_cols_all)
 
-# ── Sidebar Filtreler ──
+# Sidebar
 with st.sidebar:
-    st.image("https://via.placeholder.com/200x80?text=Hotel+Logo", width=200)
-    st.markdown("---")
     st.markdown("### ⚙️ Filtreler")
-
     time_mode = st.radio(
         "📅 Zaman Filtresi",
         ["Günlük", "Haftalık", "Aylık", "Yıllık", "Tümü"],
-        index=2
+        index=4
     )
-
     metric_mode = st.selectbox(
         "📐 Hesaplama Kriteri",
         ["Ortalama", "Toplam"],
         index=0
     )
-
     st.markdown("---")
     if st.button("🔄 Veriyi Yenile"):
         st.cache_data.clear()
         st.rerun()
-
     st.markdown("---")
     st.markdown(f"📋 **Toplam Anket:** {len(df_all)}")
-    st.markdown(f"🕐 **Son Güncelleme:** {datetime.now().strftime('%H:%M:%S')}")
+    st.markdown(
+        f"🕐 **Son Güncelleme:** "
+        f"{datetime.now().strftime('%H:%M:%S')}"
+    )
 
-# Filtrelenmiş veri
 df = filter_by_time(df_all, time_mode).copy()
 rating_cols = get_rating_cols(df)
 df = to_numeric(df, rating_cols)
 
-# ══════════════════════════════════════════
-# 1) ÖZET KARTLAR
-# ══════════════════════════════════════════
+# 1) ÖZET
 st.markdown("## 📈 Genel Özet")
-
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
@@ -369,14 +439,15 @@ with col1:
 with col2:
     if rating_cols and not df.empty:
         vals = df[rating_cols].replace(0, pd.NA)
-        genel = float(vals.mean(axis=1, skipna=True).mean(skipna=True))
+        genel = float(
+            vals.mean(axis=1, skipna=True).mean(skipna=True)
+        )
         puan = scale100(genel, max_score)
     else:
         puan = 0
     st.metric(
         label="⭐ Genel Puan (100 üzerinden)",
-        value=f"{puan}/100",
-        delta="Ortalama" if puan >= 70 else "Düşük"
+        value=f"{puan}/100"
     )
 
 with col3:
@@ -390,26 +461,25 @@ with col3:
 
 with col4:
     if "wouldRecommend" in df.columns:
-        tavsiye = df["wouldRecommend"].astype(str).str.lower()
-        evet2 = tavsiye.isin(["evet", "yes", "да"]).sum()
-        oran2 = int((evet2 / len(df) * 100)) if len(df) > 0 else 0
+        tav = df["wouldRecommend"].astype(str).str.lower()
+        evet2 = tav.isin(["evet", "yes", "да"]).sum()
+        oran2 = int(
+            (evet2 / len(df) * 100)
+        ) if len(df) > 0 else 0
         st.metric(label="👍 Tavsiye Eder", value=f"%{oran2}")
     else:
         st.metric(label="👍 Tavsiye Eder", value="N/A")
 
 st.divider()
 
-# ══════════════════════════════════════════
-# 2) EN İYİ 3 DEPARTMAN & PERSONEL
-# ══════════════════════════════════════════
+# 2) EN İYİ DEPARTMAN & PERSONEL
 st.markdown("## 🏆 En İyi Departman & Personel")
-
 dep_df = dept_avg(df, metric_mode)
 staff_df = top_staff(df, 3)
+medals = ["🥇", "🥈", "🥉"]
+colors = ["#FFD700", "#C0C0C0", "#CD7F32"]
 
 col_a, col_b = st.columns(2)
-
-medals = ["🥇", "🥈", "🥉"]
 
 with col_a:
     st.markdown("### 🏢 En İyi 3 Departman")
@@ -417,12 +487,15 @@ with col_a:
         st.info("Veri bulunamadı.")
     else:
         for i, row in enumerate(dep_df.head(3).itertuples()):
-            color = ["#FFD700", "#C0C0C0", "#CD7F32"][i]
+            c = colors[i]
             st.markdown(f"""
-                <div style='background:{color}22; border-left:4px solid {color};
-                padding:10px; margin:5px 0; border-radius:5px;'>
+                <div style='background:{c}22;
+                border-left:4px solid {c};
+                padding:10px; margin:5px 0;
+                border-radius:5px;'>
                     <b>{medals[i]} {row.Departman}</b>
-                    <span style='float:right; font-weight:bold;'>
+                    <span style='float:right;
+                    font-weight:bold;'>
                         {row.Skor:.2f}
                     </span>
                 </div>
@@ -434,12 +507,15 @@ with col_b:
         st.info("Henüz övülen personel yok.")
     else:
         for i, row in enumerate(staff_df.head(3).itertuples()):
-            color = ["#FFD700", "#C0C0C0", "#CD7F32"][i]
+            c = colors[i]
             st.markdown(f"""
-                <div style='background:{color}22; border-left:4px solid {color};
-                padding:10px; margin:5px 0; border-radius:5px;'>
+                <div style='background:{c}22;
+                border-left:4px solid {c};
+                padding:10px; margin:5px 0;
+                border-radius:5px;'>
                     <b>{medals[i]} {row.Personel}</b>
-                    <span style='float:right; font-weight:bold;'>
+                    <span style='float:right;
+                    font-weight:bold;'>
                         {row._2} övgü
                     </span>
                 </div>
@@ -447,99 +523,84 @@ with col_b:
 
 st.divider()
 
-# ══════════════════════════════════════════
-# 3) DEPARTMAN PUANLARI GRAFİĞİ
-# ══════════════════════════════════════════
+# 3) DEPARTMAN GRAFİĞİ
 st.markdown("## 📊 Departman Puanları")
-
 if dep_df.empty:
     st.info("Grafik için veri yok.")
 else:
     fig1 = px.bar(
-        dep_df,
-        x="Departman",
-        y="Skor",
+        dep_df, x="Departman", y="Skor",
         color="Skor",
         color_continuous_scale="RdYlGn",
-        title=f"Departman Skorları ({time_mode} | {metric_mode})",
+        title=f"Departman Skorları ({time_mode})",
         text="Skor"
     )
-    fig1.update_traces(texttemplate='%{text:.2f}', textposition='outside')
+    fig1.update_traces(
+        texttemplate='%{text:.2f}',
+        textposition='outside'
+    )
     fig1.update_layout(showlegend=False, height=450)
     st.plotly_chart(fig1, use_container_width=True)
 
 st.divider()
 
-# ══════════════════════════════════════════
-# 4) SORU BAZLI ANALİZ
-# ══════════════════════════════════════════
-st.markdown("## 🔍 Departman & Soru Bazlı Analiz")
-
+# 4) SORU BAZLI
+st.markdown("## 🔍 Soru Bazlı Analiz")
 dep_choice = st.selectbox(
     "Departman Seçin",
     list(DEPARTMENTS.keys()),
     index=0
 )
-
 q_df = question_avg(df, dep_choice, metric_mode)
-
 if q_df.empty:
     st.info("Seçilen departman için veri yok.")
 else:
     fig2 = px.bar(
-        q_df,
-        x="Soru",
-        y="Skor",
+        q_df, x="Soru", y="Skor",
         color="Skor",
         color_continuous_scale="RdYlGn",
-        title=f"{dep_choice} — Soru Bazlı Analiz",
+        title=f"{dep_choice} — Soru Bazlı",
         text="Skor"
     )
-    fig2.update_traces(texttemplate='%{text:.2f}', textposition='outside')
+    fig2.update_traces(
+        texttemplate='%{text:.2f}',
+        textposition='outside'
+    )
     fig2.update_layout(showlegend=False, height=400)
     st.plotly_chart(fig2, use_container_width=True)
 
 st.divider()
 
-# ══════════════════════════════════════════
-# 5) ÜLKE ANALİZİ
-# ══════════════════════════════════════════
+# 5) ÜLKE
 st.markdown("## 🌍 Ülke Bazlı Analiz")
-
 c_df = country_avg(df, metric_mode, rating_cols)
-
 if c_df.empty:
     st.info("Ülke verisi bulunamadı.")
 else:
     fig3 = px.bar(
-        c_df.head(20),
-        x="Ülke",
-        y="Skor",
+        c_df.head(20), x="Ülke", y="Skor",
         color="Skor",
         color_continuous_scale="Blues",
-        title="Ülke Bazlı Memnuniyet Skoru",
+        title="Ülke Bazlı Memnuniyet",
         text="Skor"
     )
-    fig3.update_traces(texttemplate='%{text:.2f}', textposition='outside')
+    fig3.update_traces(
+        texttemplate='%{text:.2f}',
+        textposition='outside'
+    )
     fig3.update_layout(showlegend=False, height=400)
     st.plotly_chart(fig3, use_container_width=True)
 
 st.divider()
 
-# ══════════════════════════════════════════
-# 6) PERSONEL ÖVGÜ GRAFİĞİ
-# ══════════════════════════════════════════
+# 6) PERSONEL
 st.markdown("## 👏 Personel Övgü Analizi")
-
 staff_all = top_staff(df, 20)
-
 if staff_all.empty:
     st.info("Övülen personel verisi yok.")
 else:
     fig4 = px.bar(
-        staff_all,
-        x="Personel",
-        y="Övgü Sayısı",
+        staff_all, x="Personel", y="Övgü Sayısı",
         color="Övgü Sayısı",
         color_continuous_scale="Greens",
         title="En Çok Övülen Personel",
@@ -551,20 +612,14 @@ else:
 
 st.divider()
 
-# ══════════════════════════════════════════
-# 7) ZAMAN TREND ANALİZİ
-# ══════════════════════════════════════════
+# 7) TREND
 st.markdown("## 📈 Zaman Trend Analizi")
-
 trend_df = time_trend(df, time_mode, metric_mode)
-
 if trend_df.empty:
-    st.info("Trend grafiği için yeterli veri yok.")
+    st.info("Trend için yeterli veri yok.")
 else:
     fig5 = px.line(
-        trend_df,
-        x="Bucket",
-        y="Skor",
+        trend_df, x="Bucket", y="Skor",
         color="Departman",
         title=f"Departman Trend ({time_mode})",
         markers=True
@@ -574,61 +629,56 @@ else:
 
 st.divider()
 
-# ══════════════════════════════════════════
-# 8) MİSAFİR YORUMLARI
-# ══════════════════════════════════════════
+# 8) YORUMLAR
 st.markdown("## 💬 Misafir Yorumları")
-
 if "generalComments" in df.columns:
     comments = (
         df["generalComments"]
-        .fillna("")
-        .astype(str)
-        .str.strip()
+        .fillna("").astype(str).str.strip()
     )
     comments = comments[comments != ""]
-
     st.markdown(f"**Toplam Yorum: {len(comments)}**")
-
-    if not comments.empty:
-        for i, (idx, comment) in enumerate(comments.head(50).items()):
-            name = df.loc[idx, "fullName"] if "fullName" in df.columns else "Misafir"
-            country = df.loc[idx, "nationality"] if "nationality" in df.columns else ""
-            st.markdown(f"""
-                <div style='background:#f8f9fa; border-left:3px solid #1a73e8;
-                padding:10px; margin:8px 0; border-radius:5px;'>
-                    <b>👤 {name}</b>
-                    {'🌍 ' + str(country) if country else ''}
-                    <br><small style='color:#666;'>{comment}</small>
-                </div>
-            """, unsafe_allow_html=True)
+    for idx, comment in comments.head(50).items():
+        name = df.loc[idx, "fullName"] \
+            if "fullName" in df.columns else "Misafir"
+        country = df.loc[idx, "nationality"] \
+            if "nationality" in df.columns else ""
+        st.markdown(f"""
+            <div style='background:#f8f9fa;
+            border-left:3px solid #1a73e8;
+            padding:10px; margin:8px 0;
+            border-radius:5px;'>
+                <b>👤 {name}</b>
+                {'🌍 ' + str(country) if country else ''}
+                <br>
+                <small style='color:#666;'>{comment}</small>
+            </div>
+        """, unsafe_allow_html=True)
 else:
     st.info("Yorum verisi bulunamadı.")
 
 st.divider()
 
-# ══════════════════════════════════════════
-# 9) HAM VERİ TABLOSU
-# ══════════════════════════════════════════
+# 9) HAM VERİ
 st.markdown("## 📋 Ham Veri Tablosu")
-
 show_cols = [
     c for c in [
         "dt", "fullName", "gender", "nationality",
         "roomNumber", "checkIn", "checkOut",
         "praisedStaff", "generalComments",
-        "onceGeldiniz", "tekrarGelir", "tavsiye"
+        "previousStay", "willReturn", "wouldRecommend"
     ] if c in df.columns
 ]
 
-st.dataframe(
-    df[show_cols].sort_values("dt", ascending=False)
-    if "dt" in df.columns else df[show_cols],
-    use_container_width=True,
-    height=400
-)
+if show_cols:
+    st.dataframe(
+        df[show_cols].sort_values("dt", ascending=False)
+        if "dt" in df.columns else df[show_cols],
+        use_container_width=True,
+        height=400
+    )
 
-# Excel İndirme
+# Excel İndir
 try:
     import io
     buffer = io.BytesIO()
@@ -637,18 +687,16 @@ try:
     st.download_button(
         label="📥 Excel Olarak İndir",
         data=buffer,
-        file_name=f"anket_verileri_{datetime.now().strftime('%Y%m%d')}.xlsx",
+        file_name=f"anket_{datetime.now().strftime('%Y%m%d')}.xlsx",
         mime="application/vnd.ms-excel"
     )
 except Exception:
-    st.info("Excel indirme için 'openpyxl' kütüphanesi gerekli.")
+    st.info("Excel için openpyxl gerekli.")
 
 st.divider()
 
-# Footer
 st.markdown("""
     <div style='text-align:center; color:#999; padding:20px;'>
-        🏨 Concordia Celes Hotel — Misafir Memnuniyet Sistemi<br>
-        <small>Veriler Google Sheets'ten otomatik yüklenmektedir</small>
+        🏨 Concordia Celes Hotel — Misafir Memnuniyet Sistemi
     </div>
 """, unsafe_allow_html=True)
