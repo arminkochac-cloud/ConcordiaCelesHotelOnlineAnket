@@ -6,6 +6,27 @@ var totalSections = 11;
 document.addEventListener('DOMContentLoaded', function() {
     initStars();
     
+    // Bugünün tarihini otomatik ayarla
+    var today = new Date();
+    var yyyy = today.getFullYear();
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var dd = String(today.getDate()).padStart(2, '0');
+    var todayStr = yyyy + '-' + mm + '-' + dd;
+
+    // Yarının tarihini hesapla
+    var tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    var yyyy2 = tomorrow.getFullYear();
+    var mm2 = String(tomorrow.getMonth() + 1).padStart(2, '0');
+    var dd2 = String(tomorrow.getDate()).padStart(2, '0');
+    var tomorrowStr = yyyy2 + '-' + mm2 + '-' + dd2;
+
+    // Tarihleri ata
+    var checkIn = document.getElementById('checkInDate');
+    var checkOut = document.getElementById('checkOutDate');
+    if(checkIn) checkIn.value = todayStr;
+    if(checkOut) checkOut.value = tomorrowStr;
+
     var form = document.getElementById('mainForm');
     if(form) {
         form.addEventListener('submit', function(e) {
@@ -172,4 +193,23 @@ function resetForm() {
         s.classList.remove('active');
     });
     document.getElementById('section1').classList.add('active');
+    
+    // Tarihleri sıfırla
+    var today = new Date();
+    var yyyy = today.getFullYear();
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var dd = String(today.getDate()).padStart(2, '0');
+    var todayStr = yyyy + '-' + mm + '-' + dd;
+
+    var tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    var yyyy2 = tomorrow.getFullYear();
+    var mm2 = String(tomorrow.getMonth() + 1).padStart(2, '0');
+    var dd2 = String(tomorrow.getDate()).padStart(2, '0');
+    var tomorrowStr = yyyy2 + '-' + mm2 + '-' + dd2;
+
+    var checkIn = document.getElementById('checkInDate');
+    var checkOut = document.getElementById('checkOutDate');
+    if(checkIn) checkIn.value = todayStr;
+    if(checkOut) checkOut.value = tomorrowStr;
 }
