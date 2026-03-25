@@ -1,6 +1,5 @@
 var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8ZKP3i7Mej1c4OjUA-QMG2aEpEUNKcIltCP9IDj3XcyPF8Wsnmc-xdHDFFynB-r16sQ/exec';
 
-
 var currentSection = 1;
 var totalSections = 11;
 
@@ -66,6 +65,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 .style.display = 'block';
         });
     }
+
+    // Modal dışına tıklayınca kapat
+    document.addEventListener('click', function(e) {
+        var modal = document.getElementById('kvkkModal');
+        if(e.target === modal) {
+            closeKvkk();
+        }
+    });
 });
 
 function initStars() {
@@ -203,26 +210,7 @@ function resetForm() {
         s.classList.remove('active');
     });
     document.getElementById('section1').classList.add('active');
-    // KVKK Fonksiyonları
-function showKvkk() {
-    document.getElementById('kvkkModal')
-        .style.display = 'block';
-    document.body.style.overflow = 'hidden';
-}
 
-function closeKvkk() {
-    document.getElementById('kvkkModal')
-        .style.display = 'none';
-    document.body.style.overflow = 'auto';
-}
-
-// Modal dışına tıklayınca kapat
-document.addEventListener('click', function(e) {
-    var modal = document.getElementById('kvkkModal');
-    if(e.target === modal) {
-        closeKvkk();
-    }
-});
     // Tarihleri sıfırla
     var today = new Date();
     var yyyy = today.getFullYear();
@@ -241,4 +229,17 @@ document.addEventListener('click', function(e) {
     var checkOut = document.getElementById('checkOutDate');
     if(checkIn) checkIn.value = todayStr;
     if(checkOut) checkOut.value = tomorrowStr;
+}
+
+// KVKK Fonksiyonları
+function showKvkk() {
+    document.getElementById('kvkkModal')
+        .style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeKvkk() {
+    document.getElementById('kvkkModal')
+        .style.display = 'none';
+    document.body.style.overflow = 'auto';
 }
