@@ -382,7 +382,7 @@ st.set_page_config(
 st.markdown("""
     <div style='text-align:center; padding:20px;'>
         <img src='https://arminkochac-cloud.github.io/OtelAnketFinal/logo.png' 
-        width='150' style='margin-bottom:10px;'>
+        width='75' style='margin-bottom:10px;'>
         <h1 style='color:#1a73e8;'>
             Concordia Celes Hotel
         </h1>
