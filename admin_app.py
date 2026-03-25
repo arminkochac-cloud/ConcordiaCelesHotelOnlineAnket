@@ -378,7 +378,6 @@ st.set_page_config(
     page_icon="🏨",
     layout="wide"
 )
-
 st.markdown("""
     <div style='
         background: linear-gradient(135deg, #1a1a3e, #2d2d7e);
@@ -394,33 +393,28 @@ st.markdown("""
         background:white; 
         padding:10px; 
         border-radius:10px;'>
-        
         <h1 style='
             color:white; 
             font-size:2.5em;
             margin:10px 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         '>
             Concordia Celes Hotel
         </h1>
-        
         <h3 style='
             color:#FFD700; 
             font-size:1.2em;
-            margin:5px 0;
         '>
             ⭐⭐⭐⭐⭐
         </h3>
-        
         <p style='
             color:#ccc;
             font-size:1.1em;
-            margin:10px 0 0 0;
         '>
             📊 Misafir Memnuniyet Yönetim Paneli
         </p>
     </div>
 """, unsafe_allow_html=True)
+
 
 df_all = load_data()
 
