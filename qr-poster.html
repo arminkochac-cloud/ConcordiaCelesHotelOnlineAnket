@@ -4,92 +4,229 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Kod Poster</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body { 
-            font-family: 'Arial', sans-serif; 
+            font-family: 'Poppins', sans-serif;
             display: flex; 
             justify-content: center; 
             align-items: center; 
             min-height: 100vh; 
-            background: #f0f0f0;
+            background: #0a0a1a;
         }
+
         .poster {
-            width: 500px;
+            width: 480px;
             text-align: center;
-            padding: 30px;
-            border: 3px solid #1a1a3e;
+            padding: 35px 30px;
+            background: linear-gradient(
+                160deg, 
+                #1a1a3e 0%, 
+                #0d0d2b 50%,
+                #1a1a3e 100%
+            );
             border-radius: 20px;
+            border: 1px solid rgba(255,215,0,0.3);
+            box-shadow: 
+                0 0 40px rgba(255,215,0,0.1),
+                0 20px 60px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Köşe süslemeleri */
+        .poster::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: 
+                radial-gradient(
+                    circle at 20% 20%, 
+                    rgba(255,215,0,0.05) 0%, 
+                    transparent 50%
+                ),
+                radial-gradient(
+                    circle at 80% 80%, 
+                    rgba(255,215,0,0.05) 0%, 
+                    transparent 50%
+                );
+            pointer-events: none;
+        }
+
+        /* Logo kutusu */
+        .logo-box {
             background: white;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #FFD700;
+            box-shadow: 0 0 20px rgba(255,215,0,0.3);
+            overflow: hidden;
         }
-        .poster img.logo {
-            width: 130px;
-            margin-bottom: 15px;
+
+        .logo-box img {
+            width: 90px;
         }
-        .poster h1 {
-            color: #1a1a3e;
+
+        /* Otel adı */
+        .hotel-name {
+            font-family: 'Playfair Display', serif;
+            color: #FFD700;
             font-size: 26px;
+            font-weight: 700;
             margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255,215,0,0.3);
+            letter-spacing: 1px;
         }
-        .poster h2 {
-            color: #666;
-            font-size: 16px;
-            margin-bottom: 5px;
-            font-weight: 400;
-        }
+
+        /* Yıldızlar */
         .stars {
             color: #FFD700;
-            font-size: 20px;
-            margin-bottom: 15px;
+            font-size: 18px;
+            margin-bottom: 12px;
+            letter-spacing: 3px;
         }
+
+        /* Ayraç çizgisi */
+        .divider {
+            width: 80%;
+            margin: 12px auto;
+            border: none;
+            height: 1px;
+            background: linear-gradient(
+                to right,
+                transparent,
+                rgba(255,215,0,0.5),
+                transparent
+            );
+        }
+
+        /* Dil yazıları */
+        .survey-titles {
+            margin-bottom: 12px;
+        }
+
+        .survey-titles p {
+            color: rgba(255,255,255,0.85);
+            font-size: 12px;
+            margin: 3px 0;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        .survey-titles p:first-child {
+            color: #FFD700;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* QR Kod kutusu */
+        .qr-container {
+            position: relative;
+            display: inline-block;
+            margin: 10px 0;
+        }
+
         .qr-box {
             background: white;
             padding: 15px;
             border-radius: 15px;
             display: inline-block;
-            margin-bottom: 15px;
-            border: 2px solid #eee;
+            border: 3px solid #FFD700;
+            box-shadow: 
+                0 0 30px rgba(255,215,0,0.2),
+                0 10px 30px rgba(0,0,0,0.3);
         }
+
         .qr-box img {
-            width: 220px;
-            height: 220px;
+            width: 200px;
+            height: 200px;
+            display: block;
         }
-        .scan-text {
-            font-size: 16px;
-            color: #1a1a3e;
-            margin: 10px 0;
-            font-weight: 600;
+
+        /* Köşe süsleri QR */
+        .corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-color: #FFD700;
+            border-style: solid;
         }
+        .corner-tl { top: -5px; left: -5px; border-width: 3px 0 0 3px; }
+        .corner-tr { top: -5px; right: -5px; border-width: 3px 3px 0 0; }
+        .corner-bl { bottom: -5px; left: -5px; border-width: 0 0 3px 3px; }
+        .corner-br { bottom: -5px; right: -5px; border-width: 0 3px 3px 0; }
+
+        /* Tarama metni */
+        .scan-texts {
+            margin: 12px 0;
+        }
+
+        .scan-texts p {
+            color: rgba(255,255,255,0.8);
+            font-size: 11px;
+            margin: 2px 0;
+            font-weight: 300;
+        }
+
+        .scan-texts p:first-child {
+            color: #FFD700;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        /* Dil butonları */
         .languages {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 15px;
+            gap: 6px;
+            margin-top: 12px;
         }
+
         .lang-tag {
-            background: #1a1a3e;
-            color: white;
-            padding: 8px;
+            background: rgba(255,215,0,0.1);
+            color: #FFD700;
+            padding: 7px 5px;
             border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid rgba(255,215,0,0.3);
+            transition: all 0.3s;
         }
+
+        /* Footer */
         .footer {
             margin-top: 15px;
-            color: #999;
+            padding-top: 12px;
+        }
+
+        .footer p {
+            color: rgba(255,255,255,0.5);
+            font-size: 11px;
+            margin: 2px 0;
+            font-weight: 300;
+        }
+
+        .footer .website {
+            color: rgba(255,215,0,0.7);
             font-size: 12px;
+            margin-top: 5px;
+            letter-spacing: 1px;
         }
-        .divider {
-            border: none;
-            border-top: 2px solid #eee;
-            margin: 15px 0;
-        }
+
         @media print {
             body { background: white; }
-            .poster { 
-                border: 2px solid #333;
+            .poster {
                 box-shadow: none;
+                border: 2px solid #1a1a3e;
             }
         }
     </style>
@@ -97,95 +234,57 @@
 <body>
 
 <div class="poster">
+
     <!-- LOGO -->
-    <img src="logo.png" alt="Hotel Logo" class="logo">
-    
-    <h1>Concordia Celes Hotel</h1>
-    <div class="stars">★★★★★</div>
-    
-    <div style="margin-bottom:10px;">
-    <p style="
-        color:#1a1a3e;
-        font-size:14px;
-        margin:3px 0;
-        font-weight:500;
-    ">
-        🇹🇷 Misafir Memnuniyet Anketi
-    </p>
-    <p style="
-        color:#444;
-        font-size:14px;
-        margin:3px 0;
-        font-weight:500;
-    ">
-        🇬🇧 Guest Satisfaction Survey
-    </p>
-    <p style="
-        color:#444;
-        font-size:14px;
-        margin:3px 0;
-        font-weight:500;
-    ">
-        🇩🇪 Gästezufriedenheitsumfrage
-    </p>
-    <p style="
-        color:#444;
-        font-size:14px;
-        margin:3px 0;
-        font-weight:500;
-    ">
-        🇷🇺 Анкета Удовлетворённости Гостей
-    </p>
-    <p style="
-        color:#444;
-        font-size:14px;
-        margin:3px 0;
-        font-weight:500;
-    ">
-        🇵🇱 Ankieta Satysfakcji Gości
-    </p>
-    <p style="
-        color:#444;
-        font-size:14px;
-        margin:3px 0;
-        font-weight:500;
-    ">
-        🇷🇴 Chestionar de Satisfacție
-    </p>
-</div>
-    
+    <div class="logo-box">
+        <img src="logo.png" alt="Concordia Celes Hotel">
+    </div>
+
+    <!-- OTEL ADI -->
+    <h1 class="hotel-name">Concordia Celes Hotel</h1>
+
+    <!-- YILDIZLAR -->
+    <div class="stars">★ ★ ★ ★ ★</div>
+
+    <hr class="divider">
+
+    <!-- 6 DİL ANKET BAŞLIĞI -->
+    <div class="survey-titles">
+        <p>🇹🇷 Misafir Memnuniyet Anketi</p>
+        <p>🇬🇧 Guest Satisfaction Survey</p>
+        <p>🇩🇪 Gästezufriedenheitsumfrage</p>
+        <p>🇷🇺 Анкета Удовлетворённости</p>
+        <p>🇵🇱 Ankieta Satysfakcji Gości</p>
+        <p>🇷🇴 Chestionar de Satisfacție</p>
+    </div>
+
     <hr class="divider">
 
     <!-- QR KOD -->
-    <div class="qr-box">
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://arminkochac-cloud.github.io/OtelAnketFinal/&color=1a1a3e" 
-             alt="QR Code">
+    <div class="qr-container">
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div>
+        <div class="corner corner-br"></div>
+        <div class="qr-box">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://arminkochac-cloud.github.io/OtelAnketFinal/&color=1a1a3e&bgcolor=ffffff" 
+                 alt="QR Code">
+        </div>
     </div>
 
-    <div class="scan-text">
-    <p style="margin:3px 0;">
-        📱 🇹🇷 QR kodu telefonunuzla okutun
-    </p>
-    <p style="margin:3px 0; font-size:13px; color:#444;">
-        📱 🇬🇧 Scan the QR code with your phone
-    </p>
-    <p style="margin:3px 0; font-size:13px; color:#444;">
-        📱 🇩🇪 QR-Code mit Ihrem Handy scannen
-    </p>
-    <p style="margin:3px 0; font-size:13px; color:#444;">
-        📱 🇷🇺 Отсканируйте QR-код телефоном
-    </p>
-    <p style="margin:3px 0; font-size:13px; color:#444;">
-        📱 🇵🇱 Zeskanuj kod QR swoim telefonem
-    </p>
-    <p style="margin:3px 0; font-size:13px; color:#444;">
-        📱 🇷🇴 Scanează codul QR cu telefonul
-    </p>
-</div>
+    <!-- TARAMA METNİ 6 DİL -->
+    <div class="scan-texts">
+        <p>📱 QR kodu telefonunuzla okutun</p>
+        <p>🇬🇧 Scan the QR code with your phone</p>
+        <p>🇩🇪 QR-Code mit Ihrem Handy scannen</p>
+        <p>🇷🇺 Отсканируйте QR-код телефоном</p>
+        <p>🇵🇱 Zeskanuj kod QR swoim telefonem</p>
+        <p>🇷🇴 Scanează codul QR cu telefonul</p>
+    </div>
 
     <hr class="divider">
 
-    <!-- DESTEKLENEN DILLER -->
+    <!-- DİL BUTONLARI -->
     <div class="languages">
         <div class="lang-tag">🇹🇷 Türkçe</div>
         <div class="lang-tag">🇬🇧 English</div>
@@ -195,13 +294,14 @@
         <div class="lang-tag">🇷🇴 Română</div>
     </div>
 
+    <!-- FOOTER -->
     <div class="footer">
+        <hr class="divider">
         <p>Görüşleriniz bizim için çok değerlidir.</p>
         <p>Your feedback is very valuable to us.</p>
-        <p style="margin-top:5px; color:#1a1a3e;">
-            www.concordiaceles.com
-        </p>
+        <p class="website">www.concordiaceles.com</p>
     </div>
+
 </div>
 
 </body>
