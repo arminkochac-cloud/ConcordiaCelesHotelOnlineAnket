@@ -1,3 +1,5 @@
+from fpdf import FPDF
+import io
 import pytz
 import pandas as pd
 import streamlit as st
@@ -801,3 +803,198 @@ st.markdown("""
         🏨 Concordia Celes Hotel — Misafir Memnuniyet Sistemi
     </div>
 """, unsafe_allow_html=True)
+st.divider()
+
+# PDF RAPOR
+st.markdown("## 📄 PDF Rapor")
+
+def create_pdf_report(df, dep_df, staff_df, puan, time_mode):
+    pdf = FPDF()
+    pdf.add_page()
+    
+    # Font ekle
+    pdf.set_font("Helvetica", "B", 20)
+    
+    # Başlık
+    pdf.set_fill_color(26, 26, 62)
+    pdf.set_text_color(255, 215, 0)
+    pdf.rect(0, 0, 210, 40, 'F')
+    pdf.set_y(10)
+    pdf.cell(0, 10, "Concordia Celes Hotel", 
+             align='C', ln=True)
+    pdf.set_font("Helvetica", "", 12)
+    pdf.set_text_color(255, 255, 255)
+    pdf.cell(0, 8, "Misafir Memnuniyet Raporu", 
+             align='C', ln=True)
+    pdf.cell(0, 8, f"Filtre: {time_mode}", 
+             align='C', ln=True)
+    
+    # Tarih
+    turkey_tz = pytz.timezone('Europe/Istanbul')
+    now = datetime.now(turkey_tz)
+    pdf.set_font("Helvetica", "", 10)
+    pdf.set_text_color(200, 200, 200)
+    pdf.cell(0, 8, 
+             f"Rapor Tarihi: {now.strftime('%d.%m.%Y %H:%M')}", 
+             align='C', ln=True)
+    
+    pdf.set_y(50)
+    
+    # Genel Özet
+    pdf.set_font("Helvetica", "B", 14)
+    pdf.set_text_color(26, 26, 62)
+    pdf.cell(0, 10, "GENEL OZET", ln=True)
+    pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+    pdf.ln(3)
+    
+    pdf.set_font("Helvetica", "", 11)
+    pdf.set_text_color(0, 0, 0)
+    pdf.cell(95, 8, f"Toplam Anket: {len(df)}", 
+             border=1, ln=0, align='C')
+    pdf.cell(95, 8, f"Genel Puan: {puan}/100", 
+             border=1, ln=1, align='C')
+    
+    # Tekrar Gelir
+    if "willReturn" in df.columns:
+        donus = df["willReturn"].astype(str).str.lower()
+        evet = donus.isin(["evet", "yes"]).sum()
+        hayir = len(df) - evet
+        oran = int((evet / len(df) * 100)) if len(df) > 0 else 0
+        pdf.cell(95, 8, 
+                 f"Tekrar Gelir: %{oran} ({evet} Evet / {hayir} Hayir)", 
+                 border=1, ln=0, align='C')
+    
+    # Tavsiye
+    if "wouldRecommend" in df.columns:
+        tav = df["wouldRecommend"].astype(str).str.lower()
+        evet2 = tav.isin(["evet", "yes"]).sum()
+        hayir2 = len(df) - evet2
+        oran2 = int((evet2 / len(df) * 100)) if len(df) > 0 else 0
+        pdf.cell(95, 8, 
+                 f"Tavsiye Eder: %{oran2} ({evet2} Evet / {hayir2} Hayir)", 
+                 border=1, ln=1, align='C')
+    
+    pdf.ln(8)
+    
+    # Departman Puanları
+    pdf.set_font("Helvetica", "B", 14)
+    pdf.set_text_color(26, 26, 62)
+    pdf.cell(0, 10, "DEPARTMAN PUANLARI", ln=True)
+    pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+    pdf.ln(3)
+    
+    pdf.set_font("Helvetica", "B", 10)
+    pdf.set_fill_color(26, 26, 62)
+    pdf.set_text_color(255, 255, 255)
+    pdf.cell(130, 8, "Departman", 
+             border=1, fill=True, align='C')
+    pdf.cell(60, 8, "Puan (100 uzerinden)", 
+             border=1, fill=True, align='C', ln=True)
+    
+    medals = ["1.", "2.", "3."]
+    for i, row in enumerate(dep_df.itertuples()):
+        if i % 2 == 0:
+            pdf.set_fill_color(240, 240, 255)
+        else:
+            pdf.set_fill_color(255, 255, 255)
+        pdf.set_text_color(0, 0, 0)
+        pdf.set_font("Helvetica", "", 10)
+        
+        dep_name = row.Departman[:40]
+        pdf.cell(130, 8, dep_name, 
+                 border=1, fill=True)
+        pdf.cell(60, 8, f"{row.Skor:.1f}/100", 
+                 border=1, fill=True, align='C', ln=True)
+    
+    pdf.ln(8)
+    
+    # En Çok Övülen Personel
+    if not staff_df.empty:
+        pdf.set_font("Helvetica", "B", 14)
+        pdf.set_text_color(26, 26, 62)
+        pdf.cell(0, 10, "EN COK OVULEN PERSONEL", ln=True)
+        pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+        pdf.ln(3)
+        
+        pdf.set_font("Helvetica", "B", 10)
+        pdf.set_fill_color(26, 26, 62)
+        pdf.set_text_color(255, 255, 255)
+        pdf.cell(130, 8, "Personel Adi", 
+                 border=1, fill=True, align='C')
+        pdf.cell(60, 8, "Ovgu Sayisi", 
+                 border=1, fill=True, align='C', ln=True)
+        
+        for i, row in enumerate(staff_df.head(10).itertuples()):
+            if i % 2 == 0:
+                pdf.set_fill_color(240, 240, 255)
+            else:
+                pdf.set_fill_color(255, 255, 255)
+            pdf.set_text_color(0, 0, 0)
+            pdf.set_font("Helvetica", "", 10)
+            pdf.cell(130, 8, str(row.Personel), 
+                     border=1, fill=True)
+            pdf.cell(60, 8, str(row._2), 
+                     border=1, fill=True, align='C', ln=True)
+    
+    pdf.ln(8)
+    
+    # Yorumlar
+    if "generalComments" in df.columns:
+        comments = df["generalComments"].fillna("").astype(str).str.strip()
+        comments = comments[comments != ""]
+        
+        if not comments.empty:
+            pdf.set_font("Helvetica", "B", 14)
+            pdf.set_text_color(26, 26, 62)
+            pdf.cell(0, 10, "MISAFIR YORUMLARI", ln=True)
+            pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+            pdf.ln(3)
+            
+            pdf.set_font("Helvetica", "", 9)
+            pdf.set_text_color(0, 0, 0)
+            
+            for i, (idx, comment) in enumerate(
+                comments.head(10).items()
+            ):
+                name = df.loc[idx, "fullName"] \
+                    if "fullName" in df.columns else "Misafir"
+                pdf.set_font("Helvetica", "B", 9)
+                pdf.cell(0, 6, f"{i+1}. {name}:", ln=True)
+                pdf.set_font("Helvetica", "", 9)
+                
+                # Uzun yorumları kes
+                comment_short = str(comment)[:150]
+                if len(str(comment)) > 150:
+                    comment_short += "..."
+                pdf.multi_cell(0, 5, comment_short)
+                pdf.ln(2)
+    
+    # Footer
+    pdf.set_y(-20)
+    pdf.set_font("Helvetica", "I", 8)
+    pdf.set_text_color(150, 150, 150)
+    pdf.cell(0, 10, 
+             "Concordia Celes Hotel - Misafir Memnuniyet Sistemi", 
+             align='C')
+    
+    return pdf.output()
+
+# PDF İndir Butonu
+try:
+    turkey_tz = pytz.timezone('Europe/Istanbul')
+    now = datetime.now(turkey_tz)
+    
+    staff_all_pdf = top_staff(df, 20)
+    
+    pdf_bytes = create_pdf_report(
+        df, dep_df, staff_all_pdf, puan, time_mode
+    )
+    
+    st.download_button(
+        label="📄 PDF Rapor İndir",
+        data=bytes(pdf_bytes),
+        file_name=f"concordia_rapor_{now.strftime('%d%m%Y')}.pdf",
+        mime="application/pdf"
+    )
+except Exception as ex:
+    st.error(f"PDF oluşturma hatası: {ex}")
