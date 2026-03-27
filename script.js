@@ -1,4 +1,4 @@
-var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8ZKP3i7Mej1c4OjUA-QMG2aEpEUNKcIltCP9IDj3XcyPF8Wsnmc-xdHDFFynB-r16sQ/exec';
+var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFoskU9T87ar-74jYgM_N2NTUmy4S72jsll2FRcBpjb9hmgyBlpXzishNQS_sVw3Ujgg/exec';
 
 var currentSection = 1;
 var totalSections = 11;
