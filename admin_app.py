@@ -417,7 +417,6 @@ st.markdown("""
                 margin:0 0 3px 0;
                 letter-spacing:3px;
             '>
-                ★★★★★
             </p>
             <p style='
                 color:#ccc;
