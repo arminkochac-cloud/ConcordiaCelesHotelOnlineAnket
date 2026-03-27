@@ -21,13 +21,13 @@ DEPARTMENTS = {
         "minibarService", "publicAreaCleaning", "beachPoolCleaning",
         "housekeepingStaffCare"
     ],
-    "YİYECEK HİZMETLERİ & MUTFAK": [
-        "breakfastVariety", "breakfastQuality",
-        "lunchVariety", "lunchQuality",
-        "dinnerVariety", "dinnerQuality",
+    "MUTFAK": [
+        "breakfastVariety",
+        "lunchVariety",
+        "dinnerVariety",
         "alacarteQuality", "kitchenHygiene", "foodStaffCare"
     ],
-    "SERVİS ve BARLAR": [
+    "BARLAR": [
         "poolBarQuality", "lobbyBarQuality", "snackBarQuality",
         "drinkQuality", "barHygiene", "barStaffCare"
     ],
@@ -54,9 +54,9 @@ QUESTION_LABELS = {
     "facilityInfo": "Tesis Hakkında Bilgilendirme",
     "frontDeskCare": "Personelin İlgi ve Nezaketi",
     "bellboyService": "Bellboy Hizmetleri",
-    "grWelcomeQuality": "Karşılama Kalitesi",
-    "problemSolving": "Sorunları Çözüme Kavuşturma",
-    "guestFollowUp": "Misafir Takibi",
+    "grWelcomeQuality": "Misafir ile İletişimi",
+    "problemSolving": "Bilgilendirme Yeterliliği",
+    "guestFollowUp": "Personelin İlgi ve Nezaketi",
     "initialRoomCleaning": "İlk Varışta Oda Temizliği",
     "roomAppearance": "Oda Fiziki Görünümü ve Konforu",
     "dailyRoomCleaning": "Konaklama Süresince Oda Temizliği",
