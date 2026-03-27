@@ -399,7 +399,7 @@ st.markdown("""
             justify-content:center;
         '>
             <img src='https://arminkochac-cloud.github.io/OtelAnketFinal/logo.png' 
-            width='120'
+            width='250'
             style='display:block;'>
         </div>
         <div>
