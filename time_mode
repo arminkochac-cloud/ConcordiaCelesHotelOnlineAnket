@@ -380,6 +380,20 @@ st.set_page_config(
     page_icon="🏨",
     layout="wide"
 )
+
+# Üstteki boşluğu kaldır
+st.markdown("""
+    <style>
+        .block-container {
+            padding-top: 0rem;
+            padding-bottom: 0rem;
+        }
+        header {display: none !important;}
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+    </style>
+""", unsafe_allow_html=True)
+
 st.markdown("""
     <div style='
         background: linear-gradient(135deg, #1a1a3e, #2d2d7e);
@@ -400,7 +414,7 @@ st.markdown("""
             align-items:center;
             justify-content:center;
         '>
-            data=https://arminkochac-cloud.github.io/ConcordiaCelesHotelOnlineAnket/ 
+            <img src='https://arminkochac-cloud.github.io/ConcordiaCelesHotelOnlineAnket/logo.png' 
             width='120'
             style='display:block;'>
         </div>
@@ -419,6 +433,7 @@ st.markdown("""
                 margin:0 0 3px 0;
                 letter-spacing:3px;
             '>
+                ★★★★★
             </p>
             <p style='
                 color:#ccc;
@@ -446,6 +461,26 @@ max_score = get_max_score(df_all, rating_cols_all)
 
 # Sidebar
 with st.sidebar:
+    st.markdown("""
+        <div style='
+            text-align:center;
+            background:linear-gradient(135deg, #1a1a3e, #2d2d7e);
+            padding:15px;
+            border-radius:10px;
+            margin-bottom:10px;
+        '>
+            <img src='https://arminkochac-cloud.github.io/ConcordiaCelesHotelOnlineAnket/logo.png' 
+            width='100'
+            style='background:white;
+            padding:8px;
+            border-radius:8px;'>
+            <p style='color:white; 
+            margin:8px 0 0 0;
+            font-size:0.8em;'>
+            Concordia Celes Hotel
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
     st.markdown("### ⚙️ Filtreler")
     time_mode = st.radio(
         "📅 Zaman Filtresi",
