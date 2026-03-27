@@ -400,7 +400,7 @@ st.markdown("""
             align-items:center;
             justify-content:center;
         '>
-            <img src='https://arminkochac-cloud.github.io/OtelAnketFinal/logo.png' 
+            data=https://arminkochac-cloud.github.io/ConcordiaCelesHotelOnlineAnket/ 
             width='120'
             style='display:block;'>
         </div>
