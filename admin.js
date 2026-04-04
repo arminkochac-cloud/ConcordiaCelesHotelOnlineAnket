@@ -1,39 +1,59 @@
-// GOOGLE SHEETS URL (ayni URL)
+// ============================================================================
+// CONCORDİA CELES HOTEL - ADMIN PANEL JAVASCRIPT
+// ============================================================================
+
+// GOOGLE SCRIPTS URL (Buraya kendi Google Apps Script URL'nizi yapıştırın)
 var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx.../exec';
 
-// GOOGLE SHEETS'TEN VERİ CEKME
+// ============================================================================
+// SAYFA YÜKLENDİĞİNDE ÇALIŞACAK FONKSİYONLAR
+// ============================================================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        // Google Sheets'ten veri çekmeyi dene
+        loadFromGoogleSheets();
+        
+        // Dashboard'u render et
+        renderDashboardInternal();
+        
+        console.log('✅ Admin panel başarıyla yüklendi!');
+    } catch (e) {
+        console.error('❌ Yükleme hatası:', e);
+    }
+});
+
+// ============================================================================
+// GOOGLE SHEETS'TEN VERİ ÇEKME
+// ============================================================================
+
 function loadFromGoogleSheets() {
-    if (GOOGLE_SCRIPT_URL === 'BURAYA_KENDI_GOOGLE_SCRIPT_URLINIZI_YAPISITIRIN') return;
+    // URL ayarlanmamışsa yerel veri kullan
+    if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes('...')) {
+        console.log('⚠️ Google Script URL ayarlanmamış, yerel veri kullanılıyor');
+        return;
+    }
     
     fetch(GOOGLE_SCRIPT_URL)
-        .then(function(response) { return response.json(); })
+        .then(function(response) {
+            return response.json();
+        })
         .then(function(data) {
             if (data && data.length > 0) {
                 localStorage.setItem('hotelSurveys', JSON.stringify(data));
-                renderDashboard();
+                console.log('✅ Google Sheets\'ten ' + data.length + ' kayıt yüklendi');
+                renderDashboardInternal();
             }
         })
         .catch(function(err) {
-            console.log('Google Sheets baglanti hatasi, yerel veri kullaniliyor:', err);
+            console.log('⚠️ Google Sheets bağlantı hatası, yerel veri kullanılıyor:', err);
         });
 }
-// SAYFA YUKLENDI
-document.addEventListener('DOMContentLoaded', function() {
-    try {
-        loadFromGoogleSheets();
-        renderDashboard();
-    } catch (e) {
-        console.error('Hata:', e);
-    }
-});
-    try {
-        renderDashboard();
-    } catch (e) {
-        console.error('Hata:', e);
-    }
-});
 
-// TUM SORU ISIMLERI (index.html ile birebir eslesme)
+// ============================================================================
+// TÜM SORU ALANLARI (index.html ile birebir eşleşmeli)
+// ============================================================================
+
 var ALL_FIELDS = [
     'girisKarsilama', 'checkInIslem', 'tesisBilgi', 'onBuroNezaket', 'bellboy',
     'grKararlama', 'sorunCozum', 'misafirTakip',
@@ -46,140 +66,180 @@ var ALL_FIELDS = [
     'peyzaj', 'spa', 'esnaf', 'fiyatKalite'
 ];
 
+// ============================================================================
 // DEPARTMAN GRUPLARI
+// ============================================================================
+
 var DEPT_MAP = {
-    'On Buro': ['girisKarsilama', 'checkInIslem', 'tesisBilgi', 'onBuroNezaket', 'bellboy'],
+    'On Büro': ['girisKarsilama', 'checkInIslem', 'tesisBilgi', 'onBuroNezaket', 'bellboy'],
     'Guest Relation': ['grKararlama', 'sorunCozum', 'misafirTakip'],
     'Kat Hizmetleri': ['katIlkTemizlik', 'katGorunum', 'katGunlukTemizlik', 'minibar', 'genelAlan', 'sahilHavuz', 'katNezaket'],
     'Yiyecek': ['kahvaltiCesit', 'kahvaltiSunum', 'ogleCesit', 'ogleSunum', 'aksamCesit', 'aksamSunum', 'alacartYemek', 'mutfakHijyen', 'yiyecekNezaket'],
     'Barlar': ['pollBar', 'lobbyBar', 'snackBar', 'ickiKalite', 'barHijyen', 'barNezaket'],
-    'Restaurant': ['restDuzen', 'restYer', 'restHijyen', 'snackRest', 'alacartRest', 'restNezaket'],
+    'Restoran': ['restDuzen', 'restYer', 'restHijyen', 'snackRest', 'alacartRest', 'restNezaket'],
     'Teknik': ['teknikSistem', 'ariza', 'cevreAydinlatma', 'havuzSu', 'teknikNezaket'],
-    'Eglence': ['animasyonGunduz', 'sporAlan', 'showlar', 'miniclub', 'eglenceNezaket'],
-    'Diger': ['peyzaj', 'spa', 'esnaf', 'fiyatKalite']
+    'Eğlence': ['animasyonGunduz', 'sporAlan', 'showlar', 'miniclub', 'eglenceNezaket'],
+    'Diğer': ['peyzaj', 'spa', 'esnaf', 'fiyatKalite']
 };
 
-// DEPARTMAN DETAY SORULARI (Turkce etiketler)
+// ============================================================================
+// DEPARTMAN DETAY SORULARI (Türkçe etiketler)
+// ============================================================================
+
 var DEPT_DETAIL = {
     'frontOffice': [
-        ['Giris Karsilama', 'girisKarsilama'],
-        ['C/In Islemleri', 'checkInIslem'],
-        ['Tesis Hakkinda Bilgilendirme', 'tesisBilgi'],
-        ['Personelin Ilgi ve Nezaketi', 'onBuroNezaket'],
+        ['Giriş Karşılama', 'girisKarsilama'],
+        ['Check-In İşlemleri', 'checkInIslem'],
+        ['Tesis Hakkında Bilgilendirme', 'tesisBilgi'],
+        ['Personelin İlgi ve Nezaket', 'onBuroNezaket'],
         ['Bellboy Hizmetleri', 'bellboy']
     ],
     'guestRelation': [
-        ['Karsilama Kalitesi', 'grKararlama'],
-        ['Sorunlari Cozume', 'sorunCozum'],
+        ['Karşılama Kalitesi', 'grKararlama'],
+        ['Sorunları Çözme', 'sorunCozum'],
         ['Misafir Takibi', 'misafirTakip']
     ],
     'housekeeping': [
-        ['Ilk Varisinizda Oda Temizligi', 'katIlkTemizlik'],
-        ['Oda Fiziki Gorunumu ve Konforu', 'katGorunum'],
-        ['Konaklama Suresince Oda Temizligi', 'katGunlukTemizlik'],
+        ['İlk Varışınızda Oda Temizliği', 'katIlkTemizlik'],
+        ['Oda Fiziki Görünümü ve Konforu', 'katGorunum'],
+        ['Konaklama Süresince Oda Temizliği', 'katGunlukTemizlik'],
         ['Minibar Hizmeti', 'minibar'],
-        ['Genel Alan Temizligi', 'genelAlan'],
-        ['Sahil ve Havuz Cevre Temizligi', 'sahilHavuz'],
-        ['Personelin Ilgi ve Nezaketi', 'katNezaket']
+        ['Genel Alan Temizliği', 'genelAlan'],
+        ['Sahil ve Havuz Çevre Temizliği', 'sahilHavuz'],
+        ['Personelin İlgi ve Nezaket', 'katNezaket']
     ],
     'foodServices': [
-        ['Kahvalti Bufesi Cesitliligi', 'kahvaltiCesit'],
-        ['Kahvalti Bufesi Sunumu ve Kalitesi', 'kahvaltiSunum'],
-        ['Ogle Yemegi Bufesi Cesitliligi', 'ogleCesit'],
-        ['Ogle Yemegi Sunumu ve Kalitesi', 'ogleSunum'],
-        ['Aksam Yemegi Bufesi Cesitliligi', 'aksamCesit'],
-        ['Aksam Yemegi Sunumu ve Kalitesi', 'aksamSunum'],
-        ['Alacart Restaurant Yemegi', 'alacartYemek'],
-        ['Mutfak Hijyen ve Temizligi', 'mutfakHijyen'],
-        ['Personelin Ilgi ve Nezaketi', 'yiyecekNezaket']
+        ['Kahvaltı Büfesi Çeşitliliği', 'kahvaltiCesit'],
+        ['Kahvaltı Büfesi Sunumu ve Kalitesi', 'kahvaltiSunum'],
+        ['Öğle Yemeği Büfesi Çeşitliliği', 'ogleCesit'],
+        ['Öğle Yemeği Sunumu ve Kalitesi', 'ogleSunum'],
+        ['Akşam Yemeği Büfesi Çeşitliliği', 'aksamCesit'],
+        ['Akşam Yemeği Sunumu ve Kalitesi', 'aksamSunum'],
+        ['Alacart Restaurant Yemeği', 'alacartYemek'],
+        ['Mutfak Hijyen ve Temizliği', 'mutfakHijyen'],
+        ['Personelin İlgi ve Nezaket', 'yiyecekNezaket']
     ],
     'barsServices': [
-        ['Poll Bar Servis Kalitesi', 'pollBar'],
+        ['Pool Bar Servis Kalitesi', 'pollBar'],
         ['Lobby Bar Servis Kalitesi', 'lobbyBar'],
         ['Snack Bar Servis Kalitesi', 'snackBar'],
-        ['Icki Kalitesi ve Sunumu', 'ickiKalite'],
-        ['Barlarin Hijyen ve Temizligi', 'barHijyen'],
-        ['Personelin Ilgi ve Nezaketi', 'barNezaket']
+        ['İçki Kalitesi ve Sunumu', 'ickiKalite'],
+        ['Barların Hijyen ve Temizliği', 'barHijyen'],
+        ['Personelin İlgi ve Nezaket', 'barNezaket']
     ],
     'restaurantServices': [
-        ['Restaurant Duzeni ve Kalitesi', 'restDuzen'],
-        ['Restaurant Yer Yeterliligi', 'restYer'],
-        ['Restaurant Hijyen ve Temizligi', 'restHijyen'],
+        ['Restaurant Düzeni ve Kalitesi', 'restDuzen'],
+        ['Restaurant Yer Yeterliliği', 'restYer'],
+        ['Restaurant Hijyen ve Temizliği', 'restHijyen'],
         ['Snackbar Restaurant Hizmeti', 'snackRest'],
         ['Alacart Restaurant Hizmeti', 'alacartRest'],
-        ['Personelin Ilgi ve Nezaketi', 'restNezaket']
+        ['Personelin İlgi ve Nezaket', 'restNezaket']
     ],
     'technicalService': [
         ['Oda Teknik Sistemleri', 'teknikSistem'],
-        ['Ariza Bildirimi ve Giderme', 'ariza'],
-        ['Cevre Aydinlatma ve Duzeni', 'cevreAydinlatma'],
-        ['Havuz Suyu Temizligi', 'havuzSu'],
-        ['Personelin Ilgi ve Nezaketi', 'teknikNezaket']
+        ['Arıza Bildirimi ve Giderme', 'ariza'],
+        ['Çevre Aydınlatma ve Düzeni', 'cevreAydinlatma'],
+        ['Havuz Suyu Temizliği', 'havuzSu'],
+        ['Personelin İlgi ve Nezaket', 'teknikNezaket']
     ],
     'entertainmentServices': [
-        ['Animasyon Ekibi ile Gunduz Aktiviteleri', 'animasyonGunduz'],
-        ['Aktivite ve Spor Alanlari', 'sporAlan'],
-        ['Aksam Aktiviteleri ve Showlar', 'showlar'],
+        ['Animasyon Ekibi ile Gündüz Aktiviteleri', 'animasyonGunduz'],
+        ['Aktivite ve Spor Alanları', 'sporAlan'],
+        ['Akşam Aktiviteleri ve Showlar', 'showlar'],
         ['Miniclub Aktiviteleri', 'miniclub'],
-        ['Personelin Ilgi ve Nezaketi', 'eglenceNezaket']
+        ['Personelin İlgi ve Nezaket', 'eglenceNezaket']
     ],
     'otherServices': [
-        ['Genel Duzenleme / Peyzaj', 'peyzaj'],
+        ['Genel Düzenleme / Peyzaj', 'peyzaj'],
         ['Sauna-Hamam Hizmetleri', 'spa'],
-        ['Hotel Genel Esnaf Davranislari', 'esnaf'],
-        ['Fiyat Kalitesi ve Iliskisi', 'fiyatKalite']
+        ['Otel Genel Esnaf Davranışları', 'esnaf'],
+        ['Fiyat Kalitesi ve İlişkisi', 'fiyatKalite']
     ]
 };
 
-// ANA RENDER
-function renderDashboard() {
+// ============================================================================
+// ANA DASHBOARD RENDER FONKSİYONU
+// ============================================================================
+
+function renderDashboardInternal() {
     var rawDataStr = localStorage.getItem('hotelSurveys');
     var rawData = rawDataStr ? JSON.parse(rawDataStr) : [];
     
+    // Veri yoksa uyarı göster
     if (rawData.length === 0) {
-        document.body.innerHTML = '<div style="text-align:center; padding:50px;"><h2>Veri Yok</h2><p>Anketi doldurup gonderdikten sonra burasi dolacak.</p><br><a href="index.html" style="color:blue;">Ankete Git</a></div>';
+        var dashboardGrid = document.querySelector('.dashboard-grid');
+        if (dashboardGrid) {
+            dashboardGrid.innerHTML = '<div class="card full-width" style="text-align:center; padding:50px;"><h2>📭 Veri Yok</h2><p style="color:#666; margin-top:15px;">Anketi doldurup gönderdikten sonra burası dolacak.</p><br><a href="index.html" style="color:#1a1a3e; font-weight:600;">📋 Ankete Git</a></div>';
+        }
         return;
     }
 
-    var filterType = document.getElementById('timeFilter').value;
-    var filteredData = filterByTime(rawData, filterType);
+    var filterType = document.getElementById('timeFilter');
+    var selectedFilter = filterType ? filterType.value : 'monthly';
+    var filteredData = filterByTime(rawData, selectedFilter);
     
+    // Tüm grafikleri ve tabloları render et
     calcAvg(filteredData);
     calcTopPerformers(filteredData);
     drawDeptScores(filteredData);
-    renderDeptDetail();
+    renderDeptDetailInternal();
     drawCountryChart(filteredData);
     drawStaffChart(filteredData);
     drawTable(filteredData);
     drawComments(filteredData);
+    
+    console.log('✅ Dashboard render edildi. Toplam kayıt: ' + filteredData.length);
 }
 
-// ZAMAN FILTRESI
+// Global fonksiyon olarak da tanımla (HTML'den çağrılabilir olması için)
+window.renderDashboardInternal = renderDashboardInternal;
+window.renderDashboard = renderDashboardInternal;
+
+// ============================================================================
+// ZAMAN FİLTRESİ
+// ============================================================================
+
 function filterByTime(data, type) {
     var now = new Date();
     return data.filter(function(item) {
         if (!item.date) return false;
+        
         var dateStr = item.date;
+        
+        // Tarih formatını düzelt (DD.MM.YYYY → YYYY-MM-DD)
         if (dateStr.indexOf('.') > -1) {
             var parts = dateStr.split(' ')[0].split('.');
-            if (parts.length === 3) dateStr = parts[2] + '-' + parts[1] + '-' + parts[0];
+            if (parts.length === 3) {
+                dateStr = parts[2] + '-' + parts[1] + '-' + parts[0];
+            }
         }
+        
         var itemDate = new Date(dateStr);
         if (isNaN(itemDate)) return false;
+        
         var diffDays = Math.ceil(Math.abs(now - itemDate) / (1000 * 60 * 60 * 24));
+        
         if (type === 'all') return true;
         if (type === 'daily') return diffDays <= 1;
         if (type === 'weekly') return diffDays <= 7;
         if (type === 'monthly') return diffDays <= 30;
         if (type === 'yearly') return diffDays <= 365;
+        
         return true;
     });
 }
 
-// GENEL ORTALAMA
+// ============================================================================
+// GENEL ORTALAMA HESAPLAMA
+// ============================================================================
+
 function calcAvg(data) {
+    var el = document.getElementById('generalAvg');
+    if (!el) return;
+    
     var totalScore = 0;
     var count = 0;
+    
     for (var i = 0; i < data.length; i++) {
         for (var j = 0; j < ALL_FIELDS.length; j++) {
             var val = data[i][ALL_FIELDS[j]];
@@ -189,94 +249,178 @@ function calcAvg(data) {
             }
         }
     }
-    var el = document.getElementById('generalAvg');
-    if (count === 0) { el.innerText = 'N/A'; return; }
+    
+    if (count === 0) {
+        el.innerText = 'N/A';
+        el.style.color = '#999';
+        return;
+    }
+    
     var avg = totalScore / count;
     var scaled = Math.round((avg / 5) * 100);
+    
     el.innerText = scaled;
-    el.style.color = scaled >= 80 ? '#28a745' : scaled >= 60 ? '#ffc107' : '#dc3545';
+    
+    // Renk kodu
+    if (scaled >= 80) {
+        el.style.color = '#28a745'; // Yeşil
+    } else if (scaled >= 60) {
+        el.style.color = '#ffc107'; // Sarı
+    } else {
+        el.style.color = '#dc3545'; // Kırmızı
+    }
 }
 
-// EN IYI 3 DEPARTMAN VE PERSONEL
+// ============================================================================
+// EN İYİ 3 DEPARTMAN VE PERSONEL HESAPLAMA
+// ============================================================================
+
 function calcTopPerformers(data) {
+    // DEPARTMAN PUANLARI
     var deptScores = [];
     var deptNames = Object.keys(DEPT_MAP);
+    
     for (var d = 0; d < deptNames.length; d++) {
         var name = deptNames[d];
         var fields = DEPT_MAP[name];
         var sum = 0;
         var n = 0;
+        
         for (var i = 0; i < data.length; i++) {
             for (var f = 0; f < fields.length; f++) {
                 var val = data[i][fields[f]];
-                if (val && val !== '' && !isNaN(val)) { sum += parseInt(val); n++; }
+                if (val && val !== '' && !isNaN(val)) {
+                    sum += parseInt(val);
+                    n++;
+                }
             }
         }
-        if (n > 0) deptScores.push({ name: name, score: sum / n });
+        
+        if (n > 0) {
+            deptScores.push({
+                name: name,
+                score: sum / n
+            });
+        }
     }
-    deptScores.sort(function(a, b) { return b.score - a.score; });
     
-    var topDepts = deptScores.slice(0, 3).map(function(d) {
-        return { name: d.name, val: Math.round((d.score / 5) * 100) + '%' };
+    // Sırala (yüksekten düşüğe)
+    deptScores.sort(function(a, b) {
+        return b.score - a.score;
     });
+    
+    // İlk 3'ü al
+    var topDepts = deptScores.slice(0, 3).map(function(d) {
+        return {
+            name: d.name,
+            val: Math.round((d.score / 5) * 100) + '%'
+        };
+    });
+    
     drawMedals('topDepts', topDepts);
 
-    // PERSONEL
+    // PERSONEL ÖVGÜLERİ
     var staffCounts = {};
+    
     for (var i = 0; i < data.length; i++) {
         var ps = data[i].praisedStaff;
         if (ps && ps.trim() !== '') {
             var names = ps.split(',');
             for (var k = 0; k < names.length; k++) {
                 var nm = names[k].trim();
-                if (nm) staffCounts[nm] = (staffCounts[nm] || 0) + 1;
+                if (nm) {
+                    staffCounts[nm] = (staffCounts[nm] || 0) + 1;
+                }
             }
         }
     }
+    
     var staffArr = [];
     for (var key in staffCounts) {
-        staffArr.push({ name: key, val: staffCounts[key] + ' ovgu' });
+        staffArr.push({
+            name: key,
+            val: staffCounts[key] + ' övgü'
+        });
     }
-    staffArr.sort(function(a, b) { return parseInt(b.val) - parseInt(a.val); });
+    
+    staffArr.sort(function(a, b) {
+        return parseInt(b.val) - parseInt(a.val);
+    });
+    
     drawMedals('topStaff', staffArr.slice(0, 3));
 }
+
+// ============================================================================
+// MADALYA ÇİZİMİ (TOP 3)
+// ============================================================================
 
 function drawMedals(containerId, items) {
     var el = document.getElementById(containerId);
     if (!el) return;
+    
     el.innerHTML = '';
-    if (items.length === 0) { el.innerHTML = '<p style="color:#999;">Veri yok</p>'; return; }
-    var medals = ['1.', '2.', '3.'];
+    
+    if (items.length === 0) {
+        el.innerHTML = '<p style="color:#999; text-align:center; padding:20px;">Veri yok</p>';
+        return;
+    }
+    
+    var medals = ['🥇', '🥈', '🥉'];
+    
     for (var i = 0; i < items.length; i++) {
-        el.innerHTML += '<div class="rank-item"><div class="medal">' + medals[i] + '</div><div class="rank-info"><strong>' + items[i].name + '</strong><span>' + items[i].val + '</span></div></div>';
+        el.innerHTML += 
+            '<div class="rank-item">' +
+                '<div class="medal">' + medals[i] + '</div>' +
+                '<div class="rank-info">' +
+                    '<strong>' + items[i].name + '</strong>' +
+                    '<span>' + items[i].val + '</span>' +
+                '</div>' +
+            '</div>';
     }
 }
 
-// DEPARTMAN PUANLARI GRAFIGI
+// ============================================================================
+// DEPARTMAN PUANLARI GRAFİĞİ
+// ============================================================================
+
 function drawDeptScores(data) {
     var el = document.getElementById('deptChart');
     if (!el) return;
+    
     var html = '';
     var deptNames = Object.keys(DEPT_MAP);
+    
     for (var d = 0; d < deptNames.length; d++) {
         var name = deptNames[d];
         var fields = DEPT_MAP[name];
         var sum = 0;
         var n = 0;
+        
         for (var i = 0; i < data.length; i++) {
             for (var f = 0; f < fields.length; f++) {
                 var val = data[i][fields[f]];
-                if (val && !isNaN(val)) { sum += parseInt(val); n++; }
+                if (val && !isNaN(val)) {
+                    sum += parseInt(val);
+                    n++;
+                }
             }
         }
+        
         var avg = n > 0 ? Math.round((sum / n / 5) * 100) : 0;
-        if (n > 0) html += makeBar(name, avg);
+        
+        if (n > 0) {
+            html += makeBar(name, avg);
+        }
     }
-    el.innerHTML = html || '<p style="color:#999;">Henuz puan girilmemis.</p>';
+    
+    el.innerHTML = html || '<p style="color:#999; text-align:center; padding:20px;">Henüz puan girilmemiş.</p>';
 }
 
-// DEPARTMAN DETAY ANALIZI
-function renderDeptDetail() {
+// ============================================================================
+// DEPARTMAN DETAY ANALİZİ
+// ============================================================================
+
+function renderDeptDetailInternal() {
     var deptSelectEl = document.getElementById('deptSelect');
     if (!deptSelectEl) return;
 
@@ -284,21 +428,23 @@ function renderDeptDetail() {
     var el = document.getElementById('deptDetailChart');
 
     if (!dept || dept === '') {
-        el.innerHTML = '<p style="color:#999;">Lutfen bir departman secin.</p>';
+        if (el) el.innerHTML = '<p style="color:#999; text-align:center; padding:20px;">Lütfen bir departman seçin.</p>';
         return;
     }
 
-    // VERIYI OKU
+    // Veriyi oku
     var rawDataStr = localStorage.getItem('hotelSurveys');
     var data = rawDataStr ? JSON.parse(rawDataStr) : [];
-    var filterType = document.getElementById('timeFilter').value;
-    data = filterByTime(data, filterType);
+    
+    var filterType = document.getElementById('timeFilter');
+    var selectedFilter = filterType ? filterType.value : 'monthly';
+    data = filterByTime(data, selectedFilter);
 
-    // SORULARI BUL
+    // Soruları bul
     var questions = DEPT_DETAIL[dept];
 
     if (!questions) {
-        el.innerHTML = '<p style="color:red;">Departman bulunamadi: ' + dept + '</p>';
+        if (el) el.innerHTML = '<p style="color:red; text-align:center; padding:20px;">Departman bulunamadı: ' + dept + '</p>';
         return;
     }
 
@@ -310,6 +456,7 @@ function renderDeptDetail() {
         var field = questions[q][1];
         var sum = 0;
         var n = 0;
+        
         for (var i = 0; i < data.length; i++) {
             var val = data[i][field];
             if (val && val !== '' && !isNaN(val)) {
@@ -317,6 +464,7 @@ function renderDeptDetail() {
                 n++;
             }
         }
+        
         if (n > 0) {
             var score = Math.round((sum / n / 5) * 100);
             html += makeBar(label, score);
@@ -325,101 +473,265 @@ function renderDeptDetail() {
     }
 
     if (count === 0) {
-        html = '<p style="color:#999;">Bu departman icin henuz puan girilmedi.</p>';
+        html = '<p style="color:#999; text-align:center; padding:20px;">Bu departman için henüz puan girilmedi.</p>';
     }
 
-    el.innerHTML = html;
+    if (el) el.innerHTML = html;
 }
 
-// ULKE GRAFIGI
+// Global fonksiyon olarak da tanımla
+window.renderDeptDetailInternal = renderDeptDetailInternal;
+window.renderDeptDetail = renderDeptDetailInternal;
+
+// ============================================================================
+// ÜLKE GRAFİĞİ
+// ============================================================================
+
 function drawCountryChart(data) {
     var counts = {};
+    
     for (var i = 0; i < data.length; i++) {
         var nat = data[i].nationality;
-        if (nat) counts[nat] = (counts[nat] || 0) + 1;
+        if (nat && nat.trim() !== '') {
+            counts[nat] = (counts[nat] || 0) + 1;
+        }
     }
+    
     var total = data.length;
     var el = document.getElementById('countryChart');
     if (!el) return;
+    
     var html = '';
+    
     for (var key in counts) {
         var pct = Math.round((counts[key] / total) * 100);
         html += makeBar(key, pct);
     }
-    el.innerHTML = html || '<p style="color:#999;">Veri yok</p>';
+    
+    el.innerHTML = html || '<p style="color:#999; text-align:center; padding:20px;">Veri yok</p>';
 }
 
-// PERSONEL GRAFIGI
+// ============================================================================
+// PERSONEL GRAFİĞİ
+// ============================================================================
+
 function drawStaffChart(data) {
     var counts = {};
+    
     for (var i = 0; i < data.length; i++) {
         var ps = data[i].praisedStaff;
         if (ps && ps.trim() !== '') {
             var names = ps.split(',');
             for (var k = 0; k < names.length; k++) {
                 var nm = names[k].trim();
-                if (nm) counts[nm] = (counts[nm] || 0) + 1;
+                if (nm) {
+                    counts[nm] = (counts[nm] || 0) + 1;
+                }
             }
         }
     }
+    
     var el = document.getElementById('staffChart');
     if (!el) return;
+    
     var html = '';
+    
     for (var key in counts) {
+        // Her övgü için 20 puan (görsel amaçlı)
         html += makeBar(key, counts[key] * 20);
     }
-    el.innerHTML = html || '<p style="color:#999;">Veri yok</p>';
+    
+    el.innerHTML = html || '<p style="color:#999; text-align:center; padding:20px;">Veri yok</p>';
 }
 
-// BAR CIZICI
+// ============================================================================
+// BAR ÇİZİCİ FONKSİYON
+// ============================================================================
+
 function makeBar(label, value) {
+    // Renk sınıfı belirle
     var colorClass = 'bg-blue';
-    if (value >= 90) colorClass = 'bg-gold';
-    else if (value >= 70) colorClass = 'bg-green';
-    return '<div class="bar-row"><div class="bar-label">' + label + '</div><div class="bar-area"><div class="bar-fill ' + colorClass + '" style="width:' + value + '%">' + value + '%</div></div></div>';
+    if (value >= 90) {
+        colorClass = 'bg-gold';
+    } else if (value >= 70) {
+        colorClass = 'bg-green';
+    } else if (value >= 50) {
+        colorClass = 'bg-blue';
+    } else {
+        colorClass = 'bg-purple';
+    }
+    
+    // Value'u sınırla (0-100 arası)
+    var displayValue = Math.min(100, Math.max(0, value));
+    
+    return '<div class="bar-row">' +
+        '<div class="bar-label">' + label + '</div>' +
+        '<div class="bar-area">' +
+            '<div class="bar-fill ' + colorClass + '" style="width:' + displayValue + '%">' + displayValue + '%</div>' +
+        '</div>' +
+    '</div>';
 }
 
-// TABLO
+// ============================================================================
+// HAM VERİ TABLOSU
+// ============================================================================
+
 function drawTable(data) {
     var tbody = document.querySelector('#rawDataTable tbody');
     if (!tbody) return;
+    
     tbody.innerHTML = '';
+    
+    // Son 10 kaydı göster
     var max = data.length > 10 ? 10 : data.length;
+    
     for (var i = 0; i < max; i++) {
         var item = data[i];
         var tarih = item.date ? item.date.split(' ')[0] : '-';
-        tbody.innerHTML += '<tr><td>' + tarih + '</td><td>' + (item.fullName || '-') + '</td><td>' + (item.roomNumber || '-') + '</td><td>' + (item.fiyatKalite || '-') + '/5</td></tr>';
+        var ad = item.fullName || '-';
+        var oda = item.roomNumber || '-';
+        var departman = item.fiyatKalite || '-';
+        
+        tbody.innerHTML += 
+            '<tr>' +
+                '<td>' + tarih + '</td>' +
+                '<td>' + ad + '</td>' +
+                '<td>' + oda + '</td>' +
+                '<td>' + departman + '/5</td>' +
+            '</tr>';
+    }
+    
+    // Veri yoksa uyarı
+    if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999; padding:30px;">Veri bulunamadı</td></tr>';
     }
 }
 
-// YORUMLAR
+// ============================================================================
+// YORUMLAR BÖLÜMÜ
+// ============================================================================
+
 function drawComments(data) {
     var div = document.getElementById('quickComments');
     if (!div) return;
+    
     div.innerHTML = '';
+    
+    var commentCount = 0;
+    
     for (var i = 0; i < data.length; i++) {
         var item = data[i];
+        
         if (item.generalComments && item.generalComments.trim() !== '') {
-            div.innerHTML += '<div style="background:#f9f9f9; padding:10px; border-radius:8px; margin-bottom:5px; font-size:13px;"><strong>' + (item.fullName || 'Misafir') + ':</strong> ' + item.generalComments + '</div>';
+            var name = item.fullName || 'Misafir';
+            var comment = item.generalComments;
+            
+            div.innerHTML += 
+                '<div style="background:#f9f9f9; padding:10px; border-radius:8px; margin-bottom:5px; font-size:13px; border-left:3px solid #1a1a3e;">' +
+                    '<strong>' + name + ':</strong> ' + comment +
+                '</div>';
+            
+            commentCount++;
+            
+            // Maksimum 5 yorum göster
+            if (commentCount >= 5) break;
         }
     }
-}
-
-// TEMIZLE
-function clearData() {
-    if (confirm('Tum verileri silmek istediginize emin misiniz?')) {
-        localStorage.removeItem('hotelSurveys');
-        location.reload();
+    
+    if (commentCount === 0) {
+        div.innerHTML = '<p style="color:#999; text-align:center; padding:20px;">Henüz yorum yok</p>';
     }
 }
 
-// INDIR
+// ============================================================================
+// VERİLERİ TEMİZLE
+// ============================================================================
+
+function clearData() {
+    if (confirm('⚠️ TÜM VERİLERİ SİLMEK İSTEDİĞİNİZE EMİN MİSİNİZ?\n\nBu işlem geri alınamaz!')) {
+        localStorage.removeItem('hotelSurveys');
+        
+        // Başarı mesajı göster
+        var alert = document.getElementById('successAlert');
+        if (alert) {
+            alert.textContent = '🗑️ Veriler temizlendi!';
+            alert.className = 'alert alert-success show';
+            setTimeout(function() {
+                alert.className = 'alert alert-success';
+            }, 3000);
+        }
+        
+        // Sayfayı yenile
+        setTimeout(function() {
+            location.reload();
+        }, 1000);
+    }
+}
+
+// ============================================================================
+// VERİLERİ DIŞA AKTAR (INDIR)
+// ============================================================================
+
 function exportData() {
     var data = JSON.parse(localStorage.getItem('hotelSurveys') || '[]');
-    if (data.length === 0) { alert('Veri yok!'); return; }
+    
+    if (data.length === 0) {
+        alert('⚠️ İndirilecek veri yok!');
+        return;
+    }
+    
+    // JSON olarak indir
     var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     var link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'otel_verileri.json';
+    link.download = 'otel_anke_verileri_' + new Date().toISOString().split('T')[0] + '.json';
     link.click();
+    
+    // Başarı mesajı göster
+    var alert = document.getElementById('successAlert');
+    if (alert) {
+        alert.textContent = '📥 Veriler başarıyla indirildi! (' + data.length + ' kayıt)';
+        alert.className = 'alert alert-success show';
+        setTimeout(function() {
+            alert.className = 'alert alert-success';
+        }, 3000);
+    }
+    
+    console.log('✅ ' + data.length + ' kayıt indirildi');
 }
+
+// ============================================================================
+// YARDIMCI FONKSİYONLAR
+// ============================================================================
+
+// LocalStorage'dan veri al
+function getSurveyData() {
+    return JSON.parse(localStorage.getItem('hotelSurveys') || '[]');
+}
+
+// LocalStorage'a veri kaydet
+function saveSurveyData(data) {
+    localStorage.setItem('hotelSurveys', JSON.stringify(data));
+}
+
+// Tarih formatını düzelt
+function formatDate(dateString) {
+    if (!dateString) return '-';
+    
+    var date = new Date(dateString);
+    if (isNaN(date)) return dateString;
+    
+    var day = String(date.getDate()).padStart(2, '0');
+    var month = String(date.getMonth() + 1).padStart(2, '0');
+    var year = date.getFullYear();
+    
+    return day + '.' + month + '.' + year;
+}
+
+// ============================================================================
+// KONSOL MESAJI (Başarı)
+// ============================================================================
+
+console.log('✅ Concordia Celes Hotel Admin Panel yüklendi!');
+console.log('📊 Veri kaynağı: LocalStorage + Google Sheets (opsiyonel)');
+console.log('🔗 Google Script URL:', GOOGLE_SCRIPT_URL);
