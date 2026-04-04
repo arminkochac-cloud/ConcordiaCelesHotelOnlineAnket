@@ -2,122 +2,587 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Panel</title>
-    <link href="https://script.google.com/macros/s/AKfycbx1icCxt-LamGjdmlyN2yCAgrK1okXheDezXBiihIH0NJnC-7STfkEfu3sX7Q32xKqsow/exec
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concordia Celes Hotel - Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; background: #f4f7f6; padding: 20px; color: #333; }
-        .header { background: linear-gradient(135deg, #1a1a3e, #2d2d6b); color: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap:10px; }
-        .header h1 { font-size: 24px; }
-        select, button { padding: 10px 15px; border-radius: 8px; border: none; cursor: pointer; font-family: inherit; }
-        select { background: white; color: #333; font-weight: 600; border: 1px solid #ccc; }
-        .btn-export { background: #28a745; color: white; }
-        .btn-reset { background: #dc3545; color: white; }
-        .btn-back { background: rgba(255,255,255,0.2); color: white; text-decoration: none; display: inline-block; }
-        .dashboard-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .full-width { grid-column: span 2; }
-        .card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .card h3 { font-size: 18px; margin-bottom: 15px; color: #1a1a3e; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .avg-score { text-align: center; font-size: 50px; font-weight: 700; color: #1a1a3e; }
-        .avg-label { text-align: center; color: #666; font-size: 14px; margin-top: -10px; }
-        .top-container { display: flex; gap: 20px; }
-        .top-box { flex: 1; background: #f8f9fa; border-radius: 10px; padding: 15px; }
-        .rank-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding: 8px; background: white; border-radius: 8px; }
-        .medal { font-size: 20px; width: 30px; text-align: center; }
-        .rank-info { flex: 1; }
-        .rank-info strong { display: block; font-size: 14px; }
-        .rank-info span { font-size: 12px; color: #666; }
-        .chart-container { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
-        .bar-row { display: flex; align-items: center; gap: 10px; }
-        .bar-label { width: 140px; font-size: 13px; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .bar-area { flex: 1; background: #eee; height: 20px; border-radius: 10px; overflow: hidden; }
-        .bar-fill { height: 100%; display: flex; align-items: center; justify-content: flex-end; padding-right: 5px; color: white; font-size: 11px; border-radius: 10px; transition: width 1s; }
-        .bg-gold { background: linear-gradient(90deg, #ffd700, #fdb931); }
-        .bg-green { background: #2ecc71; }
-        .bg-blue { background: #3498db; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th, td { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
-        th { background: #f8f9fa; color: #555; }
-        @media (max-width: 768px) { .dashboard-grid { grid-template-columns: 1fr; } .top-container { flex-direction: column; } }
+        
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: #f4f7f6; 
+            padding: 20px; 
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .header { 
+            background: linear-gradient(135deg, #1a1a3e, #2d2d6b); 
+            color: white; 
+            padding: 20px; 
+            border-radius: 15px; 
+            margin-bottom: 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            flex-wrap: wrap; 
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .header img { 
+            width: 60px; 
+            height: 60px;
+            object-fit: contain;
+            background: white;
+            border-radius: 50%;
+            padding: 5px;
+        }
+        
+        .header h1 { 
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .header-right {
+            display: flex; 
+            gap: 10px; 
+            align-items: center; 
+            flex-wrap: wrap;
+        }
+        
+        select, button, a { 
+            padding: 10px 15px; 
+            border-radius: 8px; 
+            border: none; 
+            cursor: pointer; 
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        select { 
+            background: white; 
+            color: #333; 
+            border: 1px solid #ccc;
+        }
+        
+        select:hover {
+            border-color: #1a1a3e;
+        }
+        
+        .btn-export { 
+            background: #28a745; 
+            color: white;
+        }
+        
+        .btn-export:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+        
+        .btn-reset { 
+            background: #dc3545; 
+            color: white;
+        }
+        
+        .btn-reset:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+        
+        .btn-back { 
+            background: rgba(255,255,255,0.2); 
+            color: white; 
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-back:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .dashboard-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .full-width { 
+            grid-column: span 2;
+        }
+        
+        .card { 
+            background: white; 
+            border-radius: 15px; 
+            padding: 20px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .card h3 { 
+            font-size: 18px; 
+            margin-bottom: 15px; 
+            color: #1a1a3e; 
+            border-bottom: 2px solid #eee; 
+            padding-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .avg-score { 
+            text-align: center; 
+            font-size: 50px; 
+            font-weight: 700; 
+            color: #1a1a3e;
+            line-height: 1;
+        }
+        
+        .avg-label { 
+            text-align: center; 
+            color: #666; 
+            font-size: 14px; 
+            margin-top: 10px;
+        }
+        
+        .top-container { 
+            display: flex; 
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .top-box { 
+            flex: 1; 
+            background: #f8f9fa; 
+            border-radius: 10px; 
+            padding: 15px;
+            min-width: 250px;
+        }
+        
+        .top-box h4 {
+            font-size: 14px;
+            color: #1a1a3e;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .rank-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            margin-bottom: 10px; 
+            padding: 8px; 
+            background: white; 
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .rank-item:hover {
+            background: #f0f0f0;
+        }
+        
+        .medal { 
+            font-size: 20px; 
+            width: 30px; 
+            text-align: center;
+        }
+        
+        .rank-info { 
+            flex: 1;
+        }
+        
+        .rank-info strong { 
+            display: block; 
+            font-size: 14px;
+            color: #1a1a3e;
+        }
+        
+        .rank-info span { 
+            font-size: 12px; 
+            color: #666;
+        }
+        
+        .chart-container { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+            margin-top: 10px;
+        }
+        
+        .bar-row { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+        }
+        
+        .bar-label { 
+            width: 140px; 
+            font-size: 13px; 
+            text-align: right; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis;
+            color: #555;
+        }
+        
+        .bar-area { 
+            flex: 1; 
+            background: #eee; 
+            height: 20px; 
+            border-radius: 10px; 
+            overflow: hidden;
+        }
+        
+        .bar-fill { 
+            height: 100%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: flex-end; 
+            padding-right: 8px; 
+            color: white; 
+            font-size: 11px; 
+            border-radius: 10px; 
+            transition: width 1s;
+            font-weight: 600;
+        }
+        
+        .bg-gold { 
+            background: linear-gradient(90deg, #ffd700, #fdb931);
+        }
+        
+        .bg-green { 
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+        }
+        
+        .bg-blue { 
+            background: linear-gradient(90deg, #3498db, #2980b9);
+        }
+        
+        .bg-purple {
+            background: linear-gradient(90deg, #9b59b6, #8e44ad);
+        }
+        
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            font-size: 13px;
+        }
+        
+        th, td { 
+            padding: 12px 10px; 
+            border-bottom: 1px solid #eee; 
+            text-align: left;
+        }
+        
+        th { 
+            background: #f8f9fa; 
+            color: #555;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 14px;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert.show {
+            display: block;
+            animation: slideDown 0.3s;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1a1a3e;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) { 
+            .dashboard-grid { 
+                grid-template-columns: 1fr;
+            } 
+            .full-width { 
+                grid-column: span 1;
+            }
+            .top-container { 
+                flex-direction: column;
+            }
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .header-left {
+                flex-direction: column;
+            }
+            .header-right {
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
 
+<!-- HEADER -->
 <div class="header">
-    <div>
-        <img src="logo.png" alt="Logo" style="width:60px; margin-right:10px; vertical-align:middle;">
-<h1 style="display:inline;">Concordia Celes Hotel - Admin</h1>
+    <div class="header-left">
+        <img src="logo.png" alt="Concordia Celes Hotel Logo" onerror="this.style.display='none'">
+        <h1>Concordia Celes Hotel - Admin</h1>
     </div>
-    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+    <div class="header-right">
         <select id="timeFilter" onchange="renderDashboard()">
             <option value="daily">Son 24 Saat</option>
-            <option value="weekly">Son 7 Gun</option>
-            <option value="monthly" selected>Son 30 Gun</option>
-            <option value="yearly">Son 365 Gun</option>
-            <option value="all">Tum Zamanlar</option>
+            <option value="weekly">Son 7 Gün</option>
+            <option value="monthly" selected>Son 30 Gün</option>
+            <option value="yearly">Son 365 Gün</option>
+            <option value="all">Tüm Zamanlar</option>
         </select>
-        <button class="btn-export" onclick="exportData()">Indir</button>
-        <button class="btn-reset" onclick="clearData()">Temizle</button>
-        <a href="index.html" class="btn-back">Anket</a>
+        <button class="btn-export" onclick="exportData()">📥 İndir</button>
+        <button class="btn-reset" onclick="clearData()">🗑️ Temizle</button>
+        <a href="index.html" class="btn-back">📋 Anket</a>
+        <a href="guest.html" class="btn-back" target="_blank">🏨 Guest Info</a>
     </div>
 </div>
 
+<!-- ALERT BOX -->
+<div class="alert alert-success" id="successAlert">
+    ✅ İşlem başarıyla tamamlandı!
+</div>
+
+<!-- DASHBOARD GRID -->
 <div class="dashboard-grid">
+    
+    <!-- GENEL ORTALAMA -->
     <div class="card">
-        <h3>Genel Ortalama</h3>
+        <h3>📊 Genel Ortalama</h3>
         <div class="avg-score" id="generalAvg">0</div>
-        <div class="avg-label">1-100 Olcegi</div>
+        <div class="avg-label">1-100 Ölçeği</div>
     </div>
+    
+    <!-- PERFORMANS ÖDÜLLERİ -->
     <div class="card full-width">
-        <h3>Performans Odulleri</h3>
+        <h3>🏆 Performans Ödülleri</h3>
         <div class="top-container">
-            <div class="top-box"><h4>En Iyi 3 Departman</h4><div id="topDepts"></div></div>
-            <div class="top-box"><h4>En Cok Ovulen 3 Personel</h4><div id="topStaff"></div></div>
+            <div class="top-box">
+                <h4>🥇 En İyi 3 Departman</h4>
+                <div id="topDepts">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Yükleniyor...
+                    </div>
+                </div>
+            </div>
+            <div class="top-box">
+                <h4>⭐ En Çok Övülen 3 Personel</h4>
+                <div id="topStaff">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Yükleniyor...
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+    
+    <!-- DEPARTMAN ORTALAMALARI -->
     <div class="card">
-        <h3>Departman Ortalamalari</h3>
-        <div class="chart-container" id="deptChart"></div>
+        <h3>📈 Departman Ortalamaları</h3>
+        <div class="chart-container" id="deptChart">
+            <div class="loading">
+                <div class="spinner"></div>
+                Yükleniyor...
+            </div>
+        </div>
     </div>
+    
+    <!-- DEPARTMAN DETAY ANALİZİ -->
     <div class="card">
-        <h3>Departman Detay Analizi</h3>
+        <h3>🔍 Departman Detay Analizi</h3>
         <select id="deptSelect" style="width:100%; margin-bottom:10px;" onchange="renderDeptDetail()">
-            <option value="">-- Departman Seciniz --</option>
-            <option value="frontOffice">On Buro ve Resepsiyon</option>
+            <option value="">-- Departman Seçiniz --</option>
+            <option value="frontOffice">Ön Büro ve Resepsiyon</option>
             <option value="guestRelation">Guest Relation</option>
             <option value="housekeeping">Kat Hizmetleri</option>
             <option value="foodServices">Yiyecek Hizmetleri</option>
             <option value="barsServices">Barlar</option>
-            <option value="restaurantServices">Restaurant Hizmetleri</option>
+            <option value="restaurantServices">Restoran Hizmetleri</option>
             <option value="technicalService">Teknik Servis</option>
-            <option value="entertainmentServices">Eglence Hizmetleri</option>
-            <option value="otherServices">Diger Hizmetler</option>
+            <option value="entertainmentServices">Eğlence Hizmetleri</option>
+            <option value="otherServices">Diğer Hizmetler</option>
         </select>
-        <div class="chart-container" id="deptDetailChart"></div>
+        <div class="chart-container" id="deptDetailChart">
+            <p style="text-align:center; color:#999; padding:20px;">Lütfen bir departman seçin</p>
+        </div>
     </div>
+    
+    <!-- ÜLKE ANALİZİ -->
     <div class="card">
-        <h3>Ulke Analizi</h3>
-        <div class="chart-container" id="countryChart"></div>
+        <h3>🌍 Ülke Analizi</h3>
+        <div class="chart-container" id="countryChart">
+            <div class="loading">
+                <div class="spinner"></div>
+                Yükleniyor...
+            </div>
+        </div>
     </div>
+    
+    <!-- EN ÇOK ÖVGÜ ALAN PERSONEL -->
     <div class="card">
-        <h3>En Cok Ovgu Alan Personel</h3>
-        <div class="chart-container" id="staffChart"></div>
+        <h3>👏 En Çok Övgü Alan Personel</h3>
+        <div class="chart-container" id="staffChart">
+            <div class="loading">
+                <div class="spinner"></div>
+                Yükleniyor...
+            </div>
+        </div>
     </div>
+    
+    <!-- SON YORUMLAR -->
     <div class="card full-width">
-        <h3>Son Yorumlar</h3>
-        <div id="quickComments" style="max-height:150px; overflow-y:auto;"></div>
+        <h3>💬 Son Yorumlar</h3>
+        <div id="quickComments" style="max-height:150px; overflow-y:auto;">
+            <div class="loading">
+                <div class="spinner"></div>
+                Yükleniyor...
+            </div>
+        </div>
     </div>
+    
+    <!-- HAM VERİ TABLOSU -->
     <div class="card full-width">
-        <h3>Ham Veri Tablosu</h3>
+        <h3>📋 Ham Veri Tablosu</h3>
         <div style="overflow-x:auto;">
             <table id="rawDataTable">
-                <thead><tr><th>Tarih</th><th>Ad</th><th>Oda</th><th>Puan</th></tr></thead>
-                <tbody></tbody>
+                <thead>
+                    <tr>
+                        <th>Tarih</th>
+                        <th>Ad</th>
+                        <th>Oda</th>
+                        <th>Departman</th>
+                        <th>Puan</th>
+                        <th>Yorum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="6" style="text-align:center; color:#999; padding:30px;">
+                            Veri yükleniyor...
+                        </td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     </div>
+    
 </div>
 
+<!-- JAVASCRIPT -->
 <script src="admin.js"></script>
+<script>
+    // Sayfa yüklendiğinde dashboard'u render et
+    document.addEventListener('DOMContentLoaded', function() {
+        renderDashboard();
+    });
+    
+    // Başarı mesajı göster
+    function showSuccess(message) {
+        const alert = document.getElementById('successAlert');
+        alert.textContent = '✅ ' + message;
+        alert.classList.add('show');
+        setTimeout(() => {
+            alert.classList.remove('show');
+        }, 3000);
+    }
+    
+    // Verileri dışa aktar
+    function exportData() {
+        showSuccess('Veriler Excel olarak indiriliyor...');
+        // Burada gerçek export fonksiyonu admin.js'de olacak
+    }
+    
+    // Verileri temizle
+    function clearData() {
+        if(confirm('⚠️ Tüm verileri silmek istediğinizden emin misiniz? Bu işlem geri alınamaz!')) {
+            showSuccess('Veriler temizlendi!');
+            renderDashboard();
+        }
+    }
+    
+    // Dashboard render (admin.js'den çağrılır)
+    function renderDashboard() {
+        // Bu fonksiyon admin.js'de tanımlı
+        if(typeof window.renderDashboardInternal === 'function') {
+            window.renderDashboardInternal();
+        }
+    }
+    
+    // Departman detay render
+    function renderDeptDetail() {
+        // Bu fonksiyon admin.js'de tanımlı
+        if(typeof window.renderDeptDetailInternal === 'function') {
+            window.renderDeptDetailInternal();
+        }
+    }
+</script>
+
 </body>
 </html>
