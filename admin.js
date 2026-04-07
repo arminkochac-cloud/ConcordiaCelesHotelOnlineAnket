@@ -1,19 +1,22 @@
 // ============================================================================
-// CONCORDİA CELES HOTEL - ADMIN PANEL JAVASCRIPT v8
-// 1-5 PUAN → 100'LÜK SİSTEM + DEPARTMAN/PERSONEL DÜZELTMELERİ
+// CONCORDİA CELES HOTEL - ADMIN PANEL JAVASCRIPT (FINAL SÜRÜM)
+// 1-5 PUAN → 100% DÖNÜŞÜM + DEPARTMAN/PERSONEL UYUMLU
 // ============================================================================
-console.log('🚀 admin.js v8 yüklendi (1-5 → 100 Dönüşüm Aktif)');
+console.log('🚀 admin.js FINAL yüklendi');
 
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQXQnpJIwj4vvKbSrEVJUmKWGQxJyJiKls2m-hLbMdHpD0cBSewzGGYPe3gtkhBWGR/exec';
-const SCALE = 20; // 1-5 puanı 100'e çevirir (1*20=20, 5*20=100)
+const SCALE = 20; // 1-5 puanı 100% e çevirir (1*20=20, 5*20=100)
 
-// DEPARTMAN - SÜTUN EŞLEŞMESİ (Sizin Sheets başlıklarınıza birebir uyumlu)
+// DEPARTMAN - SÜTUN EŞLEŞMESİ (Sizin yapıya tam uyumlu)
 const DEPT_MAP = {
-  "Ön Büro & Resepsiyon": ["welcomeGreeting","checkInProcess","facilityInfo","frontDeskCare","bellboyService","grWelcomeQuality","problemSolving","guestFollowUp"],
+  "Ön Büro & Resepsiyon": ["welcomeGreeting","checkInProcess","facilityInfo","frontDeskCare","bellboyService"],
+  "Guest Relations": ["grWelcomeQuality","problemSolving","guestFollowUp"],
   "Kat Hizmetleri": ["initialRoomCleaning","roomAppearance","dailyRoomCleaning","minibarService","publicAreaCleaning","beachPoolCleaning","housekeepingStaffCare"],
-  "Yiyecek & İçecek": ["breakfastVariety","breakfastQuality","lunchVariety","lunchQuality","dinnerVariety","dinnerQuality","alacarteQuality","kitchenHygiene","foodStaffCare","poolBarQuality","lobbyBarQuality","snackBarQuality","drinkQuality","barHygiene","barStaffCare","restaurantLayout","restaurantCapacity","restaurantHygiene","snackbarRestaurant","alacarteRestaurant","restaurantStaffCare"],
+  "Yiyecek Hizmetleri & Mutfak": ["breakfastVariety","breakfastQuality","lunchVariety","lunchQuality","dinnerVariety","dinnerQuality","alacarteQuality","kitchenHygiene","foodStaffCare"],
+  "Servis ve Barlar": ["poolBarQuality","lobbyBarQuality","snackBarQuality","drinkQuality","barHygiene","barStaffCare"],
+  "Restaurant Hizmetleri": ["restaurantLayout","restaurantCapacity","restaurantHygiene","snackbarRestaurant","alacarteRestaurant","restaurantStaffCare"],
   "Teknik Servis": ["roomTechnicalSystems","maintenanceResponse","environmentLighting","poolWaterCleaning","technicalStaffCare"],
-  "Eğlence & Animasyon": ["daytimeActivities","sportsAreas","eveningShows","miniclubActivities","entertainmentStaffCare"],
+  "Eğlence Hizmetleri": ["daytimeActivities","sportsAreas","eveningShows","miniclubActivities","entertainmentStaffCare"],
   "Diğer Hizmetler": ["landscaping","spaServices","shopBehavior","priceQuality"]
 };
 
@@ -29,10 +32,8 @@ async function loadDashboard() {
         const data = await res.json();
         const validData = Array.isArray(data) ? data : [];
         console.log(`📦 ${validData.length} kayıt alındı`);
-        
-        // 🔍 DEBUG: İlk satırın kolon isimlerini konsola yazdır
         if(validData.length > 0) console.log("🔍 Sheets kolonları:", Object.keys(validData[0]));
-        
+
         localStorage.setItem('hotelSurveys', JSON.stringify(validData));
         const stats = processData(validData);
         renderDashboard(stats);
@@ -50,15 +51,13 @@ function processData(data) {
     let comments = [];
 
     data.forEach(row => {
-        // 1. SATIR ORTALAMASI (1-5 → 100 dönüşümü)
+        // 1. SATIR ORTALAMASI (1-5 → 100%)
         let rowVals = [];
         for (let key in row) {
             let v = parseFloat(row[key]);
-            if (!isNaN(v) && v >= 1 && v <= 5) rowVals.push(v * SCALE); // 1-5 arasıysa 100'e çevir
+            if (!isNaN(v) && v >= 1 && v <= 5) rowVals.push(v * SCALE);
         }
-        if (rowVals.length > 0) {
-            totalRowAverages.push(rowVals.reduce((a,b)=>a+b,0) / rowVals.length);
-        }
+        if (rowVals.length > 0) totalRowAverages.push(rowVals.reduce((a,b)=>a+b,0) / rowVals.length);
 
         // 2. DEPARTMAN PUANLARI
         for (let dept in DEPT_MAP) {
@@ -75,13 +74,11 @@ function processData(data) {
             }
         }
 
-        // 3. PERSONEL ÖVGÜLERİ (Sadece praisedStaff sütununu okur)
+        // 3. PERSONEL ÖVGÜLERİ (praisedStaff sütunundan okur)
         let staffRaw = row.praisedStaff || '';
         if (staffRaw.trim() && staffRaw.toLowerCase() !== 'boş' && staffRaw.toLowerCase() !== 'none') {
             let names = staffRaw.split(/[,;ve&\n]/).map(n => n.trim()).filter(n => n.length > 2);
-            names.forEach(n => {
-                staffCounts[n] = (staffCounts[n] || 0) + 1;
-            });
+            names.forEach(n => { staffCounts[n] = (staffCounts[n] || 0) + 1; });
         }
 
         // 4. ÜLKE ANALİZİ
@@ -94,14 +91,13 @@ function processData(data) {
         }
     });
 
-    // TOPLU HESAPLAMALAR
     let generalAvg = totalRowAverages.length ? Math.round(totalRowAverages.reduce((a,b)=>a+b,0)/totalRowAverages.length) : 0;
-    let deptStats = Object.keys(deptScores).map(d => ({ 
-        name: d, 
-        avg: Math.round(deptScores[d].reduce((a,b)=>a+b,0)/deptScores[d].length), 
-        count: deptScores[d].length 
+    let deptStats = Object.keys(deptScores).map(d => ({
+        name: d,
+        avg: Math.round(deptScores[d].reduce((a,b)=>a+b,0)/deptScores[d].length),
+        count: deptScores[d].length
     })).sort((a,b)=>b.avg-a.avg);
-    
+
     let staffStats = Object.keys(staffCounts).map(n => ({ name: n, count: staffCounts[n] })).sort((a,b)=>b.count-a.count);
     let countryStats = Object.keys(countryCounts).map(c => ({ name: c, count: countryCounts[c] })).sort((a,b)=>b.count-a.count);
 
@@ -111,14 +107,12 @@ function processData(data) {
 function renderDashboard(stats) {
     console.log('🎨 Panel render ediliyor...');
 
-    // 1. GENEL ORTALAMA (100'lük)
     const avgEl = document.getElementById('generalAvg');
     if (avgEl) {
         avgEl.textContent = stats.generalAvg;
         avgEl.style.color = stats.generalAvg >= 85 ? '#28a745' : stats.generalAvg >= 70 ? '#ffc107' : '#dc3545';
     }
 
-    // 2. EN İYİ DEPARTMANLAR (% olarak gösterir)
     const topDepts = document.getElementById('topDepts');
     if (topDepts) {
         topDepts.innerHTML = stats.deptStats.length > 0 ? stats.deptStats.slice(0,3).map((d, i) => {
@@ -127,7 +121,6 @@ function renderDashboard(stats) {
         }).join('') : '<p style="color:#999;text-align:center;padding:15px">Departman verisi yok</p>';
     }
 
-    // 3. EN ÇOK ÖVÜLEN PERSONEL (övgü sayısı olarak gösterir)
     const topStaff = document.getElementById('topStaff');
     if (topStaff) {
         topStaff.innerHTML = stats.staffStats.length > 0 ? stats.staffStats.slice(0,3).map((s, i) => {
@@ -136,7 +129,6 @@ function renderDashboard(stats) {
         }).join('') : '<p style="color:#999;text-align:center;padding:15px">Henüz personel övgüsü yok</p>';
     }
 
-    // 4. GRAFİKLER
     const deptChart = document.getElementById('deptChart');
     const countryChart = document.getElementById('countryChart');
     const staffChart = document.getElementById('staffChart');
@@ -145,7 +137,6 @@ function renderDashboard(stats) {
     if (countryChart) countryChart.innerHTML = stats.countryStats.length > 0 ? createBars(stats.countryStats.slice(0,5).map(c => `${c.name}:${Math.round(c.count/stats.rawData.length*100)}`)) : emptyMsg();
     if (staffChart) staffChart.innerHTML = stats.staffStats.length > 0 ? createBars(stats.staffStats.slice(0,5).map(s => `${s.name}:${s.count}`)) : emptyMsg();
 
-    // 5. SON YORUMLAR
     const commentsDiv = document.getElementById('quickComments');
     if (commentsDiv) {
         commentsDiv.innerHTML = '';
@@ -159,7 +150,6 @@ function renderDashboard(stats) {
         }
     }
 
-    // 6. TABLO (SON 10)
     const tbody = document.querySelector('#rawDataTable tbody');
     if (tbody) {
         tbody.innerHTML = '';
