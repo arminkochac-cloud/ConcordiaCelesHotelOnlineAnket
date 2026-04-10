@@ -1,11 +1,11 @@
 // ============================================================================
 // CONCORDIA CELES HOTEL - ADMIN PANEL JAVASCRIPT
-// FINAL MODERN SÜRÜM
+// CLEAN FINAL VERSION
 // ============================================================================
 
 console.log('✅ admin.js başlatıldı!');
 
-// Google Apps Script Web App URL
+// Apps Script Web App URL
 var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQXQnpJIwj4vvKbSrEVJUmKWGQxJyJiKls2m-hLbMdHpD0cBSewzGGYPe3gtkhBWGR/exec';
 
 // ---------------------------------------------------------------------------
@@ -169,13 +169,13 @@ function normalizeRatingValue(value) {
     var n = parseFloat(String(value).replace(',', '.'));
     if (isNaN(n)) return null;
 
-    // 1-5 ölçeği ise 100'lük sisteme çevir
+    // 1-5 ölçeği
     if (n >= 0 && n <= 5) return n * 20;
 
-    // 1-10 ölçeği ise 100'lük sisteme çevir
+    // 1-10 ölçeği
     if (n > 5 && n <= 10) return n * 10;
 
-    // 100'lük sistemse olduğu gibi kullan
+    // 100'lük sistem
     if (n > 10 && n <= 100) return n;
 
     return null;
@@ -202,7 +202,7 @@ function computeOverallScore(item) {
     return averageOfFields(item, RATING_FIELDS);
 }
 
-// GENEL ORTALAMA
+// Genel ortalama
 function calculateGeneralAverage(rows) {
     var total = 0;
     var count = 0;
@@ -396,18 +396,21 @@ function applyTimeFilter(rows) {
 }
 
 function hideLoadingTexts() {
-    document.querySelectorAll('.loading').forEach(function(el) {
-        el.style.display = 'none';
-    });
+    var loadingEls = document.querySelectorAll('.loading');
+    for (var i = 0; i < loadingEls.length; i++) {
+        loadingEls[i].style.display = 'none';
+    }
 
-    document.querySelectorAll('body *').forEach(function(el) {
+    var allEls = document.querySelectorAll('body *');
+    for (var j = 0; j < allEls.length; j++) {
+        var el = allEls[j];
         if (el.children.length === 0) {
             var txt = (el.textContent || '').trim();
             if (txt === 'Yükleniyor...' || txt === 'Veri yükleniyor...') {
                 el.textContent = '';
             }
         }
-    });
+    }
 }
 
 function renderRankList(el, items, valueTextFn, emptyText) {
@@ -524,47 +527,38 @@ function renderGuestInsights(rows) {
     var recPct = percent(rec.yes, rec.total);
     var commentPct = percent(commentCount, rows.length);
 
-    el.innerHTML = `
-        <div class="insight-card">
-            <div class="insight-title">🏨 Daha Önce Otelimizde Bulundunuz Mu?</div>
-            <div class="insight-value">${prevPct}%</div>
-            <div class="insight-sub">Eski misafir oranı</div>
-            <div class="mini-progress">
-                <div style="width:${prevPct}%;background:linear-gradient(90deg,#16a34a,#22c55e)"></div>
-            </div>
-            <div class="insight-sub">Eski: ${prev.yes} • Yeni: ${prev.no}</div>
-        </div>
+    el.innerHTML =
+        '<div class="insight-card">' +
+            '<div class="insight-title">🏨 Daha Önce Otelimizde Bulundunuz Mu?</div>' +
+            '<div class="insight-value">' + prevPct + '%</div>' +
+            '<div class="insight-sub">Eski misafir oranı</div>' +
+            '<div class="mini-progress"><div style="width:' + prevPct + '%;background:linear-gradient(90deg,#16a34a,#22c55e)"></div></div>' +
+            '<div class="insight-sub">Eski: ' + prev.yes + ' • Yeni: ' + prev.no + '</div>' +
+        '</div>' +
 
-        <div class="insight-card">
-            <div class="insight-title">🔁 Tekrar Gelir Misiniz?</div>
-            <div class="insight-value">${retPct}%</div>
-            <div class="insight-sub">Geri dönüş niyeti</div>
-            <div class="mini-progress">
-                <div style="width:${retPct}%;background:linear-gradient(90deg,#2563eb,#3b82f6)"></div>
-            </div>
-            <div class="insight-sub">Evet: ${ret.yes} • Hayır: ${ret.no}</div>
-        </div>
+        '<div class="insight-card">' +
+            '<div class="insight-title">🔁 Tekrar Gelir Misiniz?</div>' +
+            '<div class="insight-value">' + retPct + '%</div>' +
+            '<div class="insight-sub">Geri dönüş niyeti</div>' +
+            '<div class="mini-progress"><div style="width:' + retPct + '%;background:linear-gradient(90deg,#2563eb,#3b82f6)"></div></div>' +
+            '<div class="insight-sub">Evet: ' + ret.yes + ' • Hayır: ' + ret.no + '</div>' +
+        '</div>' +
 
-        <div class="insight-card">
-            <div class="insight-title">⭐ Bizi Çevrenize Tavsiye Eder Misiniz?</div>
-            <div class="insight-value">${recPct}%</div>
-            <div class="insight-sub">Tavsiye oranı</div>
-            <div class="mini-progress">
-                <div style="width:${recPct}%;background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div>
-            </div>
-            <div class="insight-sub">Evet: ${rec.yes} • Hayır: ${rec.no}</div>
-        </div>
+        '<div class="insight-card">' +
+            '<div class="insight-title">⭐ Bizi Çevrenize Tavsiye Eder Misiniz?</div>' +
+            '<div class="insight-value">' + recPct + '%</div>' +
+            '<div class="insight-sub">Tavsiye oranı</div>' +
+            '<div class="mini-progress"><div style="width:' + recPct + '%;background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div></div>' +
+            '<div class="insight-sub">Evet: ' + rec.yes + ' • Hayır: ' + rec.no + '</div>' +
+        '</div>' +
 
-        <div class="insight-card">
-            <div class="insight-title">💬 Yorum Bırakan Misafirler</div>
-            <div class="insight-value">${commentCount}</div>
-            <div class="insight-sub">Genel düşünce ve öneriler</div>
-            <div class="mini-progress">
-                <div style="width:${commentPct}%;background:linear-gradient(90deg,#7c3aed,#a855f7)"></div>
-            </div>
-            <div class="insight-sub">Toplam anket: ${rows.length}</div>
-        </div>
-    `;
+        '<div class="insight-card">' +
+            '<div class="insight-title">💬 Yorum Bırakan Misafirler</div>' +
+            '<div class="insight-value">' + commentCount + '</div>' +
+            '<div class="insight-sub">Genel düşünce ve öneriler</div>' +
+            '<div class="mini-progress"><div style="width:' + commentPct + '%;background:linear-gradient(90deg,#7c3aed,#a855f7)"></div></div>' +
+            '<div class="insight-sub">Toplam anket: ' + rows.length + '</div>' +
+        '</div>';
 }
 
 function renderCommentFeed(rows) {
@@ -600,18 +594,17 @@ function renderCommentFeed(rows) {
         var returnVal = normalizeYesNo(item.returnText);
         var recVal = normalizeYesNo(item.recText);
 
-        html += `
-            <div class="comment-card">
-                <div class="comment-meta">
-                    <span>👤 ${escapeHtml(item.name)}</span>
-                    ${item.staff ? `<span>⭐ ${escapeHtml(item.staff)}</span>` : ''}
-                    ${item.date ? `<span>📅 ${escapeHtml(item.date)}</span>` : ''}
-                    ${returnVal !== null ? `<span>↩️ Tekrar: ${returnVal ? 'Evet' : 'Hayır'}</span>` : ''}
-                    ${recVal !== null ? `<span>👍 Tavsiye: ${recVal ? 'Evet' : 'Hayır'}</span>` : ''}
-                </div>
-                <div class="comment-text">${escapeHtml(item.text)}</div>
-            </div>
-        `;
+        html +=
+            '<div class="comment-card">' +
+                '<div class="comment-meta">' +
+                    '<span>👤 ' + escapeHtml(item.name) + '</span>' +
+                    (item.staff ? '<span>⭐ ' + escapeHtml(item.staff) + '</span>' : '') +
+                    (item.date ? '<span>📅 ' + escapeHtml(item.date) + '</span>' : '') +
+                    (returnVal !== null ? '<span>↩️ Tekrar: ' + (returnVal ? 'Evet' : 'Hayır') + '</span>' : '') +
+                    (recVal !== null ? '<span>👍 Tavsiye: ' + (recVal ? 'Evet' : 'Hayır') + '</span>' : '') +
+                '</div>' +
+                '<div class="comment-text">' + escapeHtml(item.text) + '</div>' +
+            '</div>';
     }
 
     el.innerHTML = html;
@@ -927,7 +920,7 @@ window.clearData = clearData;
 window.exportData = exportData;
 window.loadAndRenderData = loadAndRenderData;
 
-// Eski HTML yapıları için uyumluluk
+// Eski HTML uyumluluğu
 window.renderDashboardInternal = renderDashboard;
 window.renderDeptDetailInternal = renderDeptDetail;
 
