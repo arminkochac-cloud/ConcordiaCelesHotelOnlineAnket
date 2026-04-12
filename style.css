@@ -302,7 +302,9 @@ textarea {
     text-align: right;
 }
 
-/* STAR RATING */
+/* =========================
+   STAR RATING - CLEAN
+   ========================= */
 .stars {
     display: flex;
     align-items: center;
@@ -312,31 +314,25 @@ textarea {
     line-height: 1;
 }
 
-.stars input[type="radio"] {
-    display: none;
-}
-
 .stars .star {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     user-select: none;
-    position: relative;
-    font-size: 34px;
+    font-size: 36px;
     line-height: 1;
     color: #d9d9d9;
     transition: transform 0.15s ease, color 0.15s ease;
-    pointer-events: auto;
     background: transparent;
     border: 0;
     padding: 0 2px;
-    appearance: none;
-    -webkit-appearance: none;
+    outline: none;
 }
 
 .stars .star:hover {
     transform: translateY(-1px);
+    color: #f5b301;
 }
 
 .stars .star.selected {
