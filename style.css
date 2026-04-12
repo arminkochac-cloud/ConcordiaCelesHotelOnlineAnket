@@ -87,6 +87,6 @@ input[type="text"], input[type="email"], input[type="date"], select, textarea { 
     pointer-events: auto;
 }
 
-.stars .star span {
-    pointer-events: none;
+..stars .star.selected {
+    color: #f5b301 !important;
 }
