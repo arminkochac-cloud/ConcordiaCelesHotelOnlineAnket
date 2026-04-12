@@ -312,6 +312,10 @@ textarea {
     line-height: 1;
 }
 
+.stars input[type="radio"] {
+    display: none;
+}
+
 .stars .star {
     display: inline-flex;
     align-items: center;
