@@ -212,16 +212,27 @@ function initStars() {
             radios[k].addEventListener('change', updateStars);
         }
 
-        // label tıklaması her zaman çalışsın
-        stars.forEach(function (star) {
-            star.addEventListener('click', function () {
-                var radio = star.querySelector('input[type="radio"]');
-                if (radio) {
-                    radio.checked = true;
-                    radio.dispatchEvent(new Event('change', { bubbles: true }));
-                }
-            });
-        });
+        // label tıklaması daha sağlam çalışsın
+        for (var s = 0; s < stars.length; s++) {
+            (function(star) {
+                star.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    var radio = star.querySelector('input[type="radio"]');
+                    if (radio) {
+                        radio.checked = true;
+                        if (typeof Event === 'function') {
+                            radio.dispatchEvent(new Event('change', { bubbles: true }));
+                        } else {
+                            var evt = document.createEvent('Event');
+                            evt.initEvent('change', true, true);
+                            radio.dispatchEvent(evt);
+                        }
+                    }
+                });
+            })(stars[s]);
+        }
 
         if (hiddenInput) hiddenInput.value = '';
         updateStars();
