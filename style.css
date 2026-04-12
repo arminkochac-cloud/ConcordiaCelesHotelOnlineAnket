@@ -86,20 +86,22 @@ input[type="text"], input[type="email"], input[type="date"], select, textarea { 
     align-items: center;
     gap: 4px;
     flex-wrap: wrap;
+    margin-top: 8px;
 }
 
 .stars .star {
-    border: 0;
-    background: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     font-size: 34px;
     line-height: 1;
     color: #d9d9d9;
-    padding: 0 2px;
-    user-select: none;
     transition: transform 0.15s ease, color 0.15s ease;
-    appearance: none;
-    -webkit-appearance: none;
+    user-select: none;
+    position: relative;
+    z-index: 2;
+    pointer-events: auto;
 }
 
 .stars .star:hover {
@@ -109,4 +111,12 @@ input[type="text"], input[type="email"], input[type="date"], select, textarea { 
 
 .stars .star.selected {
     color: #f5b301 !important;
+}
+
+.stars .star input {
+    display: none;
+}
+
+.stars .star span {
+    pointer-events: none;
 }
