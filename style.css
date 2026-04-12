@@ -80,38 +80,18 @@ input[type="text"], input[type="email"], input[type="date"], select, textarea { 
     color: #1a73e8;
     text-decoration: underline;
 }s
-/* YILDIZLAR */
-.stars {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    flex-wrap: wrap;
-}
-
-.stars .star {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+/* YILDIZ STİLLERİ */
+.star {
+    font-size: 24px;
+    color: #d1d5db; /* Gri (seçili değil) */
     cursor: pointer;
-    font-size: 34px;
-    line-height: 1;
-    color: #d9d9d9;
-    transition: transform 0.15s ease, color 0.15s ease;
-    user-select: none;
+    transition: color 0.2s, transform 0.2s;
+    margin-right: 4px;
 }
-
-.stars .star:hover {
-    transform: translateY(-1px);
+.star:hover {
+    transform: scale(1.1);
+    color: #fbbf24;
 }
-
-.stars .star.selected {
-    color: #f5b301 !important;
-}
-
-.stars .star input {
-    display: none;
-}
-
-.stars .star span {
-    pointer-events: none;
+.star.active {
+    color: #f59e0b !important; /* Altın Sarısı (seçili) */
 }
