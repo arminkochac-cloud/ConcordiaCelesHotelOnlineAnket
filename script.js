@@ -164,6 +164,18 @@ function syncStarContainer(container) {
     }
 }
 
+Tamam, şimdi en sağlam şekilde çözelim.  
+Sizde yıldızlar görünüyor ama tıklayınca tepki vermiyorsa, en güvenli çözüm **event delegation** ile yeniden kurmak.
+
+Aşağıdakileri yapın:
+
+---
+
+# 1) `script.js` içindeki `initStars()` fonksiyonunu tamamen değiştirin
+
+Eski `initStars()` kodunu silin ve bunu yapıştırın:
+
+```javascript
 function initStars() {
     var containers = document.querySelectorAll('.rating-item .stars[data-name]');
 
@@ -181,41 +193,137 @@ function initStars() {
             'input[type="hidden"][name="' + fieldName + '"]'
         );
 
-        // 5 yıldızı oluştur (5 -> 1)
+        // Yıldızları oluştur
         var html = '';
         for (var i = 5; i >= 1; i--) {
-            html +=
-                '<label class="star" data-value="' + i + '">' +
-                    '<input type="radio" name="' + fieldName + '_rating" value="' + i + '">' +
-                    '<span>★</span>' +
-                '</label>';
+            html += '<button type="button" class="star" data-value="' + i + '" aria-label="' + i + ' yıldız">★</button>';
         }
-
         container.innerHTML = html;
 
-        function updateStars() {
-            var checked = container.querySelector('input[name="' + fieldName + '_rating"]:checked');
-            var value = checked ? parseInt(checked.value, 10) : 0;
+        // Tek bir click listener
+        container.addEventListener('click', function (e) {
+            var star = e.target.closest('.star');
+            if (!star) return;
+
+            e.preventDefault();
+
+            var value = parseInt(star.getAttribute('data-value'), 10);
 
             if (hiddenInput) {
-                hiddenInput.value = value ? String(value) : '';
+                hiddenInput.value = String(value);
             }
 
-            var labels = container.querySelectorAll('.star');
-            for (var k = 0; k < labels.length; k++) {
-                var starValue = parseInt(labels[k].getAttribute('data-value'), 10);
-                labels[k].classList.toggle('selected', starValue <= value);
+            var stars = container.querySelectorAll('.star');
+            for (var s = 0; s < stars.length; s++) {
+                var starValue = parseInt(stars[s].getAttribute('data-value'), 10);
+                stars[s].classList.toggle('selected', starValue <= value);
             }
+        });
+
+        // Klavye ile seçme
+        var stars = container.querySelectorAll('.star');
+        for (var k = 0; k < stars.length; k++) {
+            stars[k].addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
         }
 
-        var inputs = container.querySelectorAll('input[name="' + fieldName + '_rating"]');
-        for (var j = 0; j < inputs.length; j++) {
-            inputs[j].addEventListener('change', updateStars);
-        }
-
-        updateStars();
+        if (hiddenInput) hiddenInput.value = '';
     }
 }
+```
+
+---
+
+# 2) `style.css` içindeki yıldız stilini bununla değiştirin
+
+Eski `.stars` ve `.star` bloklarını silip bunu koyun:
+
+```css
+.stars {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.stars .star {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font-size: 34px;
+    line-height: 1;
+    color: #d9d9d9;
+    padding: 0 2px;
+    user-select: none;
+    transition: transform 0.15s ease, color 0.15s ease;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.stars .star:hover {
+    transform: translateY(-1px);
+    color: #f5b301;
+}
+
+.stars .star.selected {
+    color: #f5b301 !important;
+}
+```
+
+> Önemli:  
+> Eğer şu tarz eski bir kural varsa kaldırın:
+```css
+.stars .star.selected span
+```
+Bu artık kullanılmıyor.
+
+---
+
+# 3) `index.html` script sürümünü artırın
+Cache yüzünden eski JS yükleniyor olabilir.  
+Şunu:
+
+```html
+<script src="script.js?v=2"></script>
+```
+
+şuna çevirin:
+
+```html
+<script src="script.js?v=3"></script>
+```
+
+---
+
+# 4) Tarayıcı cache temizleyin
+Sonra:
+
+- **Ctrl + F5**
+- mümkünse gizli sekmede açın
+
+---
+
+# 5) Beklenen sonuç
+Artık:
+
+- yıldızın üstüne tıklayınca **sarılaşmalı**
+- hidden input’a puan yazılmalı
+- “İleri” butonu artık puanlamayı görmeli
+
+---
+
+# 6) Hâlâ olmazsa
+O zaman sorun %99 şu ikisinden biridir:
+- `script.js` sayfaya eski sürüm olarak geliyor
+- HTML içinde eski `initStars()` ya da başka bir inline script kaldı
+
+Bu durumda bana sadece `index.html` dosyanızın en alt 20-30 satırını atın, ben çakışan kısmı net ayırayım.
+
+İsterseniz bir sonraki mesajda size **tam çalışan son `script.js` + ilgili `style.css` bloğunu tek parça birleşik şekilde** de gönderebilirim.
 
 // ---------------------------------------------------------------------------
 // CHAR COUNTER
