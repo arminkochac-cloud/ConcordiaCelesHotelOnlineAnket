@@ -171,49 +171,49 @@ function initStars() {
         var container = containers[c];
 
         if (container.getAttribute('data-ready') === '1') {
-            syncStarContainer(container);
             continue;
         }
 
         container.setAttribute('data-ready', '1');
 
         var fieldName = container.getAttribute('data-name');
-        var hiddenInput = container.parentElement.querySelector('input[type="hidden"][name="' + fieldName + '"]');
+        var hiddenInput = container.parentElement.querySelector(
+            'input[type="hidden"][name="' + fieldName + '"]'
+        );
 
-        // 5 yıldız oluştur
+        // 5 yıldızı oluştur (5 -> 1)
         var html = '';
-        for (var i = 1; i <= 5; i++) {
-            html += '<button type="button" class="star" data-value="' + i + '" aria-label="' + i + ' yıldız">★</button>';
+        for (var i = 5; i >= 1; i--) {
+            html +=
+                '<label class="star" data-value="' + i + '">' +
+                    '<input type="radio" name="' + fieldName + '_rating" value="' + i + '">' +
+                    '<span>★</span>' +
+                '</label>';
         }
+
         container.innerHTML = html;
 
-        var stars = container.querySelectorAll('.star');
+        function updateStars() {
+            var checked = container.querySelector('input[name="' + fieldName + '_rating"]:checked');
+            var value = checked ? parseInt(checked.value, 10) : 0;
 
-        function setRating(value) {
-            if (hiddenInput) hiddenInput.value = String(value);
-            syncStarContainer(container);
+            if (hiddenInput) {
+                hiddenInput.value = value ? String(value) : '';
+            }
+
+            var labels = container.querySelectorAll('.star');
+            for (var k = 0; k < labels.length; k++) {
+                var starValue = parseInt(labels[k].getAttribute('data-value'), 10);
+                labels[k].classList.toggle('selected', starValue <= value);
+            }
         }
 
-        for (var s = 0; s < stars.length; s++) {
-            (function (starEl) {
-                var value = parseInt(starEl.getAttribute('data-value'), 10);
-
-                starEl.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    setRating(value);
-                });
-
-                starEl.addEventListener('keydown', function (e) {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        setRating(value);
-                    }
-                });
-            })(stars[s]);
+        var inputs = container.querySelectorAll('input[name="' + fieldName + '_rating"]');
+        for (var j = 0; j < inputs.length; j++) {
+            inputs[j].addEventListener('change', updateStars);
         }
 
-        if (hiddenInput) hiddenInput.value = '';
-        syncStarContainer(container);
+        updateStars();
     }
 }
 
