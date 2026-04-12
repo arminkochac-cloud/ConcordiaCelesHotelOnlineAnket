@@ -95,27 +95,74 @@ function syncStarContainer(container) {
     }
 }
 
-function initStars() {
-    var containers = document.querySelectorAll('.rating-item .stars[data-name]');
-
-    for (var c = 0; c < containers.length; c++) {
-        var container = containers[c];
-
-        if (container.getAttribute('data-ready') !== '1') {
-            container.setAttribute('data-ready', '1');
-
-            var radios = container.querySelectorAll('input[type="radio"]');
-            for (var r = 0; r < radios.length; r++) {
-                radios[r].addEventListener('change', function () {
-                    syncStarContainer(container);
-                });
-            }
-        }
-
-        syncStarContainer(container);
-    }
+function showKvkk() {
+    const modal = document.getElementById('kvkkModal');
+    if (modal) modal.style.display = 'block';
 }
 
+function closeKvkk() {
+    const modal = document.getElementById('kvkkModal');
+    if (modal) modal.style.display = 'none';
+}
+
+window.addEventListener('click', function(e) {
+    const modal = document.getElementById('kvkkModal');
+    if (e.target === modal) {
+        closeKvkk();
+    }
+});
+
+function initStars() {
+    document.querySelectorAll('.stars').forEach(container => {
+        const fieldName = container.getAttribute('data-name');
+        if (!fieldName) return;
+
+        // Bir kez oluştur
+        if (container.dataset.ready === '1') return;
+        container.dataset.ready = '1';
+
+        const hiddenInput = container.parentElement.querySelector(`input[type="hidden"][name="${fieldName}"]`);
+
+        // 5 yıldız oluştur
+        let html = '';
+        for (let i = 5; i >= 1; i--) {
+            html += `
+                <label class="star" title="${i}">
+                    <input type="radio" name="${fieldName}_rating" value="${i}">
+                    <span>★</span>
+                </label>
+            `;
+        }
+        container.innerHTML = html;
+
+        const radios = container.querySelectorAll(`input[name="${fieldName}_rating"]`);
+
+        function updateStars() {
+            const checked = Array.from(radios).find(r => r.checked);
+            const value = checked ? parseInt(checked.value, 10) : 0;
+
+            if (hiddenInput) {
+                hiddenInput.value = value || '';
+            }
+
+            container.querySelectorAll('.star').forEach(label => {
+                const radio = label.querySelector('input[type="radio"]');
+                const radioVal = parseInt(radio.value, 10);
+                label.classList.toggle('selected', radioVal <= value);
+            });
+        }
+
+        radios.forEach(radio => {
+            radio.addEventListener('change', updateStars);
+        });
+
+        updateStars();
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    initStars();
+});
 // ---------------------------------------------------------------------------
 // BUTTONS / VALIDATION
 // ---------------------------------------------------------------------------
