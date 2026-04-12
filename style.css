@@ -80,13 +80,57 @@ input[type="text"], input[type="email"], input[type="date"], select, textarea { 
     color: #1a73e8;
     text-decoration: underline;
 }s
-/* YILDIZ STİLLERİ */
+/* =========================
+   STAR RATING
+   ========================= */
+.stars {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+    line-height: 1;
+}
+
 .stars .star {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     user-select: none;
+    position: relative;
+    font-size: 34px;
+    line-height: 1;
+    color: #d9d9d9;
+    transition: transform 0.15s ease, color 0.15s ease;
     pointer-events: auto;
 }
 
-..stars .star.selected {
+.stars .star:hover {
+    transform: translateY(-1px);
+}
+
+.stars .star input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 1px;
+    height: 1px;
+}
+
+.stars .star span {
+    pointer-events: none;
+    display: inline-block;
+    color: #d9d9d9;
+    transition: color 0.15s ease;
+}
+
+/* Seçili yıldız */
+.stars .star.selected span {
     color: #f5b301 !important;
+}
+
+/* Klavye ile odaklandığında */
+.stars .star:focus-within span {
+    color: #f5b301;
 }
