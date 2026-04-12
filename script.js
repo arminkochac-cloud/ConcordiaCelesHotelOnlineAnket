@@ -184,10 +184,10 @@ function initStars() {
         var html = '';
         for (var i = 5; i >= 1; i--) {
             html +=
-                '<label class="star" data-value="' + i + '">' +
-                    '<input type="radio" name="' + fieldName + '_rating" value="' + i + '">' +
-                    '<span>★</span>' +
-                '</label>';
+                <label class="star" data-value="5">
+    <input type="radio" ...>
+    <span>★</span>
+</label>
         }
         container.innerHTML = html;
 
