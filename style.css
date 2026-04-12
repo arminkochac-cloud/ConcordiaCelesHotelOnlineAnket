@@ -90,23 +90,22 @@ input[type="text"], input[type="email"], input[type="date"], select, textarea { 
 
 .stars .star {
     cursor: pointer;
-    font-size: 32px;
+    font-size: 34px;
     line-height: 1;
     color: #d9d9d9;
     transition: transform 0.15s ease, color 0.15s ease;
+    user-select: none;
+    background: transparent;
+    border: none;
+    padding: 0;
+    outline: none;
 }
 
 .stars .star:hover {
     transform: translateY(-1px);
+    color: #f5b301;
 }
 
-.stars .star.selected span {
+.stars .star.selected {
     color: var(--warning-color);
-}
-
-.stars .star input {
-    display: none;
-}
-.stars .star input {
-    display: none;
 }
