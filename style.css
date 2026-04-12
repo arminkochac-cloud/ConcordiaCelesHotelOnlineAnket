@@ -100,10 +100,13 @@ input[type="text"], input[type="email"], input[type="date"], select, textarea { 
     transform: translateY(-1px);
 }
 
-.stars .star.selected {
+.stars .star.selected span {
     color: var(--warning-color);
 }
 
+.stars .star input {
+    display: none;
+}
 .stars .star input {
     display: none;
 }
