@@ -8,12 +8,11 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQXQnpJIwj4v
 
 var currentSectionIndex = 0;
 
-// Yukarıya kendi çalışan /exec URL'nizi koyun.
-
-let currentSectionIndex = 0;
-
+// ---------------------------------------------------------------------------
+// SECTIONS
+// ---------------------------------------------------------------------------
 function getSections() {
-    return Array.from(document.querySelectorAll('.section'));
+    return Array.prototype.slice.call(document.querySelectorAll('.section'));
 }
 
 function updateProgressBar() {
@@ -23,7 +22,10 @@ function updateProgressBar() {
 
     if (!progressBar || !progressText || sections.length < 2) return;
 
-    var percent = Math.round(((currentSectionIndex + 1) / sections.length) * 100);
+    var percent = Math.round((currentSectionIndex / (sections.length - 1)) * 100);
+    if (percent < 0) percent = 0;
+    if (percent > 100) percent = 100;
+
     progressBar.style.width = percent + '%';
     progressText.textContent = percent + '%';
 }
@@ -35,9 +37,9 @@ function showSection(index) {
     if (index < 0) index = 0;
     if (index >= sections.length) index = sections.length - 1;
 
-    sections.forEach(function (sec, i) {
-        sec.classList.toggle('active', i === index);
-    });
+    for (var i = 0; i < sections.length; i++) {
+        sections[i].classList.toggle('active', i === index);
+    }
 
     currentSectionIndex = index;
     updateProgressBar();
@@ -49,14 +51,27 @@ function validateCurrentSection() {
     var active = sections[currentSectionIndex];
     if (!active) return true;
 
-    // Aktif bölümdeki required alanlar
+    // 1) Required alanlar
     var requiredFields = active.querySelectorAll('[required]');
+    var processedRadioNames = [];
+
     for (var i = 0; i < requiredFields.length; i++) {
         var el = requiredFields[i];
 
         if (el.type === 'radio') {
+            if (processedRadioNames.indexOf(el.name) !== -1) continue;
+            processedRadioNames.push(el.name);
+
             var group = active.querySelectorAll('input[name="' + el.name + '"]');
-            var checked = Array.from(group).some(function (r) { return r.checked; });
+            var checked = false;
+
+            for (var j = 0; j < group.length; j++) {
+                if (group[j].checked) {
+                    checked = true;
+                    break;
+                }
+            }
+
             if (!checked) {
                 alert('Lütfen zorunlu alanları doldurun.');
                 return false;
@@ -73,10 +88,10 @@ function validateCurrentSection() {
         }
     }
 
-    // Sadece aktif bölümdeki yıldızlar dolu mu?
+    // 2) Yıldız puanları
     var hiddenRatings = active.querySelectorAll('.rating-item input[type="hidden"][name]');
-    for (var j = 0; j < hiddenRatings.length; j++) {
-        if (!String(hiddenRatings[j].value || '').trim()) {
+    for (var k = 0; k < hiddenRatings.length; k++) {
+        if (!String(hiddenRatings[k].value || '').trim()) {
             alert('Lütfen bu bölümdeki tüm soruları puanlayın.');
             return false;
         }
@@ -141,10 +156,10 @@ function syncStarContainer(container) {
     var hiddenInput = container.parentElement.querySelector('input[type="hidden"][name="' + fieldName + '"]');
     var value = parseInt((hiddenInput && hiddenInput.value) ? hiddenInput.value : '0', 10) || 0;
 
-    var labels = container.querySelectorAll('.star');
-    for (var i = 0; i < labels.length; i++) {
-        var starValue = parseInt(labels[i].getAttribute('data-value'), 10);
-        labels[i].classList.toggle('selected', starValue <= value);
+    var stars = container.querySelectorAll('.star');
+    for (var i = 0; i < stars.length; i++) {
+        var starValue = parseInt(stars[i].getAttribute('data-value'), 10);
+        stars[i].classList.toggle('selected', starValue <= value);
     }
 }
 
@@ -154,45 +169,49 @@ function initStars() {
     for (var c = 0; c < containers.length; c++) {
         var container = containers[c];
 
-        if (container.dataset.ready === '1') {
+        if (container.getAttribute('data-ready') === '1') {
             syncStarContainer(container);
             continue;
         }
 
-        container.dataset.ready = '1';
+        container.setAttribute('data-ready', '1');
 
         var fieldName = container.getAttribute('data-name');
         var hiddenInput = container.parentElement.querySelector('input[type="hidden"][name="' + fieldName + '"]');
 
         // 5 yıldız oluştur
         var html = '';
-        for (var i = 1; i <= 5; i++) {
-            html += '<span class="star" data-value="' + i + '" role="button" tabindex="0" aria-label="' + i + ' yıldız">★</span>';
+        for (var i = 5; i >= 1; i--) {
+            html += '<button type="button" class="star" data-value="' + i + '" aria-label="' + i + ' yıldız">★</button>';
         }
         container.innerHTML = html;
 
-        var stars = Array.from(container.querySelectorAll('.star'));
+        var stars = container.querySelectorAll('.star');
 
         function setRating(value) {
             if (hiddenInput) hiddenInput.value = String(value);
             syncStarContainer(container);
         }
 
-        stars.forEach(function (star) {
-            var value = parseInt(star.getAttribute('data-value'), 10);
+        for (var s = 0; s < stars.length; s++) {
+            (function (starEl) {
+                var value = parseInt(starEl.getAttribute('data-value'), 10);
 
-            star.addEventListener('click', function () {
-                setRating(value);
-            });
-
-            star.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter' || e.key === ' ') {
+                starEl.addEventListener('click', function (e) {
                     e.preventDefault();
                     setRating(value);
-                }
-            });
-        });
+                });
 
+                starEl.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setRating(value);
+                    }
+                });
+            })(stars[s]);
+        }
+
+        if (hiddenInput) hiddenInput.value = '';
         syncStarContainer(container);
     }
 }
@@ -265,17 +284,25 @@ function validateEntireForm(form) {
     if (!form) return false;
 
     var requiredFields = form.querySelectorAll('[required]');
-    var processedRadioNames = new Set();
+    var processedRadioNames = [];
 
     for (var i = 0; i < requiredFields.length; i++) {
         var el = requiredFields[i];
 
         if (el.type === 'radio') {
-            if (processedRadioNames.has(el.name)) continue;
-            processedRadioNames.add(el.name);
+            if (processedRadioNames.indexOf(el.name) !== -1) continue;
+            processedRadioNames.push(el.name);
 
             var group = form.querySelectorAll('input[name="' + el.name + '"]');
-            var checked = Array.from(group).some(function (r) { return r.checked; });
+            var checked = false;
+
+            for (var j = 0; j < group.length; j++) {
+                if (group[j].checked) {
+                    checked = true;
+                    break;
+                }
+            }
+
             if (!checked) {
                 alert('Lütfen zorunlu alanları doldurun.');
                 return false;
@@ -294,8 +321,8 @@ function validateEntireForm(form) {
 
     // Tüm yıldız alanları dolu mu?
     var hiddenRatings = form.querySelectorAll('.rating-item input[type="hidden"][name]');
-    for (var j = 0; j < hiddenRatings.length; j++) {
-        if (!String(hiddenRatings[j].value || '').trim()) {
+    for (var k = 0; k < hiddenRatings.length; k++) {
+        if (!String(hiddenRatings[k].value || '').trim()) {
             alert('Lütfen tüm departman sorularını puanlayın.');
             return false;
         }
@@ -306,12 +333,6 @@ function validateEntireForm(form) {
 
 async function submitSurvey(form) {
     var data = collectFormData(form);
-
-    // KVKK zorunlu olsun istiyorsanız açın:
-    // if (!data.kvkkOnay) {
-    //     alert('KVKK onayı gereklidir.');
-    //     return;
-    // }
 
     try {
         var url = GOOGLE_SCRIPT_URL + '?data=' + encodeURIComponent(JSON.stringify(data));
@@ -368,11 +389,12 @@ if (typeof window.changeLanguage !== 'function') {
 
 if (typeof window.setLanguage !== 'function') {
     window.setLanguage = function () {
-        console.warn('setLanguage() translations.js içinde tanımlı değil.');
         var surveyForm = document.getElementById('surveyForm');
         var languageSelector = document.getElementById('languageSelector');
         if (surveyForm) surveyForm.style.display = 'block';
         if (languageSelector) languageSelector.style.display = 'none';
+        initStars();
+        showSection(0);
     };
 }
 
