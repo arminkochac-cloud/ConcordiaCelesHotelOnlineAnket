@@ -312,6 +312,10 @@ textarea {
     line-height: 1;
 }
 
+.stars input[type="radio"] {
+    display: none;
+}
+
 .stars .star {
     display: inline-flex;
     align-items: center;
@@ -327,35 +331,17 @@ textarea {
     background: transparent;
     border: 0;
     padding: 0 2px;
+    appearance: none;
+    -webkit-appearance: none;
 }
 
 .stars .star:hover {
     transform: translateY(-1px);
 }
 
-.stars .star input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-    width: 1px;
-    height: 1px;
-}
-
-.stars .star span {
-    pointer-events: none;
-    display: inline-block;
-    color: #d9d9d9;
-    transition: color 0.15s ease;
-}
-
-.stars .star.selected span {
+.stars .star.selected {
     color: #f5b301 !important;
 }
-
-.stars .star:focus-within span {
-    color: #f5b301;
-}
-
 /* KVKK MODAL */
 .kvkk-modal {
     position: fixed;
