@@ -175,41 +175,49 @@ function initStars() {
         container.setAttribute('data-ready', '1');
 
         var fieldName = container.getAttribute('data-name');
-        var hiddenInput = container.parentElement.querySelector('input[type="hidden"][name="' + fieldName + '"]');
+        var hiddenInput = container.parentElement.querySelector(
+            'input[type="hidden"][name="' + fieldName + '"]'
+        );
 
-        // 5 yıldız oluştur
-        var html = '';
+        // Önce container'ı temizle
+        container.innerHTML = '';
+
+        // 5 yıldız oluştur (DOM ile, string HTML yok)
         for (var i = 5; i >= 1; i--) {
-            html += '<button type="button" class="star" data-value="' + i + '" aria-label="' + i + ' yıldız">★</button>';
-        }
-        container.innerHTML = html;
+            (function (value) {
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'star';
+                btn.setAttribute('data-value', String(value));
+                btn.setAttribute('aria-label', value + ' yıldız');
+                btn.textContent = '★';
 
-        var stars = container.querySelectorAll('.star');
-
-        function setRating(value) {
-            if (hiddenInput) hiddenInput.value = String(value);
-            syncStarContainer(container);
-        }
-
-        for (var s = 0; s < stars.length; s++) {
-            (function (starEl) {
-                var value = parseInt(starEl.getAttribute('data-value'), 10);
-
-                starEl.addEventListener('click', function (e) {
+                btn.addEventListener('click', function (e) {
                     e.preventDefault();
-                    setRating(value);
+
+                    if (hiddenInput) {
+                        hiddenInput.value = String(value);
+                    }
+
+                    syncStarContainer(container);
                 });
 
-                starEl.addEventListener('keydown', function (e) {
+                btn.addEventListener('keydown', function (e) {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
-                        setRating(value);
+                        btn.click();
                     }
                 });
-            })(stars[s]);
+
+                container.appendChild(btn);
+            })(i);
         }
 
-        if (hiddenInput) hiddenInput.value = '';
+        // Eğer önceden değer varsa işaretle
+        if (hiddenInput) {
+            hiddenInput.value = hiddenInput.value || '';
+        }
+
         syncStarContainer(container);
     }
 }
