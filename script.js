@@ -39,7 +39,7 @@ function validateStep(step) {
     return true;
 }
 
-// 🔑 YILDIZ SİSTEMİ (EKSİKSE OTOMATİK OLUŞTURUR)
+// 🔑 YILDIZ SİSTEMİ (KESİN ÇALIŞAN VERSİYON)
 function initStars() {
     console.log('⭐ Yıldız sistemi başlatılıyor...');
     const containers = document.querySelectorAll('.stars');
@@ -49,9 +49,18 @@ function initStars() {
         if (container.dataset.ready === '1') return;
         container.dataset.ready = '1';
         
-        // Eğer konteyner boşsa, 5 yıldız span'i oluştur
+        // 1. Radio butonları varsa ANINDA gizle
+        const radios = container.querySelectorAll('input[type="radio"]');
+        radios.forEach(r => {
+            r.style.display = 'none';
+            r.style.visibility = 'hidden';
+            r.style.position = 'absolute';
+            r.style.width = '0';
+            r.style.height = '0';
+        });
+
+        // 2. Yıldız span'lerini oluştur (eğer yoksa)
         if (!container.querySelector('.star')) {
-            console.log(`✨ Konteyner ${idx} boş, yıldızlar oluşturuluyor...`);
             for (let i = 1; i <= 5; i++) {
                 const star = document.createElement('span');
                 star.className = 'star';
@@ -66,12 +75,11 @@ function initStars() {
                        container.querySelector('input[type="hidden"]');
         
         if (!hidden) {
-            console.warn(`⚠️ Konteyner ${idx} için hidden input bulunamadı! Lütfen HTML yapısını kontrol edin.`);
+            console.warn(`⚠️ Konteyner ${idx} için hidden input bulunamadı!`);
             return;
         }
 
-        container.querySelectorAll('input[type="radio"]').forEach(r => r.style.display = 'none');
-
+        // 3. Tıklama olayını bağla
         stars.forEach((star, i) => {
             star.style.cursor = 'pointer';
             star.addEventListener('click', (e) => {
@@ -79,12 +87,17 @@ function initStars() {
                 e.stopPropagation();
                 const val = i + 1;
                 hidden.value = val;
-                stars.forEach((s, idx) => s.classList.toggle('selected', idx < val));
-                console.log(`✅ Puan: ${val}/5 | Input: ${hidden.name}`);
+                
+                // Görsel güncelleme (Soldan sağa)
+                stars.forEach((s, idx) => {
+                    s.classList.toggle('selected', idx < val);
+                });
+                
+                console.log(`✅ Puan: ${val}/5 | Input: ${hidden.name} | Value: ${hidden.value}`);
             });
         });
     });
-    console.log('✅ Yıldız sistemi aktif.');
+    console.log('✅ Yıldız sistemi aktif. Radio\'lar gizlendi.');
 }
 
 function updateProgress() {
