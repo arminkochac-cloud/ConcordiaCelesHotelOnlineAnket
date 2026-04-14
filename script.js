@@ -1,21 +1,3 @@
-Tabii. Aşağıya **tam temiz, baştan sona çalışan `script.js`** veriyorum.  
-Bu sürümde:
-
-- **HTML içinde yıldız oluşturma yok**
-- **Radio + label ile puanlama var**
-- **KVKK sadece modal**
-- **Bölüm geçişi çalışır**
-- **Form Apps Script’e gönderilir**
-- **Mavi ekran / syntax hatası olmaması için sade tutuldu**
-
-> Bu dosya, benim önce verdiğim **`<div id="app"></div>`** kullanan minimal `index.html` ile uyumludur.  
-> `index.html` içinde ayrıca `kvkkModal` ve `thankYou` alanlarının bulunduğunu varsayar.
-
----
-
-# `script.js` — tam temiz sürüm
-
-```javascript
 // ============================================================================
 // CONCORDIA CELES HOTEL - FRONTEND SCRIPT
 // CLEAN FINAL VERSION
