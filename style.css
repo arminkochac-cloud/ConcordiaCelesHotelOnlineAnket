@@ -479,3 +479,26 @@ textarea {
 .stars.error .star {
   color: #ef4444 !important;
 }
+/* ⭐ YILDIZ YÖNÜ DÜZELTMESİ (SOLDAN SAĞA) */
+.stars {
+  display: flex !important;
+  flex-direction: row !important; /* Soldan sağa sırala */
+  direction: ltr !important; /* Metin yönünü sola zorla */
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Radio'ları gizle */
+.stars input[type="radio"] { display: none !important; }
+
+/* Yıldız Stili */
+.stars .star {
+  font-size: 32px;
+  color: #cbd5e1;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s, transform 0.2s;
+}
+.stars .star:hover { transform: scale(1.1); color: #fbbf24; }
+.stars .star.selected { color: #f59e0b !important; }
