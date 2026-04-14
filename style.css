@@ -342,12 +342,11 @@ textarea {
 
 .stars .star:hover {
     transform: translateY(-1px);
-    color: #f5b301;
 }
 
 .stars .star.selected {
     color: #f5b301 !important;
-}.kvkk-content {
+}}.kvkk-content {
     background: #fff;
     max-width: 620px;
     margin: 30px auto;
