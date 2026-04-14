@@ -1,3 +1,29 @@
+/* ⚡ YILDIZ YÖNÜ KESİN SABİTLEME (NÜKLEER) */
+.stars, .stars * {
+    direction: ltr !important;
+    unicode-bidi: isolate !important;
+    text-align: left !important;
+}
+.stars {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+    width: fit-content !important;
+    margin: 10px 0 !important;
+}
+.stars .star {
+    order: unset !important; /* Flex sıralamasını sıfırla */
+    font-size: 32px;
+    color: #d9d9d9;
+    cursor: pointer;
+    user-select: none;
+    transition: 0.2s;
+}
+.stars .star:hover { transform: scale(1.1); color: #fbbf24; }
+.stars .star.selected { color: #f5b301 !important; }
 /* =========================
    RESET & VARIABLES
    ========================= */
