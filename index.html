@@ -9,7 +9,7 @@
 <body>
   <div class="container">
     <header class="app-header">
-      <img src="logo.png" alt="Logo" class="logo">
+      <img src="logo.png" alt="Concordia Celes Hotel Logo">
       <h1>Concordia Celes Hotel</h1>
       <p>Misafir Memnuniyet Anketi</p>
     </header>
@@ -20,65 +20,59 @@
     </div>
 
     <form id="surveyForm" novalidate>
-      <!-- ADIM 1: BİLGİLER -->
+      <!-- ADIM 1 -->
       <div class="step active" data-step="1">
         <h2>👤 Genel Bilgiler</h2>
-        <div class="field"><label>Ad Soyad *</label><input type="text" name="fullName" required></div>
-        <div class="field"><label>Oda No *</label><input type="text" name="roomNumber" required></div>
+        <div class="field"><label>Ad Soyad *</label><input type="text" name="fullName" required placeholder="Adınız Soyadınız"></div>
+        <div class="field"><label>Oda Numarası *</label><input type="text" name="roomNumber" required placeholder="Örn: 305"></div>
         <div class="field"><label>Giriş Tarihi *</label><input type="date" name="checkIn" required></div>
         <div class="field"><label>Çıkış Tarihi *</label><input type="date" name="checkOut" required></div>
         <div class="field kvkk">
-          <label><input type="checkbox" name="kvkk" required> <a href="#" onclick="openKvkk(); return false;">KVKK metnini</a> okudum, onay veriyorum.</label>
+          <label><input type="checkbox" name="kvkk" required> <a href="#" onclick="openKvkk(); return false;">KVKK Aydınlatma Metni</a>'ni okudum, onay veriyorum.</label>
         </div>
         <div class="nav"><div></div><button type="button" class="btn next" onclick="nextStep()">İleri →</button></div>
       </div>
 
-      <!-- ADIM 2: PUANLAMA -->
+      <!-- ADIM 2 -->
       <div class="step" data-step="2">
         <h2>⭐ Değerlendirme</h2>
-        
         <div class="rating">
-          <label>Resepsiyon</label>
+          <label>Resepsiyon Hizmeti</label>
           <div class="stars" data-field="reception"></div>
           <input type="hidden" name="reception" required>
         </div>
-
         <div class="rating">
-          <label>Check-In</label>
+          <label>Check-In İşlemleri</label>
           <div class="stars" data-field="checkin"></div>
           <input type="hidden" name="checkin" required>
         </div>
-
         <div class="rating">
           <label>Tesis Bilgilendirme</label>
           <div class="stars" data-field="info"></div>
           <input type="hidden" name="info" required>
         </div>
-
         <div class="rating">
-          <label>Personel İlgisi</label>
+          <label>Personel İlgisi & Nezaket</label>
           <div class="stars" data-field="staff"></div>
           <input type="hidden" name="staff" required>
         </div>
-
         <div class="nav">
           <button type="button" class="btn prev" onclick="prevStep()">← Geri</button>
           <button type="button" class="btn next" onclick="nextStep()">İleri →</button>
         </div>
       </div>
 
-      <!-- ADIM 3: GÖNDER -->
+      <!-- ADIM 3 -->
       <div class="step" data-step="3">
         <h2>💬 Yorum & Gönder</h2>
-        <div class="field"><label>Öneri/Şikayet (İsteğe bağlı)</label><textarea name="comment" rows="3"></textarea></div>
+        <div class="field"><label>Öneri veya Şikayetiniz (İsteğe bağlı)</label><textarea name="comment" rows="4" placeholder="Düşüncelerinizi paylaşın..."></textarea></div>
         <div class="nav">
           <button type="button" class="btn prev" onclick="prevStep()">← Geri</button>
-          <button type="button" class="btn submit" onclick="submitForm()">✅ Gönder</button>
+          <button type="button" class="btn submit" onclick="submitForm()">✅ Anketi Gönder</button>
         </div>
       </div>
     </form>
 
-    <!-- TEŞEKKÜR -->
     <div id="thankScreen" class="step thank-screen">
       <div class="thank-icon">🎉</div>
       <h2>Teşekkür Ederiz!</h2>
@@ -86,11 +80,10 @@
       <button class="btn" onclick="location.reload()">Yeni Anket</button>
     </div>
 
-    <!-- KVKK MODAL -->
     <div id="kvkkModal" class="modal">
       <div class="modal-box">
         <h3>KVKK Aydınlatma Metni</h3>
-        <p>Kişisel verileriniz anket ve hizmet kalitesi amaçlarıyla işlenmektedir. 2 yıl saklanır. İletişim: info@otel.com</p>
+        <p>Kişisel verileriniz anket değerlendirme ve hizmet kalitesi artırma amaçlarıyla işlenmektedir. Verileriniz 2 yıl süreyle saklanacak olup, dilediğiniz zaman silinmesini talep edebilirsiniz.</p>
         <button class="btn" onclick="closeKvkk()">Anladım, Kapat</button>
       </div>
     </div>
