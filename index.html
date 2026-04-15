@@ -10,10 +10,10 @@
   <div class="container">
     <!-- DİL SEÇİCİ -->
     <div class="lang-bar">
-      <button onclick="setLang('tr')" class="lang-btn active" data-lang="tr">🇹🇷 TR</button>
+      <button onclick="setLang('tr')" class="lang-btn active" data-lang="tr">🇹 TR</button>
       <button onclick="setLang('en')" class="lang-btn" data-lang="en">🇬🇧 EN</button>
-      <button onclick="setLang('de')" class="lang-btn" data-lang="de">🇩 DE</button>
-      <button onclick="setLang('ru')" class="lang-btn" data-lang="ru">🇷🇺 RU</button>
+      <button onclick="setLang('de')" class="lang-btn" data-lang="de">🇩🇪 DE</button>
+      <button onclick="setLang('ru')" class="lang-btn" data-lang="ru">🇷 RU</button>
       <button onclick="setLang('pl')" class="lang-btn" data-lang="pl">🇵🇱 PL</button>
       <button onclick="setLang('ro')" class="lang-btn" data-lang="ro">🇷🇴 RO</button>
     </div>
@@ -30,71 +30,152 @@
     </div>
 
     <form id="surveyForm" novalidate>
-      <!-- ADIM 1: BİLGİLER -->
+      <!-- ADIM 1: GENEL BİLGİLER -->
       <div class="step active" data-step="1">
         <h2 data-i18n="step1Title">👤 Genel Bilgiler</h2>
-        <div class="field">
-          <label data-i18n="fullName">Ad Soyad *</label>
-          <input type="text" name="fullName" required data-i18n-placeholder="fullNamePh" placeholder="Adınız Soyadınız">
-        </div>
-        <div class="field">
-          <label data-i18n="roomNo">Oda Numarası *</label>
-          <input type="text" name="roomNumber" required data-i18n-placeholder="roomNoPh" placeholder="Örn: 305">
-        </div>
-        <div class="field">
-          <label data-i18n="checkIn">Giriş Tarihi *</label>
-          <input type="date" name="checkIn" required>
-        </div>
-        <div class="field">
-          <label data-i18n="checkOut">Çıkış Tarihi *</label>
-          <input type="date" name="checkOut" required>
-        </div>
-        <div class="field kvkk">
-          <label>
-            <input type="checkbox" name="kvkk" required>
-            <span data-i18n="kvkkText">KVKK Aydınlatma Metni</span>'ni okudum, onay veriyorum.
-            <a href="#" onclick="openKvkk(); return false;" data-i18n="kvkkLink">Metni Gör</a>
-          </label>
-        </div>
+        <div class="field"><label data-i18n="fullName">Ad Soyad *</label><input type="text" name="fullName" required data-i18n-placeholder="fullNamePh" placeholder="Adınız Soyadınız"></div>
+        <div class="field"><label data-i18n="roomNo">Oda Numarası *</label><input type="text" name="roomNumber" required data-i18n-placeholder="roomNoPh" placeholder="Örn: 305"></div>
+        <div class="field"><label data-i18n="checkIn">Giriş Tarihi *</label><input type="date" name="checkIn" required></div>
+        <div class="field"><label data-i18n="checkOut">Çıkış Tarihi *</label><input type="date" name="checkOut" required></div>
+        <div class="field kvkk"><label><input type="checkbox" name="kvkk" required><span data-i18n="kvkkText">KVKK Aydınlatma Metni</span>'ni okudum, onay veriyorum. <a href="#" onclick="openKvkk(); return false;" data-i18n="kvkkLink">Metni Gör</a></label></div>
         <div class="nav"><div></div><button type="button" class="btn next" onclick="nextStep()" data-i18n="nextBtn">İleri →</button></div>
       </div>
 
-      <!-- ADIM 2: PUANLAMA -->
+      <!-- ADIM 2: DEPARTMAN DEĞERLENDİRMELERİ -->
       <div class="step" data-step="2">
-        <h2 data-i18n="step2Title">⭐ Değerlendirme</h2>
-        <div class="rating">
-          <label data-i18n="receptionLabel">Resepsiyon Hizmeti</label>
-          <div class="stars" data-field="reception"></div>
-          <input type="hidden" name="reception" required>
+        <h2 data-i18n="step2Title">⭐ Departman Değerlendirmeleri</h2>
+        
+        <div class="dept-section">
+          <h3 data-i18n="dept_frontOffice">ÖN BÜRO RESEPSİYON</h3>
+          <div class="rating-item"><label data-i18n="q_welcomeGreeting">Giriş Karşılama</label><div class="stars" data-field="welcomeGreeting"></div><input type="hidden" name="welcomeGreeting" required></div>
+          <div class="rating-item"><label data-i18n="q_checkInProcess">C/İn İşlemleri</label><div class="stars" data-field="checkInProcess"></div><input type="hidden" name="checkInProcess" required></div>
+          <div class="rating-item"><label data-i18n="q_facilityInfo">Tesis Hakkında Bilgilendirme</label><div class="stars" data-field="facilityInfo"></div><input type="hidden" name="facilityInfo" required></div>
+          <div class="rating-item"><label data-i18n="q_frontDeskCare">Personelin İlgi ve Nezaketi</label><div class="stars" data-field="frontDeskCare"></div><input type="hidden" name="frontDeskCare" required></div>
+          <div class="rating-item"><label data-i18n="q_bellboyService">Bellboy Hizmetleri</label><div class="stars" data-field="bellboyService"></div><input type="hidden" name="bellboyService" required></div>
         </div>
-        <div class="rating">
-          <label data-i18n="checkinLabel">Check-In İşlemleri</label>
-          <div class="stars" data-field="checkin"></div>
-          <input type="hidden" name="checkin" required>
+
+        <div class="dept-section">
+          <h3 data-i18n="dept_guestRelations">GUEST RELATIONS</h3>
+          <div class="rating-item"><label data-i18n="q_grWelcomeQuality">Karşılama Kalitesi</label><div class="stars" data-field="grWelcomeQuality"></div><input type="hidden" name="grWelcomeQuality" required></div>
+          <div class="rating-item"><label data-i18n="q_problemSolving">Sorunları Çözüme Kavuşturma</label><div class="stars" data-field="problemSolving"></div><input type="hidden" name="problemSolving" required></div>
+          <div class="rating-item"><label data-i18n="q_guestFollowUp">Misafir Takibi</label><div class="stars" data-field="guestFollowUp"></div><input type="hidden" name="guestFollowUp" required></div>
         </div>
-        <div class="rating">
-          <label data-i18n="infoLabel">Tesis Bilgilendirme</label>
-          <div class="stars" data-field="info"></div>
-          <input type="hidden" name="info" required>
+
+        <div class="dept-section">
+          <h3 data-i18n="dept_housekeeping">KAT HİZMETLERİ</h3>
+          <div class="rating-item"><label data-i18n="q_initialRoomCleaning">İlk Varışınızda Oda Temizliği</label><div class="stars" data-field="initialRoomCleaning"></div><input type="hidden" name="initialRoomCleaning" required></div>
+          <div class="rating-item"><label data-i18n="q_roomAppearance">Oda Fiziki Görünümü ve Konforu</label><div class="stars" data-field="roomAppearance"></div><input type="hidden" name="roomAppearance" required></div>
+          <div class="rating-item"><label data-i18n="q_dailyRoomCleaning">Konaklama Süresince Oda Temizliği</label><div class="stars" data-field="dailyRoomCleaning"></div><input type="hidden" name="dailyRoomCleaning" required></div>
+          <div class="rating-item"><label data-i18n="q_minibarService">Minibar Hizmeti</label><div class="stars" data-field="minibarService"></div><input type="hidden" name="minibarService" required></div>
+          <div class="rating-item"><label data-i18n="q_publicAreaCleaning">Genel Alan Temizliği</label><div class="stars" data-field="publicAreaCleaning"></div><input type="hidden" name="publicAreaCleaning" required></div>
+          <div class="rating-item"><label data-i18n="q_beachPoolCleaning">Sahil ve Havuz Çevre Temizliği</label><div class="stars" data-field="beachPoolCleaning"></div><input type="hidden" name="beachPoolCleaning" required></div>
+          <div class="rating-item"><label data-i18n="q_housekeepingStaffCare">Personelin İlgi ve Nezaketi</label><div class="stars" data-field="housekeepingStaffCare"></div><input type="hidden" name="housekeepingStaffCare" required></div>
         </div>
-        <div class="rating">
-          <label data-i18n="staffLabel">Personel İlgisi & Nezaket</label>
-          <div class="stars" data-field="staff"></div>
-          <input type="hidden" name="staff" required>
+
+        <div class="dept-section">
+          <h3 data-i18n="dept_foodKitchen">YİYECEK HİZMETLERİ & MUTFAK</h3>
+          <div class="rating-item"><label data -i18n="q_breakfastVariety">Kahvaltı Büfesi Çeşitliliği</label><div class="stars" data-field="breakfastVariety"></div><input type="hidden" name="breakfastVariety" required></div>
+          <div class="rating-item"><label data-i18n="q_breakfastQuality">Kahvaltı Büfesi Sunumu ve Kalitesi</label><div class="stars" data-field="breakfastQuality"></div><input type="hidden" name="breakfastQuality" required></div>
+          <div class="rating-item"><label data-i18n="q_lunchVariety">Öğle Yemeği Büfesi Çeşitliliği</label><div class="stars" data-field="lunchVariety"></div><input type="hidden" name="lunchVariety" required></div>
+          <div class="rating-item"><label data-i18n="q_lunchQuality">Öğle Yemeği Sunumu ve Kalitesi</label><div class="stars" data-field="lunchQuality"></div><input type="hidden" name="lunchQuality" required></div>
+          <div class="rating-item"><label data-i18n="q_dinnerVariety">Akşam Yemeği Büfesi Çeşitliliği</label><div class="stars" data-field="dinnerVariety"></div><input type="hidden" name="dinnerVariety" required></div>
+          <div class="rating-item"><label data-i18n="q_dinnerQuality">Akşam Yemeği Sunumu ve Kalitesi</label><div class="stars" data-field="dinnerQuality"></div><input type="hidden" name="dinnerQuality" required></div>
+          <div class="rating-item"><label data-i18n="q_alacarteQuality">Alacart Restaurant Yemeği Sunumu ve Kalitesi</label><div class="stars" data-field="alacarteQuality"></div><input type="hidden" name="alacarteQuality" required></div>
+          <div class="rating-item"><label data-i18n="q_kitchenHygiene">Mutfağın Hijyen ve Temizliği</label><div class="stars" data-field="kitchenHygiene"></div><input type="hidden" name="kitchenHygiene" required></div>
+          <div class="rating-item"><label data-i18n="q_foodStaffCare">Personelin İlgi ve Nezaketi</label><div class="stars" data-field="foodStaffCare"></div><input type="hidden" name="foodStaffCare" required></div>
         </div>
+
+        <div class="dept-section">
+          <h3 data-i18n="dept_bars">SERVİS ve BARLAR</h3>
+          <div class="rating-item"><label data-i18n="q_poolBarQuality">Pool Bar Servis Kalitesi</label><div class="stars" data-field="poolBarQuality"></div><input type="hidden" name="poolBarQuality" required></div>
+          <div class="rating-item"><label data-i18n="q_lobbyBarQuality">Lobby Bar Servis Kalitesi</label><div class="stars" data-field="lobbyBarQuality"></div><input type="hidden" name="lobbyBarQuality" required></div>
+          <div class="rating-item"><label data-i18n="q_snackBarQuality">Snack Bar Servis Kalitesi</label><div class="stars" data-field="snackBarQuality"></div><input type="hidden" name="snackBarQuality" required></div>
+          <div class="rating-item"><label data-i18n="q_drinkQuality">İçki Kalitesi ve Sunumu</label><div class="stars" data-field="drinkQuality"></div><input type="hidden" name="drinkQuality" required></div>
+          <div class="rating-item"><label data-i18n="q_barHygiene">Barların Hijyen ve Temizliği</label><div class="stars" data-field="barHygiene"></div><input type="hidden" name="barHygiene" required></div>
+          <div class="rating-item"><label data-i18n="q_barStaffCare">Personelin İlgi ve Nezaketi</label><div class="stars" data-field="barStaffCare"></div><input type="hidden" name="barStaffCare" required></div>
+        </div>
+
+        <div class="dept-section">
+          <h3 data-i18n="dept_restaurant">RESTAURANT HİZMETLERİ</h3>
+          <div class="rating-item"><label data-i18n="q_restaurantLayout">Restaurant Düzeni ve Kalitesi</label><div class="stars" data-field="restaurantLayout"></div><input type="hidden" name="restaurantLayout" required></div>
+          <div class="rating-item"><label data-i18n="q_restaurantCapacity">Restaurant Yer Yeterliliği</label><div class="stars" data-field="restaurantCapacity"></div><input type="hidden" name="restaurantCapacity" required></div>
+          <div class="rating-item"><label data-i18n="q_restaurantHygiene">Restaurant Hijyen ve Temizliği</label><div class="stars" data-field="restaurantHygiene"></div><input type="hidden" name="restaurantHygiene" required></div>
+          <div class="rating-item"><label data-i18n="q_snackbarRestaurant">Snackbar Restaurant Hizmeti</label><div class="stars" data-field="snackbarRestaurant"></div><input type="hidden" name="snackbarRestaurant" required></div>
+          <div class="rating-item"><label data-i18n="q_alacarteRestaurant">Alacart Restaurant Hizmeti ve Personel İlgisi</label><div class="stars" data-field="alacarteRestaurant"></div><input type="hidden" name="alacarteRestaurant" required></div>
+          <div class="rating-item"><label data-i18n="q_restaurantStaffCare">Personelin İlgi ve Nezaketi</label><div class="stars" data-field="restaurantStaffCare"></div><input type="hidden" name="restaurantStaffCare" required></div>
+        </div>
+
+        <div class="dept-section">
+          <h3 data-i18n="dept_technical">TEKNİK SERVİS</h3>
+          <div class="rating-item"><label data-i18n="q_roomTechnicalSystems">Oda Teknik Sistemleri</label><div class="stars" data-field="roomTechnicalSystems"></div><input type="hidden" name="roomTechnicalSystems" required></div>
+          <div class="rating-item"><label data-i18n="q_maintenanceResponse">Arıza Bildirimi ve Giderme</label><div class="stars" data-field="maintenanceResponse"></div><input type="hidden" name="maintenanceResponse" required></div>
+          <div class="rating-item"><label data-i18n="q_environmentLighting">Çevre Aydınlatma ve Düzeni</label><div class="stars" data-field="environmentLighting"></div><input type="hidden" name="environmentLighting" required></div>
+          <div class="rating-item"><label data-i18n="q_poolWaterCleaning">Havuz Suyu Temizliği</label><div class="stars" data-field="poolWaterCleaning"></div><input type="hidden" name="poolWaterCleaning" required></div>
+          <div class="rating-item"><label data-i18n="q_technicalStaffCare">Personelin İlgi ve Nezaketi</label><div class="stars" data-field="technicalStaffCare"></div><input type="hidden" name="technicalStaffCare" required></div>
+        </div>
+
+        <div class="dept-section">
+          <h3 data-i18n="dept_entertainment">EĞLENCE HİZMETLERİ</h3>
+          <div class="rating-item"><label data-i18n="q_daytimeActivities">Animasyon Ekibi ile Gündüz Aktiviteleri</label><div class="stars" data-field="daytimeActivities"></div><input type="hidden" name="daytimeActivities" required></div>
+          <div class="rating-item"><label data-i18n="q_sportsAreas">Aktivite ve Spor Alanları ve Ekipmanları</label><div class="stars" data-field="sportsAreas"></div><input type="hidden" name="sportsAreas" required></div>
+          <div class="rating-item"><label data-i18n="q_eveningShows">Akşam Aktiviteleri ve Showlar</label><div class="stars" data-field="eveningShows"></div><input type="hidden" name="eveningShows" required></div>
+          <div class="rating-item"><label data-i18n="q_miniclubActivities">Miniclub Aktiviteleri</label><div class="stars" data-field="miniclubActivities"></div><input type="hidden" name ="miniclubActivities" required></div>
+          <div class="rating-item"><label data-i18n="q_entertainmentStaffCare">Personelin İlgi ve Nezaketi</label><div class="stars" data-field="entertainmentStaffCare"></div><input type="hidden" name="entertainmentStaffCare" required></div>
+        </div>
+
+        <div class="dept-section">
+          <h3 data-i18n="dept_other">DİĞER HİZMETLER</h3>
+          <div class="rating-item"><label data-i18n="q_landscaping">Genel Düzenleme / Peyzaj</label><div class="stars" data-field="landscaping"></div><input type="hidden" name="landscaping" required></div>
+          <div class="rating-item"><label data-i18n="q_spaServices">Sauna-Hamam Hizmetleri</label><div class="stars" data-field="spaServices"></div><input type="hidden" name="spaServices" required></div>
+          <div class="rating-item"><label data-i18n="q_shopBehavior">Hotel Genel Esnaf Davranışları</label><div class="stars" data-field="shopBehavior"></div><input type="hidden" name="shopBehavior" required></div>
+          <div class="rating-item"><label data-i18n="q_priceQuality">Fiyat Kalitesi ve İlişkisi</label><div class="stars" data-field="priceQuality"></div><input type="hidden" name="priceQuality" required></div>
+        </div>
+
         <div class="nav">
           <button type="button" class="btn prev" onclick="prevStep()" data-i18n="prevBtn">← Geri</button>
           <button type="button" class="btn next" onclick="nextStep()" data-i18n="nextBtn">İleri →</button>
         </div>
       </div>
 
-      <!-- ADIM 3: GÖNDER -->
+      <!-- ADIM 3: ÖNERİLER & GÖNDER -->
       <div class="step" data-step="3">
-        <h2 data-i18n="step3Title">💬 Yorum & Gönder</h2>
+        <h2 data-i18n="step3Title">💬 Önerileriniz & Sonuç</h2>
+        
         <div class="field">
-          <label data-i18n="commentLabel">Öneri veya Şikayetiniz (İsteğe bağlı)</label>
-          <textarea name="comment" rows="4" data-i18n-placeholder="commentPh" placeholder="Düşüncelerinizi paylaşın..."></textarea>
+          <label data-i18n="q_previousStay">Otelimizde Daha Önce Bulundunuz Mu? *</label>
+          <div class="radio-group">
+            <label><input type="radio" name="previousStay" value="Evet" required> <span data-i18n="yes">Evet</span></label>
+            <label><input type="radio" name="previousStay" value="Hayır"> <span data-i18n="no">Hayır</span></label>
+          </div>
         </div>
+
+        <div class="field">
+          <label data-i18n="q_praisedStaff">Hizmetinden Dolayı Övgüye Bulunduğunuz Personelin İsmi</label>
+          <input type="text" name="praisedStaff" data-i18n-placeholder="praisedStaffPh" placeholder="Personel ismi...">
+        </div>
+
+        <div class="field">
+          <label data-i18n="q_comments">Genel Düşünce ve Yorumlarınız (0-500 karakter)</label>
+          <textarea name="generalComments" id="commentArea" rows="4" maxlength="500" data-i18n-placeholder="commentsPh" placeholder="Yorumunuzu yazın..."></textarea>
+          <small class="char-count"><span id="charCount">0</span>/500</small>
+        </div>
+
+        <div class="field">
+          <label data-i18n="q_willReturn">Tekrar Gelir Misiniz? *</label>
+          <div class="radio-group">
+            <label><input type="radio" name="willReturn" value="Evet" required> <span data-i18n="yes">Evet</span></label>
+            <label><input type="radio" name="willReturn" value="Hayır"> <span data-i18n="no">Hayır</span></label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label data-i18n="q_recommend">Bizi Çevrenize Tavsiye Eder Misiniz? *</label>
+          <div class="radio-group">
+            <label><input type="radio" name="wouldRecommend" value="Evet" required> <span data-i18n="yes">Evet</span></label>
+            <label><input type="radio" name="wouldRecommend" value="Hayır"> <span data-i18n="no">Hayır</span></label>
+          </div>
+        </div>
+
         <div class="nav">
           <button type="button" class="btn prev" onclick="prevStep()" data-i18n="prevBtn">← Geri</button>
           <button type="button" class="btn submit" onclick="submitForm()" data-i18n="submitBtn">✅ Anketi Gönder</button>
@@ -102,6 +183,7 @@
       </div>
     </form>
 
+    <!-- TEŞEKKÜR EKRANI -->
     <div id="thankScreen" class="step thank-screen">
       <div class="thank-icon">🎉</div>
       <h2 data-i18n="thankTitle">Teşekkür Ederiz!</h2>
@@ -109,6 +191,7 @@
       <button class="btn" onclick="location.reload()" data-i18n="newSurvey">Yeni Anket</button>
     </div>
 
+    <!-- KVKK MODAL -->
     <div id="kvkkModal" class="modal">
       <div class="modal-box">
         <h3 data-i18n="kvkkModalTitle">KVKK Aydınlatma Metni</h3>
