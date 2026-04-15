@@ -3,15 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Concordia Celes Hotel - Misafir Anketi</title>
+  <title data-i18n="pageTitle">Misafir Anketi</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
+    <!-- DİL SEÇİCİ -->
+    <div class="lang-bar">
+      <button onclick="setLang('tr')" class="lang-btn active" data-lang="tr">🇹🇷 TR</button>
+      <button onclick="setLang('en')" class="lang-btn" data-lang="en">🇬🇧 EN</button>
+      <button onclick="setLang('de')" class="lang-btn" data-lang="de">🇩 DE</button>
+      <button onclick="setLang('ru')" class="lang-btn" data-lang="ru">🇷🇺 RU</button>
+      <button onclick="setLang('pl')" class="lang-btn" data-lang="pl">🇵🇱 PL</button>
+      <button onclick="setLang('ro')" class="lang-btn" data-lang="ro">🇷🇴 RO</button>
+    </div>
+
     <header class="app-header">
-      <img src="logo.png" alt="Concordia Celes Hotel Logo">
-      <h1>Concordia Celes Hotel</h1>
-      <p>Misafir Memnuniyet Anketi</p>
+      <img src="logo.png" alt="Logo">
+      <h1 data-i18n="hotelName">Concordia Celes Hotel</h1>
+      <p data-i18n="surveyTitle">Misafir Memnuniyet Anketi</p>
     </header>
 
     <div class="progress-wrapper">
@@ -20,71 +30,90 @@
     </div>
 
     <form id="surveyForm" novalidate>
-      <!-- ADIM 1 -->
+      <!-- ADIM 1: BİLGİLER -->
       <div class="step active" data-step="1">
-        <h2>👤 Genel Bilgiler</h2>
-        <div class="field"><label>Ad Soyad *</label><input type="text" name="fullName" required placeholder="Adınız Soyadınız"></div>
-        <div class="field"><label>Oda Numarası *</label><input type="text" name="roomNumber" required placeholder="Örn: 305"></div>
-        <div class="field"><label>Giriş Tarihi *</label><input type="date" name="checkIn" required></div>
-        <div class="field"><label>Çıkış Tarihi *</label><input type="date" name="checkOut" required></div>
-        <div class="field kvkk">
-          <label><input type="checkbox" name="kvkk" required> <a href="#" onclick="openKvkk(); return false;">KVKK Aydınlatma Metni</a>'ni okudum, onay veriyorum.</label>
+        <h2 data-i18n="step1Title">👤 Genel Bilgiler</h2>
+        <div class="field">
+          <label data-i18n="fullName">Ad Soyad *</label>
+          <input type="text" name="fullName" required data-i18n-placeholder="fullNamePh" placeholder="Adınız Soyadınız">
         </div>
-        <div class="nav"><div></div><button type="button" class="btn next" onclick="nextStep()">İleri →</button></div>
+        <div class="field">
+          <label data-i18n="roomNo">Oda Numarası *</label>
+          <input type="text" name="roomNumber" required data-i18n-placeholder="roomNoPh" placeholder="Örn: 305">
+        </div>
+        <div class="field">
+          <label data-i18n="checkIn">Giriş Tarihi *</label>
+          <input type="date" name="checkIn" required>
+        </div>
+        <div class="field">
+          <label data-i18n="checkOut">Çıkış Tarihi *</label>
+          <input type="date" name="checkOut" required>
+        </div>
+        <div class="field kvkk">
+          <label>
+            <input type="checkbox" name="kvkk" required>
+            <span data-i18n="kvkkText">KVKK Aydınlatma Metni</span>'ni okudum, onay veriyorum.
+            <a href="#" onclick="openKvkk(); return false;" data-i18n="kvkkLink">Metni Gör</a>
+          </label>
+        </div>
+        <div class="nav"><div></div><button type="button" class="btn next" onclick="nextStep()" data-i18n="nextBtn">İleri →</button></div>
       </div>
 
-      <!-- ADIM 2 -->
+      <!-- ADIM 2: PUANLAMA -->
       <div class="step" data-step="2">
-        <h2>⭐ Değerlendirme</h2>
+        <h2 data-i18n="step2Title">⭐ Değerlendirme</h2>
         <div class="rating">
-          <label>Resepsiyon Hizmeti</label>
+          <label data-i18n="receptionLabel">Resepsiyon Hizmeti</label>
           <div class="stars" data-field="reception"></div>
           <input type="hidden" name="reception" required>
         </div>
         <div class="rating">
-          <label>Check-In İşlemleri</label>
+          <label data-i18n="checkinLabel">Check-In İşlemleri</label>
           <div class="stars" data-field="checkin"></div>
           <input type="hidden" name="checkin" required>
         </div>
         <div class="rating">
-          <label>Tesis Bilgilendirme</label>
+          <label data-i18n="infoLabel">Tesis Bilgilendirme</label>
           <div class="stars" data-field="info"></div>
           <input type="hidden" name="info" required>
         </div>
         <div class="rating">
-          <label>Personel İlgisi & Nezaket</label>
+          <label data-i18n="staffLabel">Personel İlgisi & Nezaket</label>
           <div class="stars" data-field="staff"></div>
           <input type="hidden" name="staff" required>
         </div>
         <div class="nav">
-          <button type="button" class="btn prev" onclick="prevStep()">← Geri</button>
-          <button type="button" class="btn next" onclick="nextStep()">İleri →</button>
+          <button type="button" class="btn prev" onclick="prevStep()" data-i18n="prevBtn">← Geri</button>
+          <button type="button" class="btn next" onclick="nextStep()" data-i18n="nextBtn">İleri →</button>
         </div>
       </div>
 
-      <!-- ADIM 3 -->
+      <!-- ADIM 3: GÖNDER -->
       <div class="step" data-step="3">
-        <h2>💬 Yorum & Gönder</h2>
-        <div class="field"><label>Öneri veya Şikayetiniz (İsteğe bağlı)</label><textarea name="comment" rows="4" placeholder="Düşüncelerinizi paylaşın..."></textarea></div>
+        <h2 data-i18n="step3Title">💬 Yorum & Gönder</h2>
+        <div class="field">
+          <label data-i18n="commentLabel">Öneri veya Şikayetiniz (İsteğe bağlı)</label>
+          <textarea name="comment" rows="4" data-i18n-placeholder="commentPh" placeholder="Düşüncelerinizi paylaşın..."></textarea>
+        </div>
         <div class="nav">
-          <button type="button" class="btn prev" onclick="prevStep()">← Geri</button>
-          <button type="button" class="btn submit" onclick="submitForm()">✅ Anketi Gönder</button>
+          <button type="button" class="btn prev" onclick="prevStep()" data-i18n="prevBtn">← Geri</button>
+          <button type="button" class="btn submit" onclick="submitForm()" data-i18n="submitBtn">✅ Anketi Gönder</button>
         </div>
       </div>
     </form>
 
     <div id="thankScreen" class="step thank-screen">
       <div class="thank-icon">🎉</div>
-      <h2>Teşekkür Ederiz!</h2>
-      <p>Değerli görüşleriniz başarıyla kaydedildi.</p>
-      <button class="btn" onclick="location.reload()">Yeni Anket</button>
+      <h2 data-i18n="thankTitle">Teşekkür Ederiz!</h2>
+      <p data-i18n="thankMsg">Değerli görüşleriniz başarıyla kaydedildi.</p>
+      <button class="btn" onclick="location.reload()" data-i18n="newSurvey">Yeni Anket</button>
     </div>
 
     <div id="kvkkModal" class="modal">
       <div class="modal-box">
-        <h3>KVKK Aydınlatma Metni</h3>
-        <p>Kişisel verileriniz anket değerlendirme ve hizmet kalitesi artırma amaçlarıyla işlenmektedir. Verileriniz 2 yıl süreyle saklanacak olup, dilediğiniz zaman silinmesini talep edebilirsiniz.</p>
-        <button class="btn" onclick="closeKvkk()">Anladım, Kapat</button>
+        <h3 data-i18n="kvkkModalTitle">KVKK Aydınlatma Metni</h3>
+        <p data-i18n="kvkkModalText">Kişisel verileriniz anket değerlendirme ve hizmet kalitesi artırma amaçlarıyla işlenmektedir. Verileriniz 2 yıl süreyle saklanacak olup, dilediğiniz zaman silinmesini talep edebilirsiniz.</p>
+        <button class="btn" onclick="closeKvkk()" data-i18n="closeBtn">Anladım, Kapat</button>
       </div>
     </div>
   </div>
