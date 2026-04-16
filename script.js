@@ -66,7 +66,7 @@ function showStep(n) {
     target.classList.add('active');
     currentStep = n;
     updateProgress();
-    window.scrollTo({ top: 0, behavior: 'smooth'
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // ✅ DÜZELTİLDİ
   }
 }
 
@@ -112,52 +112,36 @@ function initStars() {
     if (!container.querySelector('.star')) {
       for (let i = 1; i <= 5; i++) {
         const star = document.createElement('span');
-        star.className = 'star';
-        star.textContent = '★';
-        star.dataset.value = i;
+        star.className = 'star'; star.textContent = '★'; star.dataset.value = i;
         container.appendChild(star);
       }
     }
 
     const stars = Array.from(container.querySelectorAll('.star'));
-    const hidden = container.parentElement.querySelector('input[type="hidden"]') ||
-                   container.querySelector('input[type="hidden"]');
+    const hidden = container.parentElement.querySelector('input[type="hidden"]') || container.querySelector('input[type="hidden"]');
     if (!hidden) return;
 
     stars.forEach((star, index) => {
       star.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+        e.preventDefault(); e.stopPropagation();
         const val = index + 1;
         hidden.value = val;
         stars.forEach((s, i) => s.classList.toggle('active', i < val));
-        console.log(`✅ Puan: ${val}/5 | ${hidden.name}`);
       });
     });
   });
-  console.log('✅ Yıldız sistemi aktif.');
 }
 
-// 🔹 KARAKTER SAYACI
+// 🔹 KARAKTER SAYACI & İLERLEME
 function handleCharCount() {
   const textarea = document.getElementById('commentArea');
   const counter = document.getElementById('charCount');
-  if (textarea && counter) {
-    textarea.addEventListener('input', () => {
-      counter.textContent = textarea.value.length;
-    });
-  }
+  if (textarea && counter) textarea.addEventListener('input', () => counter.textContent = textarea.value.length);
 }
-
-// 🔹 İLERLEME ÇUBUĞU
 function updateProgress() {
   const fill = document.getElementById('progressFill');
   const text = document.getElementById('progressText');
-  if (fill && text) {
-    const pct = Math.round((currentStep / totalSteps) * 100);
-    fill.style.width = pct + '%';
-    text.textContent = pct + '%';
-  }
+  if (fill && text) { const pct = Math.round((currentStep / totalSteps) * 100); fill.style.width = pct + '%'; text.textContent = pct + '%'; }
 }
 
 // 🔹 FORM GÖNDERİMİ
@@ -165,42 +149,34 @@ async function submitForm() {
   if (!validateStep(currentStep)) return;
   const form = document.getElementById('surveyForm');
   if (!form) return;
-
   const data = Object.fromEntries(new FormData(form));
-  document.querySelectorAll('.stars input[type="hidden"]').forEach(h => {
-    if (h.value) data[h.name] = h.value;
-  });
-
+  document.querySelectorAll('.stars input[type="hidden"]').forEach(h => { if(h.value) data[h.name] = h.value; });
+  
   const btn = document.querySelector('.btn.submit');
   if (btn) { btn.disabled = true; btn.textContent = '...'; }
-
   try {
     await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
     document.getElementById('surveyForm').style.display = 'none';
     document.getElementById('thankScreen').classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    console.log('📤 Gönderildi.');
   } catch (err) {
-    console.error('❌ Gönderim hatası:', err);
-    alert('Bağlantı hatası. Lütfen tekrar deneyin.');
+    alert('Bağlantı hatası.');
     if (btn) { btn.disabled = false; btn.textContent = i18n[currentLang].submitBtn; }
   }
 }
 
-// 🔹 KVKK MODAL
-window.openKvkk = () => document.getElementById('kvkkModal').style.display = 'flex';window.closeKvkk = () => {
-  const modal = document.getElementById('kvkkModal');
-  if (modal) modal.style.display = 'none';
-};
+// 🔹 KVKK & GLOBAL EXPORT
+window.openKvkk = () => document.getElementById('kvkkModal').style.display = 'flex';
+window.closeKvkk = () => document.getElementById('kvkkModal').style.display = 'none';
+window.nextStep = nextStep; window.prevStep = prevStep; window.submitForm = submitForm;
+window.setLang = setLang; window.selectLang = selectLang;
 
-// 🔹 GLOBAL EXPORTS (HTML onclick için zorunlu)
-window.nextStep = nextStep;
-window.prevStep = prevStep;
-window.submitForm = submitForm;
-window.setLang = setLang;
-window.selectLang = selectLang;
-window.openKvkk = openKvkk;
-window.closeKvkk = closeKvkk;
+// 🔹 BAŞLATMA
+document.addEventListener('DOMContentLoaded', () => {
+  const savedLang = localStorage.getItem('surveyLang');
+  if (savedLang && i18n[savedLang]) startSurvey(savedLang);
+  else { const ls = document.getElementById('langScreen'); if(ls) ls.classList.remove('hidden'); }
+});
 
 // 🔹 SAYFA YÜKLENDİĞİNDE
 document.addEventListener('DOMContentLoaded', () => {
