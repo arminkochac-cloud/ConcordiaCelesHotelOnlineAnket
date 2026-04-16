@@ -15,11 +15,13 @@ const i18n = {
   ro: { pageTitle:"Chestionar oaspeți", hotelName:"Concordia Celes Hotel", surveyTitle:"Chestionar de satisfacție", step1Title:"👤 Informații generale", fullName:"Nume și prenume *", fullNamePh:"Numele dvs. complet", roomNo:"Număr cameră *", roomNoPh:"ex: 305", checkIn:"Data sosirii *", checkOut:"Data plecării *", kvkkText:"Text KVKK", kvkkLink:"Vezi textul", nextBtn:"Următorul →", prevBtn:"← Înapoi", step2Title:"⭐ Evaluare departamente", dept_frontOffice:"RECEPȚIE", q_welcomeGreeting:"Salut de bun venit", q_checkInProcess:"Proces check-in", q_facilityInfo:"Informații facilități", q_frontDeskCare:"Atenția personalului", q_bellboyService:"Servicii bagaje", dept_guestRelations:"GUEST RELATIONS", q_grWelcomeQuality:"Calitatea salutului", q_problemSolving:"Rezolvarea problemelor", q_guestFollowUp:"Urmărirea oaspeților", dept_housekeeping:"SERVICII DE CAMERĂ", q_initialRoomCleaning:"Curățenia inițială a camerei", q_roomAppearance:"Aspectul și confortul camerei", q_dailyRoomCleaning:"Curățenia zilnică", q_minibarService:"Serviciu minibar", q_publicAreaCleaning:"Curățenia zonelor comune", q_beachPoolCleaning:"Curățenia plajei și piscinei", q_housekeepingStaffCare:"Atenția personalului", dept_foodKitchen:"BUCĂTĂRIE ȘI RESTAURANT", q_breakfastVariety:"Varietatea micului dejun", q_breakfastQuality:"Prezentarea și calitatea micului dejun", q_lunchVariety:"Varietatea prânzului", q_lunchQuality:"Prezentarea și calitatea prânzului", q_dinnerVariety:"Varietatea cinei", q_dinnerQuality:"Prezentarea și calitatea cinei", q_alacarteQuality:"Calitatea à la carte", q_kitchenHygiene:"Igiena și curățenia bucătăriei", q_foodStaffCare:"Atenția personalului", dept_bars:"BARURI ȘI SERVICII", q_poolBarQuality:"Calitatea serviciului la barul piscinei", q_lobbyBarQuality:"Calitatea serviciului la lobby bar", q_snackBarQuality:"Calitatea serviciului la snack bar", q_drinkQuality:"Calitatea și prezentarea băuturilor", q_barHygiene:"Igiena și curățenia barurilor", q_barStaffCare:"Atenția personalului", dept_restaurant:"SERVICII RESTAURANT", q_restaurantLayout:"Amenajarea și calitatea restaurantului", q_restaurantCapacity:"Capacitatea restaurantului", q_restaurantHygiene:"Igiena și curățenia restaurantului", q_snackbarRestaurant:"Serviciul snack restaurant", q_alacarteRestaurant:"Serviciul à la carte și atenția personalului", q_restaurantStaffCare:"Atenția personalului", dept_technical:"SERVICIU TEHNIC", q_roomTechnicalSystems:"Sisteme tehnice cameră", q_maintenanceResponse:"Raportarea și remedierea defecțiunilor", q_environmentLighting:"Iluminarea și amenajarea mediului", q_poolWaterCleaning:"Curățarea apei piscinei", q_technicalStaffCare:"Atenția personalului", dept_entertainment:"ENTERTAINMENT", q_daytimeActivities:"Activități de zi cu echipa de animație", q_sportsAreas:"Zone sportive și echipamente", q_eveningShows:"Activități de seară și spectacole", q_miniclubActivities:"Activități miniclub", q_entertainmentStaffCare:"Atenția personalului", dept_other:"ALTE SERVICII", q_landscaping:"Amenajare generală / Peisagistică", q_spaServices:"Servicii saună-hamam", q_shopBehavior:"Comportamentul general al personalului/magazinelor", q_priceQuality:"Raportul calitate-preț", step3Title:"💬 Sugestiile dvs. și rezultat", q_previousStay:"Ați mai stat la noi înainte? *", yes:"Da", no:"Nu", q_praisedStaff:"Numele personalului de lăudat", praisedStaffPh:"Numele angajatului...", q_comments:"Gânduri și comentarii generale (0-500 caractere)", commentsPh:"Scrieți părerea dvs...", q_willReturn:"Veți reveni? *", q_recommend:"Ne-ați recomanda prietenilor? *", submitBtn:"✅ Trimite chestionarul", thankTitle:"Mulțumim!", thankMsg:"Feedback-ul tău valoros a fost înregistrat.", newSurvey:"Chestionar nou", kvkkModalTitle:"Text KVKK", kvkkModalText:"Datele dvs. cu caracter personal sunt procesate pentru evaluarea chestionarului și îmbunătățirea calității serviciilor. Datele vor fi păstrate 2 ani și pot fi șterse la cerere.", closeBtn:"Am înțeles, Închide", alertRequired:"Vă rugăm să completați câmpurile obligatorii.", alertKvkk:"Vă rugăm să acceptați consimțământul KVKK.", alertStars:"Vă rugăm să evaluați toate întrebările cu stele.", alertDate:"Data plecării trebuie să fie după data sosirii.", welcomeTitle:"Bine ați venit", selectLang:"Vă rugăm să selectați limba" }
 };
 
+// 🔹 DİL DEĞİŞTİRME
 function setLang(lang) {
   if (!i18n[lang]) return;
   currentLang = lang;
   localStorage.setItem('surveyLang', lang);
   document.documentElement.lang = lang;
+  
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     if (i18n[lang][key]) el.textContent = i18n[lang][key];
@@ -31,6 +33,7 @@ function setLang(lang) {
   document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
 }
 
+// 🔹 DİL SEÇİM & BAŞLATMA
 function selectLang(lang) {
   localStorage.setItem('surveyLang', lang);
   startSurvey(lang);
@@ -40,5 +43,66 @@ function startSurvey(lang) {
   setLang(lang);
   const langScreen = document.getElementById('langScreen');
   if (langScreen) langScreen.classList.add('hidden');
+  
   const container = document.getElementById('surveyContainer');
-  if (container) { container.style.display =
+  if (container) {
+    container.style.display = 'block';
+    container.classList.add('fade-in-up');
+  }
+  
+  initStars();
+  handleCharCount();
+  updateProgress();
+  showStep(1);
+  console.log('🚀 Anket başlatıldı. Dil:', lang.toUpperCase());
+}
+
+// 🔹 ADIM GÖSTERME
+function showStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  const target = document.querySelector(`.step[data-step="${n}"]`);
+  if (target) {
+    target.classList.add('active');
+    currentStep = n;
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function nextStep() {
+  if (!validateStep(currentStep)) return;
+  showStep(currentStep + 1);
+}
+function prevStep() { showStep(currentStep - 1); }
+
+// 🔹 VALIDASYON
+function validateStep(step) {
+  const section = document.querySelector(`.step[data-step="${step}"]`);
+  if (!section) return true;
+  const required = section.querySelectorAll('[required]');
+  
+  for (const el of required) {
+    if (el.type === 'checkbox' && !el.checked) { alert(i18n[currentLang].alertKvkk); el.focus(); return false; }
+    if (el.type === 'hidden' && !el.value) { alert(i18n[currentLang].alertStars); return false; }
+    if (el.type !== 'hidden' && !el.value.trim()) { alert(i18n[currentLang].alertRequired); el.focus(); return false; }
+  }
+  
+  if (step === 1) {
+    const checkIn = section.querySelector('[name="checkIn"]');
+    const checkOut = section.querySelector('[name="checkOut"]');
+    if (checkIn && checkOut && checkIn.value && checkOut.value && new Date(checkOut.value) <= new Date(checkIn.value)) {
+      alert(i18n[currentLang].alertDate);
+      checkOut.focus();
+      return false;
+    }
+  }
+  return true;
+}
+
+// 🔹 YILDIZ SİSTEMİ
+function initStars() {
+  document.querySelectorAll('.stars').forEach(container => {
+    if (container.dataset.ready === '1') return;
+    container.dataset.ready = '1';
+    container.style.direction = 'ltr';
+    container.style.unicodeBidi = 'isolate
