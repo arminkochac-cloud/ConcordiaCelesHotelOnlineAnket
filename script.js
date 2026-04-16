@@ -1,5 +1,6 @@
 'use strict';
 console.log('✅ script.js yüklendi.');
+
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQXQnpJIwj4vvKbSrEVJUmKWGQxJyJiKls2m-hLbMdHpD0cBSewzGGYPe3gtkhBWGR/exec';
 let currentLang = localStorage.getItem('surveyLang') || 'tr';
 let currentStep = 1;
