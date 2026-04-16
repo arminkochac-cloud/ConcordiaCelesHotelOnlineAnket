@@ -227,26 +227,25 @@
   <script src="script.js"></script>
 </body>
   <body>
-  <!-- 🔹 DİL SEÇİM EKRANI (İlk Açılışta Görünür) -->
+  <!-- 🔹 DİL SEÇİM EKRANI (Tam Ekran Overlay) -->
   <div id="langScreen" class="lang-screen">
     <div class="lang-card">
       <img src="logo.png" alt="Concordia Celes Hotel" class="lang-logo">
       <h1 data-i18n="welcomeTitle">Hoş Geldiniz</h1>
-      <p data-i18n="selectLang">Lütfen dilinizi seçin / Please select your language</p>
+      <p data-i18n="selectLang">Lütfen dilinizi seçin</p>
       <div class="lang-grid">
-        <button onclick="selectLang('tr')" class="lang-btn">🇹🇷 Türkçe</button>
+        <button onclick="selectLang('tr')" class="lang-btn">🇹 Türkçe</button>
         <button onclick="selectLang('en')" class="lang-btn">🇬🇧 English</button>
-        <button onclick="selectLang('de')" class="lang-btn">🇩 Deutsch</button>
+        <button onclick="selectLang('de')" class="lang-btn">🇩🇪 Deutsch</button>
         <button onclick="selectLang('ru')" class="lang-btn">🇷🇺 Русский</button>
-        <button onclick="selectLang('pl')" class="lang-btn">🇵 Polski</button>
+        <button onclick="selectLang('pl')" class="lang-btn">🇵🇱 Polski</button>
         <button onclick="selectLang('ro')" class="lang-btn">🇷🇴 Română</button>
       </div>
     </div>
   </div>
 
-  <!-- 🔹 ANKET CONTAINER (Dil Seçildikten Sonra Açılır) -->
-  <div id="surveyContainer" class="container" style="display:none;">
-    <!-- Mevcut header, progress, form, thank you, modal yapınız aynen buraya gelecek -->
+  <!-- 🔹 ANKET CONTAINER (Başlangıçta Gizli) -->
+  <div id="surveyContainer" class="survey-container" style="display:none;">
     <header class="app-header">
       <img src="logo.png" alt="Logo">
       <h1 data-i18n="hotelName">Concordia Celes Hotel</h1>
@@ -259,10 +258,11 @@
     </div>
 
     <form id="surveyForm" novalidate>
-      <!-- ... ADIM 1, 2, 3 ve diğer tüm içerikleriniz buraya gelecek ... -->
+      <!-- ✅ BURAYA MEVCUT ADIM 1, 2, 3 VE TÜM FORM İÇERİKLERİNİZ GELECEK -->
+      <!-- Mevcut kodunuzdaki <div class="step" data-step="1"> ... </div> bloklarını buraya yapıştırın -->
     </form>
 
-    <div id="thankScreen" class="step thank-screen">
+    <div id="thankScreen" class="step thank-screen" style="display:none;">
       <div class="thank-icon">🎉</div>
       <h2 data-i18n="thankTitle">Teşekkür Ederiz!</h2>
       <p data-i18n="thankMsg">Değerli görüşleriniz başarıyla kaydedildi.</p>
