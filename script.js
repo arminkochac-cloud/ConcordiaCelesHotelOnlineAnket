@@ -1,123 +1,79 @@
-// =====================================================
-// CONCORDIA CELES HOTEL - GÜNCELLENMİŞ SCRIPT.JS
-// =====================================================
-
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQXQnpJIwj4vvKbSrEVJUmKWGQxJyJiKls2m-hLbMdHpD0cBSewzGGYPe3gtkhBWGR/exec';
 
-let currentSectionIndex = 0;
 let currentLang = 'tr';
+let currentSectionIndex = 0;
 
-// ------------------------------------------------------------------
-// DİL SEÇİMİ
-// ------------------------------------------------------------------
+// Dil Seçimi
 function setLanguage(lang) {
     currentLang = lang;
+    document.getElementById('languageSelector').style.display = 'none';
+    document.getElementById('surveyForm').style.display = 'block';
+    document.getElementById('currentLangName').textContent = {
+        tr: 'Türkçe', en: 'English', de: 'Deutsch', 
+        ru: 'Русский', pl: 'Polski', ro: 'Română'
+    }[lang] || 'Türkçe';
     
-    const languageSelector = document.getElementById('languageSelector');
-    const surveyForm = document.getElementById('surveyForm');
-    const currentLangName = document.getElementById('currentLangName');
-
-    if (languageSelector) languageSelector.style.display = 'none';
-    if (surveyForm) surveyForm.style.display = 'block';
-    
-    if (currentLangName) {
-        const langNames = {
-            tr: 'Türkçe',
-            en: 'English',
-            de: 'Deutsch',
-            ru: 'Русский',
-            pl: 'Polski',
-            ro: 'Română'
-        };
-        currentLangName.textContent = langNames[lang] || 'Türkçe';
-    }
-
-    // Dil değiştiğinde formu sıfırla
     resetForm();
 }
 
 function changeLanguage() {
-    const languageSelector = document.getElementById('languageSelector');
-    const surveyForm = document.getElementById('surveyForm');
-    
-    if (surveyForm) surveyForm.style.display = 'none';
-    if (languageSelector) languageSelector.style.display = 'block';
+    document.getElementById('surveyForm').style.display = 'none';
+    document.getElementById('languageSelector').style.display = 'block';
 }
 
-// ------------------------------------------------------------------
-// SECTIONS & PROGRESS
-// ------------------------------------------------------------------
+// Bölüm Yönetimi
 function getSections() {
     return Array.from(document.querySelectorAll('.section'));
 }
 
 function updateProgressBar() {
-    const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText');
+    const bar = document.getElementById('progressBar');
+    const text = document.getElementById('progressText');
     const sections = getSections();
-    if (!progressBar || !progressText || sections.length === 0) return;
-
+    if (!bar || !text) return;
+    
     const percent = Math.round(((currentSectionIndex + 1) / sections.length) * 100);
-    progressBar.style.width = percent + '%';
-    progressText.textContent = percent + '%';
+    bar.style.width = percent + '%';
+    text.textContent = percent + '%';
 }
 
 function showSection(index) {
     const sections = getSections();
-    if (!sections.length) return;
-
-    index = Math.max(0, Math.min(index, sections.length - 1));
-
-    sections.forEach((sec, i) => {
-        sec.classList.toggle('active', i === index);
-    });
-
+    sections.forEach((s, i) => s.classList.toggle('active', i === index));
     currentSectionIndex = index;
     updateProgressBar();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
 }
 
 function nextSection() {
-    if (!validateCurrentSection()) return;
-    showSection(currentSectionIndex + 1);
+    if (validateCurrentSection()) showSection(currentSectionIndex + 1);
 }
 
 function prevSection() {
     showSection(currentSectionIndex - 1);
 }
 
-// ------------------------------------------------------------------
-// VALIDATION
-// ------------------------------------------------------------------
 function validateCurrentSection() {
-    const activeSection = document.querySelector('.section.active');
-    if (!activeSection) return true;
+    const active = document.querySelector('.section.active');
+    if (!active) return true;
 
-    const required = activeSection.querySelectorAll('[required]');
-    for (let el of required) {
-        if (el.type === 'radio') {
-            const checked = activeSection.querySelector(`input[name="${el.name}"]:checked`);
-            if (!checked) {
-                alert('Lütfen bu alanı doldurun.');
-                return false;
-            }
-        } else if (!el.value.trim()) {
+    const required = active.querySelectorAll('[required]');
+    for (let field of required) {
+        if ((field.type === 'radio' && !active.querySelector(`[name="${field.name}"]:checked`)) ||
+            (!field.value && field.type !== 'radio')) {
             alert('Lütfen zorunlu alanları doldurun.');
-            el.focus();
             return false;
         }
     }
     return true;
 }
 
-// ------------------------------------------------------------------
-// YILDIZ SİSTEMİ
-// ------------------------------------------------------------------
+// Yıldız Sistemi
 function initStars() {
     document.querySelectorAll('.stars').forEach(container => {
-        const name = container.dataset.name;
-        const hidden = container.parentElement.querySelector(`input[name="${name}"]`);
-
+        const name = container.getAttribute('data-name');
+        const hiddenInput = container.parentElement.querySelector(`input[name="${name}"]`);
+        
         let html = '';
         for (let i = 1; i <= 5; i++) {
             html += `<span class="star" data-value="${i}">★</span>`;
@@ -126,26 +82,19 @@ function initStars() {
 
         container.querySelectorAll('.star').forEach(star => {
             star.addEventListener('click', () => {
-                const value = star.dataset.value;
-                hidden.value = value;
+                const val = star.getAttribute('data-value');
+                hiddenInput.value = val;
                 container.querySelectorAll('.star').forEach(s => {
-                    s.style.color = parseInt(s.dataset.value) <= parseInt(value) ? '#facc15' : '#e2e8f0';
+                    s.style.color = (parseInt(s.getAttribute('data-value')) <= parseInt(val)) ? '#facc15' : '#e2e8f0';
                 });
             });
         });
     });
 }
 
-// ------------------------------------------------------------------
-// DİĞER FONKSİYONLAR
-// ------------------------------------------------------------------
-function showKvkk() {
-    document.getElementById('kvkkModal').style.display = 'flex';
-}
-
-function closeKvkk() {
-    document.getElementById('kvkkModal').style.display = 'none';
-}
+// Diğer Fonksiyonlar
+function showKvkk() { document.getElementById('kvkkModal').style.display = 'flex'; }
+function closeKvkk() { document.getElementById('kvkkModal').style.display = 'none'; }
 
 function showThankYou() {
     document.getElementById('surveyForm').style.display = 'none';
@@ -164,43 +113,27 @@ async function submitSurvey(e) {
     if (!validateCurrentSection()) return;
 
     const formData = new FormData(document.getElementById('mainForm'));
-    const data = Object.fromEntries(formData);
+    const data = Object.fromEntries(formData.entries());
     data.date = new Date().toLocaleString('tr-TR');
-    data.kvkkOnay = document.getElementById('kvkkOnay').checked;
 
     try {
-        const res = await fetch(GOOGLE_SCRIPT_URL + '?data=' + encodeURIComponent(JSON.stringify(data)), {
-            method: 'GET'
-        });
+        const res = await fetch(GOOGLE_SCRIPT_URL + '?data=' + encodeURIComponent(JSON.stringify(data)));
         const result = await res.json();
-        
-        if (result.status === 'success') {
-            showThankYou();
-        } else {
-            alert('Gönderim sırasında bir hata oluştu.');
-        }
+        if (result.status === 'success') showThankYou();
+        else alert('Gönderim hatası.');
     } catch (err) {
-        console.error(err);
-        alert('Bağlantı hatası. Lütfen tekrar deneyin.');
+        alert('Bağlantı hatası. Tekrar deneyin.');
     }
 }
 
-// ------------------------------------------------------------------
-// BAŞLATMA
-// ------------------------------------------------------------------
+// Başlat
 document.addEventListener('DOMContentLoaded', () => {
     initStars();
     showSection(0);
-
-    const form = document.getElementById('mainForm');
-    if (form) form.addEventListener('submit', submitSurvey);
-
-    // Dil seçici ilk açılış
-    document.getElementById('surveyForm').style.display = 'none';
-    document.getElementById('languageSelector').style.display = 'block';
+    document.getElementById('mainForm').addEventListener('submit', submitSurvey);
 });
 
-// Global fonksiyonları pencereye ekle
+// Global fonksiyonlar
 window.setLanguage = setLanguage;
 window.changeLanguage = changeLanguage;
 window.nextSection = nextSection;
