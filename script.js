@@ -185,7 +185,8 @@ function setLanguage(lang) {
     document.getElementById('languageSelector').style.display = 'none';
     document.getElementById('surveyForm').style.display = 'block';
     
-    document.getElementById('currentLangName').textContent = lang.toUpperCase();
+    document.getElementById('currentLangName').textContent = lang === 'tr' ? 'Türkçe' : 
+                                                             lang === 'en' ? 'English' : lang.toUpperCase();
     
     if (typeof updateTranslations === "function") {
         updateTranslations(lang);
