@@ -21,7 +21,14 @@ const translations = {
         submit: "Anketi Gönder",
         thankYouTitle: "Teşekkür Ederiz!",
         thankYouMessage: "Değerli görüşleriniz bizim için çok önemli.",
-        newSurvey: "Yeni Anket"
+        newSurvey: "Yeni Anket",
+
+        // Departman Soruları
+        welcomeGreeting: "Giriş Karşılama",
+        checkInProcess: "Check-In İşlemleri",
+        facilityInfo: "Tesis Hakkında Bilgilendirme",
+        frontDeskCare: "Personelin İlgi ve Nezaketi",
+        bellboyService: "Bellboy Hizmetleri"
     },
     en: {
         hotelName: "Concordia Celes Hotel",
@@ -45,15 +52,21 @@ const translations = {
         submit: "Submit Survey",
         thankYouTitle: "Thank You!",
         thankYouMessage: "Your feedback is very valuable to us.",
-        newSurvey: "New Survey"
+        newSurvey: "New Survey",
+
+        welcomeGreeting: "Welcome Greeting",
+        checkInProcess: "Check-in Procedures",
+        facilityInfo: "Information About the Facility",
+        frontDeskCare: "Staff Care and Courtesy",
+        bellboyService: "Bellboy Services"
     }
 };
 
 window.updateTranslations = function(lang) {
-    document.querySelectorAll('[data-translate]').forEach(element => {
-        const key = element.getAttribute('data-translate');
+    document.querySelectorAll('[data-translate]').forEach(el => {
+        const key = el.getAttribute('data-translate');
         if (translations[lang] && translations[lang][key]) {
-            element.textContent = translations[lang][key];
+            el.textContent = translations[lang][key];
         }
     });
 };
