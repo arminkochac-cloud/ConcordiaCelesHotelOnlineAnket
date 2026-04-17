@@ -8,6 +8,11 @@ function setLanguage(lang) {
     currentLang = lang;
     document.getElementById('languageSelector').style.display = 'none';
     document.getElementById('surveyForm').style.display = 'block';
+    
+    if (typeof updateTranslations === 'function') {
+        updateTranslations(lang);
+    }
+    
     document.getElementById('currentLangName').textContent = {
         tr: 'Türkçe', en: 'English', de: 'Deutsch', 
         ru: 'Русский', pl: 'Polski', ro: 'Română'
