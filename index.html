@@ -138,18 +138,30 @@
                     </button>
                 </div>
             </div>
-             <div class="kvkk-box">
-                    <label><input type="checkbox" id="kvkkOnay" required>
-                    <span data-translate="kvkkText">Kişisel verilerimin Concordia Celes Hotel tarafından misafir memnuniyeti amacıyla işlenmesine onay veriyorum.</span>
-                    <a href="#" onclick="showKvkk(); return false;" data-translate="kvkkLink">KVKK Aydınlatma Metni</a>
+              <!-- KVKK ONAY -->
+            <div class="form-group">
+                <div class="kvkk-box">
+                    <label class="kvkk-label">
+                        <input type="checkbox" name="kvkkOnay" id="kvkkOnay">
+                        <span>
+                            <span data-translate="kvkkText">
+                                Kişisel verilerimin Concordia Celes Hotel tarafından misafir memnuniyeti amacıyla işlenmesine onay veriyorum.
+                            </span>
+                            <a href="#" onclick="showKvkk(); return false;">
+                                📄 <span data-translate="kvkkLink">KVKK Aydınlatma Metni</span>
+                            </a>
+                        </span>
                     </label>
-                </div>
-
-                <div class="btn-group">
-                    <button type="button" class="btn btn-next" onclick="nextSection()">İleri →</button>
                 </div>
             </div>
 
+            <div class="btn-group">
+                <div></div>
+                <button type="button" class="btn btn-next" onclick="nextSection(1)">
+                    <span data-translate="next">İleri</span> →
+                </button>
+            </div>
+        </div>
 
             <!-- ========== BÖLÜM 2: ÖN BÜRO & RESEPSİYON ========== -->
             <div class="section" id="section2">
