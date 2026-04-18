@@ -14,7 +14,7 @@
     <div class="language-selector" id="languageSelector">
         <div class="lang-header">
     <img src="logo.png" alt="Hotel Logo" style="width:150px; margin-bottom:15px;">
-    <h2>Select Language / Dil Seçin</h2>
+    <h2 data-translate="languageHeader">Select Language / Dil Seçin</h2>
         </div>
         <div class="lang-grid">
             <button class="lang-btn" onclick="setLanguage('tr')">
@@ -68,101 +68,93 @@
 
             <!-- ========== BÖLÜM 1: GENEL BİLGİLER ========== -->
             <div class="section active" id="section1">
-                <div class="section-title">
-                    <span class="section-icon">👤</span>
-                    <h2 data-translate="generalInfo">GENEL BİLGİLER</h2>
-                </div>
+    <div class="section-title">
+        <span class="section-icon">👤</span>
+        <h2 data-translate="generalInfo">GENEL BİLGİLER</h2>
+    </div>
 
-                <div class="form-group">
-                    <label data-translate="fullName">Ad Soyad *</label>
-                    <input type="text" name="fullName" required>
-                </div>
+    <div class="form-group">
+        <label data-translate="fullName">Ad Soyad *</label>
+        <input type="text" name="fullName" required>
+    </div>
 
-                <div class="form-group">
-                    <label data-translate="gender">Cinsiyetiniz *</label>
-                    <div class="gender-buttons">
-                        <label class="gender-btn">
-                            <input type="radio" name="gender" value="Kadın" required>
-                            <span>👩 <span data-translate="female">Kadın</span></span>
-                        </label>
-                        <label class="gender-btn">
-                            <input type="radio" name="gender" value="Erkek">
-                            <span>👨 <span data-translate="male">Erkek</span></span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label data-translate="nationality">Uyruğu *</label>
-                    <select name="nationality" required>
-                        <option value="" data-translate="selectOption">Seçiniz...</option>
-                        <option value="Türkiye">🇹🇷 Türkiye</option>
-                        <option value="Germany">🇩🇪 Almanya</option>
-                        <option value="United Kingdom">🇬🇧 İngiltere</option>
-                        <option value="Russia">🇷🇺 Rusya</option>
-                        <option value="Poland">🇵🇱 Polonya</option>
-                        <option value="Romania">🇷🇴 Romanya</option>
-                        <option value="France">🇫🇷 Fransa</option>
-                        <option value="Netherlands">🇳🇱 Hollanda</option>
-                        <option value="Italy">🇮🇹 İtalya</option>
-                        <option value="USA">🇺🇸 ABD</option>
-                        <option value="Other" data-translate="other">Diğer</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label data-translate="roomNumber">Oda Numarası *</label>
-                    <input type="text" name="roomNumber" required placeholder="Örn: 305">
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label data-translate="checkIn">Giriş Tarihi *</label>
-                        <input type="date" name="checkIn" required>
-                    </div>
-                    <div class="form-group">
-                        <label data-translate="checkOut">Çıkış Tarihi *</label>
-                        <input type="date" name="checkOut" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label data-translate="email">Mail Adresi</label>
-                    <input type="email" name="email" placeholder="ornek@email.com">
-                </div>
-
-                <div class="btn-group">
-                    <div></div>
-                    <button type="button" class="btn btn-next" onclick="nextSection(1)">
-                        <span data-translate="next">İleri</span> →
-                    </button>
-                </div>
-            </div>
-              <!-- KVKK ONAY -->
-            <div class="form-group">
-                <div class="kvkk-box">
-                    <label class="kvkk-label">
-                        <input type="checkbox" name="kvkkOnay" id="kvkkOnay">
-                        <span>
-                            <span data-translate="kvkkText">
-                                Kişisel verilerimin Concordia Celes Hotel tarafından misafir memnuniyeti amacıyla işlenmesine onay veriyorum.
-                            </span>
-                            <a href="#" onclick="showKvkk(); return false;">
-                                📄 <span data-translate="kvkkLink">KVKK Aydınlatma Metni</span>
-                            </a>
-                        </span>
-                    </label>
-                </div>
-            </div>
-
-            <div class="btn-group">
-                <div></div>
-                <button type="button" class="btn btn-next" onclick="nextSection(1)">
-                    <span data-translate="next">İleri</span> →
-                </button>
-            </div>
+    <div class="form-group">
+        <label data-translate="gender">Cinsiyetiniz *</label>
+        <div class="gender-buttons">
+            <label class="gender-btn">
+                <input type="radio" name="gender" value="Kadın" required>
+                <span>👩 <span data-translate="female">Kadın</span></span>
+            </label>
+            <label class="gender-btn">
+                <input type="radio" name="gender" value="Erkek">
+                <span>👨 <span data-translate="male">Erkek</span></span>
+            </label>
         </div>
+    </div>
 
+    <div class="form-group">
+        <label data-translate="nationality">Uyruğu *</label>
+        <select name="nationality" required>
+            <option value="" data-translate="selectOption">Seçiniz...</option>
+            <option value="Türkiye">🇹🇷 Türkiye</option>
+            <option value="Germany">🇩🇪 Almanya</option>
+            <option value="United Kingdom">🇬🇧 İngiltere</option>
+            <option value="Russia">🇷🇺 Rusya</option>
+            <option value="Poland">🇵🇱 Polonya</option>
+            <option value="Romania">🇷🇴 Romanya</option>
+            <option value="France">🇫🇷 Fransa</option>
+            <option value="Netherlands">🇳🇱 Hollanda</option>
+            <option value="Italy">🇮🇹 İtalya</option>
+            <option value="USA">🇺🇸 ABD</option>
+            <option value="Other" data-translate="other">Diğer</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label data-translate="roomNumber">Oda Numarası *</label>
+        <input type="text" name="roomNumber" required placeholder="Örn: 305">
+    </div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label data-translate="checkIn">Giriş Tarihi *</label>
+            <input type="date" name="checkIn" required>
+        </div>
+        <div class="form-group">
+            <label data-translate="checkOut">Çıkış Tarihi *</label>
+            <input type="date" name="checkOut" required>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label data-translate="email">Mail Adresi</label>
+        <input type="email" name="email" placeholder="ornek@email.com">
+    </div>
+
+    <div class="form-group">
+        <div class="kvkk-box">
+            <label class="kvkk-label">
+                <input type="checkbox" name="kvkkOnay" id="kvkkOnay">
+                <span>
+                    <span data-translate="kvkkText">
+                        Kişisel verilerimin Concordia Celes Hotel tarafından misafir memnuniyeti amacıyla işlenmesine onay veriyorum.
+                    </span>
+                    <a href="#" onclick="showKvkk(); return false;">
+                        📄 <span data-translate="kvkkLink">KVKK Aydınlatma Metni</span>
+                    </a>
+                </span>
+            </label>
+        </div>
+    </div>
+
+    <div class="btn-group">
+        <div></div>
+        <button type="button" class="btn btn-next" onclick="nextSection(1)">
+            <span data-translate="next">İleri</span> →
+        </button>
+    </div>
+</div>
+             
             <!-- ========== BÖLÜM 2: ÖN BÜRO & RESEPSİYON ========== -->
             <div class="section" id="section2">
                 <div class="section-title">
