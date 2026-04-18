@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Concordia Celes Hotel - QR Poster A4</title>
+  <title>Concordia Celes Hotel - QR Poster</title>
 
   <style>
     @page {
@@ -16,224 +16,224 @@
     }
 
     html, body {
+      margin: 0;
       width: 210mm;
       height: 297mm;
-      margin: 0;
-      padding: 0;
+      background: #0a0f1f;
+      font-family: "Segoe UI", Arial, sans-serif;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
 
     body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: #0a0a1a;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-    }
-
-    .sheet {
-      width: 210mm;
-      height: 297mm;
-      background: #ffffff;
-      display: grid;
-      grid-template-rows: 1fr 1fr;
-      overflow: hidden;
-    }
-
-    .panel {
-      position: relative;
-      padding: 10mm 12mm;
-      background: linear-gradient(160deg, #1a1a3e 0%, #0d0d2b 50%, #1a1a3e 100%);
-      color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    .poster {
+      width: 210mm;
+      height: 297mm;
+      padding: 16mm;
+      background:
+        radial-gradient(circle at top, rgba(255,215,0,0.14), transparent 35%),
+        linear-gradient(160deg, #101a3a 0%, #0b1022 45%, #101a3a 100%);
+      color: #fff;
+      position: relative;
       overflow: hidden;
     }
 
-    .panel::before {
+    .poster::before {
       content: "";
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(circle at 20% 20%, rgba(255, 215, 0, 0.08) 0%, transparent 35%),
-        radial-gradient(circle at 80% 80%, rgba(255, 215, 0, 0.08) 0%, transparent 35%);
+        radial-gradient(circle at 20% 15%, rgba(255,215,0,0.08), transparent 20%),
+        radial-gradient(circle at 80% 85%, rgba(255,215,0,0.08), transparent 25%);
       pointer-events: none;
     }
 
-    .panel.top {
-      border-bottom: 1.5mm dashed rgba(255, 215, 0, 0.55);
-    }
-
-    .panel-content {
+    .card {
       position: relative;
       width: 100%;
       height: 100%;
-      border-radius: 6mm;
-      border: 0.6mm solid rgba(255, 215, 0, 0.25);
-      background: rgba(0, 0, 0, 0.14);
-      box-shadow: 0 0 22px rgba(255, 215, 0, 0.08);
-      padding: 7mm 8mm;
+      border-radius: 8mm;
+      border: 0.6mm solid rgba(255, 215, 0, 0.28);
+      background: rgba(255, 255, 255, 0.04);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      padding: 14mm 12mm;
       text-align: center;
+      backdrop-filter: blur(6px);
     }
 
-    .logo {
-      width: 24mm;
-      height: 24mm;
-      object-fit: contain;
-      background: #fff;
+    .logo-wrap {
+      width: 34mm;
+      height: 34mm;
       border-radius: 50%;
-      padding: 2mm;
-      margin-bottom: 4mm;
-      box-shadow: 0 0 18px rgba(255, 215, 0, 0.18);
-    }
-
-    .hotel-name {
-      font-size: 16pt;
-      font-weight: 800;
-      line-height: 1.1;
-      margin: 0;
-      color: #ffd700;
-      letter-spacing: 0.3px;
-    }
-
-    .subtitle {
-      margin-top: 2mm;
-      font-size: 8.5pt;
-      color: rgba(255, 255, 255, 0.92);
-      font-weight: 500;
-    }
-
-    .lang-chips {
-      width: 100%;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2mm;
-      margin: 4mm 0 3mm;
-    }
-
-    .chip {
-      border: 0.25mm solid rgba(255, 215, 0, 0.35);
-      background: rgba(255, 215, 0, 0.08);
-      color: #ffd700;
-      border-radius: 999px;
-      padding: 1.8mm 2mm;
-      font-size: 8pt;
-      font-weight: 700;
-      letter-spacing: 0.2px;
-    }
-
-    .qr-wrap {
-      position: relative;
-      margin: 2mm 0 3mm;
+      background: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 3mm;
+      border: 1.2mm solid #ffd700;
+      box-shadow: 0 0 22px rgba(255, 215, 0, 0.25);
+      margin-bottom: 5mm;
     }
 
-    .qr-box {
-      background: #fff;
-      padding: 4mm;
-      border-radius: 4mm;
-      border: 1mm solid #ffd700;
-      box-shadow: 0 0 22px rgba(255, 215, 0, 0.15);
+    .logo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
 
-    .qr-box img {
-      display: block;
-      width: 52mm;
-      height: 52mm;
-    }
-
-    .scan-text {
-      font-size: 8.4pt;
-      line-height: 1.35;
-      color: rgba(255, 255, 255, 0.92);
+    .title {
+      font-size: 22pt;
+      font-weight: 800;
       margin: 0;
+      color: #ffd700;
+      letter-spacing: 0.4px;
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      margin-top: 3mm;
+      font-size: 10.5pt;
+      color: rgba(255,255,255,0.92);
       font-weight: 500;
     }
 
-    .scan-text strong {
-      color: #ffd700;
+    .divider {
+      width: 70%;
+      height: 1px;
+      border: none;
+      margin: 7mm auto;
+      background: linear-gradient(to right, transparent, rgba(255,215,0,0.65), transparent);
     }
 
-    .website {
-      margin-top: 3mm;
+    .lang-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3mm;
+      margin-bottom: 6mm;
+    }
+
+    .lang {
+      border: 0.25mm solid rgba(255, 215, 0, 0.28);
+      background: rgba(255, 215, 0, 0.08);
+      color: #ffd700;
+      border-radius: 999px;
       font-size: 9pt;
-      color: #ffd700;
       font-weight: 700;
-      letter-spacing: 0.3px;
+      padding: 2.2mm 2mm;
+      letter-spacing: 0.2px;
     }
 
-    .small-note {
-      margin-top: 1.8mm;
-      font-size: 7.6pt;
-      color: rgba(255, 255, 255, 0.68);
-      font-weight: 400;
+    .qr-frame {
+      position: relative;
+      margin: 3mm 0 5mm;
+      padding: 6mm;
+      border-radius: 6mm;
+      background: #fff;
+      box-shadow: 0 0 28px rgba(255, 215, 0, 0.18);
+      border: 1mm solid #ffd700;
     }
 
-    .cut-label {
+    .qr-frame img {
+      display: block;
+      width: 72mm;
+      height: 72mm;
+    }
+
+    .scan {
+      margin-top: 2mm;
+      font-size: 10pt;
+      color: rgba(255,255,255,0.95);
+      line-height: 1.45;
+      font-weight: 500;
+    }
+
+    .scan strong {
+      color: #ffd700;
+    }
+
+    .footer {
+      margin-top: 7mm;
+      text-align: center;
+    }
+
+    .footer .website {
+      color: #ffd700;
+      font-size: 10.5pt;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      margin-top: 2mm;
+    }
+
+    .footer .note {
+      color: rgba(255,255,255,0.7);
+      font-size: 8.5pt;
+      margin-top: 2mm;
+    }
+
+    .cutline {
       position: absolute;
-      top: 50%;
       left: 0;
       right: 0;
+      top: 50%;
+      border-top: 1.5mm dashed rgba(255, 215, 0, 0.45);
       transform: translateY(-50%);
-      text-align: center;
-      font-size: 7pt;
-      letter-spacing: 0.35em;
-      color: rgba(255, 215, 0, 0.72);
-      background: rgba(13, 13, 43, 0.8);
-      padding: 1mm 0;
       pointer-events: none;
     }
 
-    .no-print {
+    .cutlabel {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(11, 16, 34, 0.95);
+      color: rgba(255, 215, 0, 0.85);
+      font-size: 7.5pt;
+      letter-spacing: 0.35em;
+      padding: 1.2mm 4mm;
+      border: 0.2mm solid rgba(255,215,0,0.3);
+      border-radius: 999px;
+    }
+
+    .btn-print {
       position: fixed;
-      top: 12px;
-      left: 12px;
+      right: 16px;
+      top: 16px;
       z-index: 9999;
-      background: #1a1a3e;
-      color: #fff;
       border: none;
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-size: 14px;
+      background: #ffd700;
+      color: #0b1022;
+      font-weight: 800;
+      padding: 12px 16px;
+      border-radius: 12px;
       cursor: pointer;
-      box-shadow: 0 10px 24px rgba(0,0,0,0.2);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
     }
 
-    .no-print:hover {
+    .btn-print:hover {
       opacity: 0.92;
-    }
-
-    @media screen {
-      body {
-        padding: 14px 0;
-        background: #0a0a1a;
-      }
-
-      .sheet {
-        box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
-        border-radius: 2mm;
-        overflow: hidden;
-      }
     }
 
     @media print {
       body {
         background: #fff;
       }
-
-      .no-print {
+      .btn-print {
         display: none !important;
       }
-
-      .sheet {
+      .poster {
+        padding: 0;
+      }
+      .card {
         box-shadow: none;
         border-radius: 0;
       }
@@ -242,87 +242,52 @@
 </head>
 <body>
 
-<button class="no-print" onclick="window.print()">Yazdır</button>
+<button class="btn-print" onclick="window.print()">Yazdır</button>
 
-<div class="sheet">
+<div class="poster">
+  <div class="cutline"></div>
+  <div class="cutlabel">CUT HERE / ORTADAN KESİN</div>
 
-  <!-- ÜST YARI -->
-  <section class="panel top">
-    <div class="panel-content">
-      <img src="logo.png" alt="Concordia Celes Hotel Logo" class="logo">
-
-      <h1 class="hotel-name">Concordia Celes Hotel</h1>
-      <div class="subtitle">Misafir Memnuniyet Anketi / Guest Satisfaction Survey</div>
-
-      <div class="lang-chips">
-        <div class="chip">🇹🇷 Türkçe</div>
-        <div class="chip">🇬🇧 English</div>
-        <div class="chip">🇩🇪 Deutsch</div>
-        <div class="chip">🇷🇺 Русский</div>
-        <div class="chip">🇵🇱 Polski</div>
-        <div class="chip">🇷🇴 Română</div>
-      </div>
-
-      <div class="qr-wrap">
-        <div class="qr-box">
-          <img class="qr-img" alt="QR Code">
-        </div>
-      </div>
-
-      <p class="scan-text">
-        <strong>📱 QR kodu telefonunuzla okutun</strong><br>
-        Scan the QR code with your phone
-      </p>
-
-      <div class="website">www.concordiaceles.com</div>
-      <div class="small-note">Anket erişimi internet olan tüm Wi‑Fi ağlarında çalışır.</div>
+  <div class="card">
+    <div class="logo-wrap">
+      <img src="logo.png" alt="Concordia Celes Hotel Logo">
     </div>
-  </section>
 
-  <!-- ALT YARI -->
-  <section class="panel bottom">
-    <div class="cut-label">K A L I N G I R / C U T   H E R E</div>
+    <h1 class="title">Concordia Celes Hotel</h1>
+    <div class="subtitle">Misafir Memnuniyet Anketi • Guest Satisfaction Survey</div>
 
-    <div class="panel-content">
-      <img src="logo.png" alt="Concordia Celes Hotel Logo" class="logo">
+    <div class="divider"></div>
 
-      <h1 class="hotel-name">Concordia Celes Hotel</h1>
-      <div class="subtitle">Misafir Memnuniyet Anketi / Guest Satisfaction Survey</div>
-
-      <div class="lang-chips">
-        <div class="chip">🇹🇷 Türkçe</div>
-        <div class="chip">🇬🇧 English</div>
-        <div class="chip">🇩🇪 Deutsch</div>
-        <div class="chip">🇷🇺 Русский</div>
-        <div class="chip">🇵🇱 Polski</div>
-        <div class="chip">🇷🇴 Română</div>
-      </div>
-
-      <div class="qr-wrap">
-        <div class="qr-box">
-          <img class="qr-img" alt="QR Code">
-        </div>
-      </div>
-
-      <p class="scan-text">
-        <strong>📱 QR kodu telefonunuzla okutun</strong><br>
-        Scan the QR code with your phone
-      </p>
-
-      <div class="website">www.concordiaceles.com</div>
-      <div class="small-note">Anket erişimi internet olan tüm Wi‑Fi ağlarında çalışır.</div>
+    <div class="lang-grid">
+      <div class="lang">🇹🇷 Türkçe</div>
+      <div class="lang">🇬🇧 English</div>
+      <div class="lang">🇩🇪 Deutsch</div>
+      <div class="lang">🇷🇺 Русский</div>
+      <div class="lang">🇵🇱 Polski</div>
+      <div class="lang">🇷🇴 Română</div>
     </div>
-  </section>
 
+    <div class="qr-frame">
+      <img id="qrImg" alt="QR Code">
+    </div>
+
+    <div class="scan">
+      <strong>📱 QR kodu telefonunuzla okutun</strong><br>
+      Scan the QR code with your phone
+    </div>
+
+    <div class="footer">
+      <div class="website">www.concordiaceles.com</div>
+      <div class="note">İnternet olan tüm Wi‑Fi ağlarında çalışır.</div>
+    </div>
+  </div>
 </div>
 
 <script>
   const QR_LINK = 'https://arminkochac-cloud.github.io/ConcordiaCelesHotelOnlineAnket/index.html';
-  const QR_SRC = 'https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=' + encodeURIComponent(QR_LINK);
+  const QR_SRC = 'https://api.qrserver.com/v1/create-qr-code/?size=420x420&data=' + encodeURIComponent(QR_LINK);
 
-  document.querySelectorAll('.qr-img').forEach(img => {
-    img.src = QR_SRC;
-  });
+  document.getElementById('qrImg').src = QR_SRC;
 </script>
 
 </body>
