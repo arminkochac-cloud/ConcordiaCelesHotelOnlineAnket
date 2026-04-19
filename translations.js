@@ -50,9 +50,9 @@ const translations = {
         frontDeskCare: "Personelin İlgi ve Nezaketi",
         bellboyService: "Bellboy Hizmetleri",
 
-        grWelcomeQuality: "Karşılama Kalitesi",
+        grWelcomeQuality: "Bilgilendirme yeterliliği",
         problemSolving: "Sorunları Çözüme Kavuşturma",
-        guestFollowUp: "Misafir Takibi",
+        guestFollowUp: "Personelin İlgi ve Nezaketi",
 
         initialRoomCleaning: "İlk Varışınızda Oda Temizliği",
         roomAppearance: "Oda Fiziki Görünümü ve Konforu",
