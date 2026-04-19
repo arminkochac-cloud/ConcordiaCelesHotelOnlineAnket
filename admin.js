@@ -26,9 +26,9 @@ var DEPARTMENT_GROUPS = {
     guestRelation: {
         label: 'Guest Relation',
         fields: [
-            ['grWelcomeQuality', 'Karşılama Kalitesi'],
+            ['grWelcomeQuality', 'Misafir Takibi'],
             ['problemSolving', 'Sorunları Çözüme Kavuşturma'],
-            ['guestFollowUp', 'Misafir Takibi']
+            ['guestFollowUp', 'Personelin İlgi ve Nezaketi']
         ]
     },
 
