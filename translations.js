@@ -160,7 +160,7 @@ const translations = {
         frontDeskCare: "Staff Courtesy and Attention",
         bellboyService: "Bellboy Services",
 
-        grWelcomeQuality: "Welcome Quality",
+        grWelcomeQuality: "information literacy",
         problemSolving: "Problem Solving",
         guestFollowUp: "Guest Follow-up",
 
@@ -270,7 +270,7 @@ const translations = {
         frontDeskCare: "Freundlichkeit und Aufmerksamkeit des Personals",
         bellboyService: "Bellboy-Service",
 
-        grWelcomeQuality: "Informationsbefähigung",
+        grWelcomeQuality: "Informationskompetenz",
         problemSolving: "Problemlösung",
         guestFollowUp: "Gästebetreuung",
 
