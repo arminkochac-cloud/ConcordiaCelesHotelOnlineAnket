@@ -154,7 +154,7 @@ const translations = {
         yes: "Yes",
         no: "No",
 
-        welcomeGreeting: "Welcome Greeting",
+        welcomeGreeting: "information proficiency",
         checkInProcess: "Check-in Procedures",
         facilityInfo: "Information About the Facility",
         frontDeskCare: "Staff Courtesy and Attention",
@@ -270,7 +270,7 @@ const translations = {
         frontDeskCare: "Freundlichkeit und Aufmerksamkeit des Personals",
         bellboyService: "Bellboy-Service",
 
-        grWelcomeQuality: "Begrüßungsqualität",
+        grWelcomeQuality: "Informationsbefähigung",
         problemSolving: "Problemlösung",
         guestFollowUp: "Gästebetreuung",
 
@@ -380,7 +380,7 @@ const translations = {
         frontDeskCare: "Вежливость и внимание персонала",
         bellboyService: "Услуги носильщика",
 
-        grWelcomeQuality: "Качество приветствия",
+        grWelcomeQuality: "информационная компетентность",
         problemSolving: "Решение проблем",
         guestFollowUp: "Сопровождение гостя",
 
@@ -490,7 +490,7 @@ const translations = {
         frontDeskCare: "Uprzejmość i troska personelu",
         bellboyService: "Usługi bagażowego",
 
-        grWelcomeQuality: "Jakość powitania",
+        grWelcomeQuality: "kompetencje informacyjne",
         problemSolving: "Rozwiązywanie problemów",
         guestFollowUp: "Opieka nad gościem",
 
@@ -600,7 +600,7 @@ const translations = {
         frontDeskCare: "Amabilitatea și atenția personalului",
         bellboyService: "Servicii bellboy",
 
-        grWelcomeQuality: "Calitatea întâmpinării",
+        grWelcomeQuality: "competențe de informare",
         problemSolving: "Rezolvarea problemelor",
         guestFollowUp: "Urmărirea oaspetelui",
 
