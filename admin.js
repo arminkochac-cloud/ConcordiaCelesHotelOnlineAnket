@@ -940,9 +940,11 @@ let allData = [];
 
 function loadDataWithMonthFilter() {
     fetchData().then(data => {
-        allData = data;
+        allData = data || [];
         console.log('✅ Toplam veri yüklendi:', allData.length);
-        renderDashboard(data);           // İlk başta tüm veriyi göster
+        renderDashboard(allData);
+    }).catch(err => {
+        console.error("Veri yüklenirken hata:", err);
     });
 }
 
@@ -956,17 +958,8 @@ function filterByMonth() {
 
     const filtered = allData.filter(row => {
         const dateField = row.tarih || row.date || row.Tarih || '';
-        const dateStr = dateField.toString();
-        
-        // Farklı tarih formatlarını yakala
-        if (dateStr.includes(selectedMonth)) return true;
-        if (dateStr.includes(selectedMonth.replace('-', '.'))) return true;
-        
-        // "25.03.2026" formatını da kontrol et
-        const yearMonth = selectedMonth.replace('-', '');
-        if (dateStr.includes(yearMonth)) return true;
-        
-        return false;
+        const dateStr = String(dateField);
+        return dateStr.includes(selectedMonth);
     });
 
     console.log(`📅 ${selectedMonth} için ${filtered.length} kayıt bulundu`);
@@ -975,7 +968,6 @@ function filterByMonth() {
 
 // ====================== SAYFA YÜKLENDİĞİNDE ÇAĞIR ======================
 document.addEventListener('DOMContentLoaded', function() {
-    // ... mevcut kodların ...
-
-    loadDataWithMonthFilter();   // ← Bu satır önemli
+    console.log('✅ Admin sayfası yüklendi - Aylık filtre aktif');
+    loadDataWithMonthFilter();
 });
