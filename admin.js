@@ -925,3 +925,176 @@ window.renderDashboardInternal = renderDashboard;
 window.renderDeptDetailInternal = renderDeptDetail;
 
 console.log('✅ Tüm fonksiyonlar tanımlandı!');
+// =====================================================================
+// AY FİLTRESİ + AYLIK GÖRÜNÜM
+// =====================================================================
+
+const TR_MONTH_NAMES = [
+  'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+  'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
+];
+
+window.allSurveys = window.allSurveys || [];
+window.filteredSurveys = window.filteredSurveys || [];
+
+function parseSurveyDate(dateStr) {
+  if (!dateStr) return null;
+
+  // dd.mm.yyyy veya dd.mm.yyyy hh:mm
+  let m = String(dateStr).match(/^(\d{2})\.(\d{2})\.(\d{4})/);
+  if (m) {
+    const day = parseInt(m[1], 10);
+    const month = parseInt(m[2], 10) - 1;
+    const year = parseInt(m[3], 10);
+    return new Date(year, month, day);
+  }
+
+  // yyyy-mm-dd veya tarayıcının anlayacağı format
+  const d = new Date(dateStr);
+  if (!isNaN(d.getTime())) return d;
+
+  return null;
+}
+
+function getMonthKeyFromDate(dateObj) {
+  if (!dateObj) return null;
+  const year = dateObj.getFullYear();
+  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+  return `${year}-${month}`;
+}
+
+function getMonthLabelFromKey(monthKey) {
+  if (!monthKey || monthKey === 'all') return 'Tüm Aylar';
+
+  const parts = monthKey.split('-');
+  if (parts.length !== 2) return monthKey;
+
+  const year = parseInt(parts[0], 10);
+  const monthIndex = parseInt(parts[1], 10) - 1;
+
+  const monthName = TR_MONTH_NAMES[monthIndex] || monthKey;
+  return `${monthName} ${year}`;
+}
+
+function uniqueMonthsFromData(data) {
+  const set = new Set();
+
+  (data || []).forEach(item => {
+    const d = parseSurveyDate(item.tarih || item.date);
+    if (!d) return;
+
+    const key = getMonthKeyFromDate(d);
+    if (key) set.add(key);
+  });
+
+  return Array.from(set).sort((a, b) => a.localeCompare(b));
+}
+
+function filterDataByMonth(data, monthKey) {
+  if (!monthKey || monthKey === 'all') return data || [];
+
+  return (data || []).filter(item => {
+    const d = parseSurveyDate(item.tarih || item.date);
+    if (!d) return false;
+
+    const key = getMonthKeyFromDate(d);
+    return key === monthKey;
+  });
+}
+
+function ensureMonthFilterSelect() {
+  let select = document.getElementById('monthFilter');
+  if (select) return select;
+
+  const timeFilter = document.getElementById('timeFilter');
+
+  select = document.createElement('select');
+  select.id = 'monthFilter';
+  select.className = 'filter-select';
+  select.innerHTML = `<option value="all">Tüm Aylar</option>`;
+
+  if (timeFilter && timeFilter.parentElement) {
+    timeFilter.parentElement.insertBefore(select, timeFilter.nextSibling);
+  } else {
+    const target =
+      document.querySelector('.filters') ||
+      document.querySelector('.filter-bar') ||
+      document.querySelector('.toolbar') ||
+      document.querySelector('.top-actions') ||
+      document.body;
+
+    target.appendChild(select);
+  }
+
+  return select;
+}
+
+function fillMonthFilterOptions(data) {
+  const select = ensureMonthFilterSelect();
+  if (!select) return;
+
+  const currentValue = select.value || 'all';
+  const months = uniqueMonthsFromData(data);
+
+  select.innerHTML = `<option value="all">Tüm Aylar</option>`;
+
+  months.forEach(key => {
+    const option = document.createElement('option');
+    option.value = key;
+    option.textContent = getMonthLabelFromKey(key);
+    select.appendChild(option);
+  });
+
+  // Önceki seçim varsa koru
+  const exists = Array.from(select.options).some(opt => opt.value === currentValue);
+  select.value = exists ? currentValue : 'all';
+}
+
+function renderAdminDashboard(data) {
+  // Burada kendi mevcut render fonksiyonunun adını otomatik bulmaya çalışıyoruz
+  if (typeof window.renderDashboard === 'function') return window.renderDashboard(data);
+  if (typeof window.updateDashboard === 'function') return window.updateDashboard(data);
+  if (typeof window.refreshDashboard === 'function') return window.refreshDashboard(data);
+  if (typeof window.drawDashboard === 'function') return window.drawDashboard(data);
+  if (typeof window.renderSurveyData === 'function') return window.renderSurveyData(data);
+
+  console.warn('Dashboard render fonksiyonu bulunamadı. Filtre verisi window.filteredSurveys içine yazıldı.');
+}
+
+function applyMonthFilter() {
+  const monthFilter = document.getElementById('monthFilter');
+  const monthKey = monthFilter ? monthFilter.value : 'all';
+
+  const filtered = filterDataByMonth(window.allSurveys || [], monthKey);
+  window.filteredSurveys = filtered;
+
+  renderAdminDashboard(filtered);
+}
+
+function setupMonthFilter(data) {
+  window.allSurveys = Array.isArray(data) ? data : [];
+
+  fillMonthFilterOptions(window.allSurveys);
+
+  const monthFilter = document.getElementById('monthFilter');
+  if (monthFilter && !monthFilter.dataset.bound) {
+    monthFilter.addEventListener('change', applyMonthFilter);
+    monthFilter.dataset.bound = '1';
+  }
+
+  applyMonthFilter();
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  const monthFilter = document.getElementById('monthFilter');
+  if (monthFilter && !monthFilter.dataset.bound) {
+    monthFilter.addEventListener('change', applyMonthFilter);
+    monthFilter.dataset.bound = '1';
+  }
+});
+
+// Dışarıdan çağırmak için
+window.setupMonthFilter = setupMonthFilter;
+window.applyMonthFilter = applyMonthFilter;
+window.filterDataByMonth = filterDataByMonth;
+window.getMonthLabelFromKey = getMonthLabelFromKey;
