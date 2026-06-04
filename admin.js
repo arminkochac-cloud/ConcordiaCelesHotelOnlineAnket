@@ -925,16 +925,17 @@ window.renderDashboardInternal = renderDashboard;
 window.renderDeptDetailInternal = renderDeptDetail;
 
 console.log('✅ Tüm fonksiyonlar tanımlandı!');
-// ====================== AYLIK FİLTRELEME - DÜZELTİLMİŞ FİNAL ======================
+// ====================== AYLIK FİLTRELEME - TEMİZ FİNAL ======================
 let allData = [];
 
 function loadDataWithMonthFilter() {
     fetchData().then(data => {
-        allData = data || [];
+        allData = Array.isArray(data) ? data : [];
         console.log('✅ Toplam veri yüklendi:', allData.length);
         renderDashboard(allData);
     }).catch(err => {
         console.error("Veri yüklenirken hata:", err);
+        renderDashboard([]);
     });
 }
 
@@ -947,7 +948,7 @@ function filterByMonth() {
     }
 
     const filtered = allData.filter(row => {
-        const dateField = row.tarih || row.date || row.Tarih || '';
+        const dateField = row.tarih || row.date || row.Tarih || row['tarih'] || '';
         const dateStr = String(dateField);
         return dateStr.includes(selectedMonth);
     });
