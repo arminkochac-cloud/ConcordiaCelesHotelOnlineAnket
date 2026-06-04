@@ -925,16 +925,6 @@ window.renderDashboardInternal = renderDashboard;
 window.renderDeptDetailInternal = renderDeptDetail;
 
 console.log('✅ Tüm fonksiyonlar tanımlandı!');
-// ====================== AYLIK FİLTRELEME (YENİ EKLENDİ) ======================
-let allData = []; // Tüm veriyi saklamak için
-
-// Verileri ilk yüklediğinde çağır
-function loadDataWithMonthFilter() {
-    fetchData().then(data => {
-    allData = data;
-    renderDashboard(data);
-    console.log('✅ Tüm veriler yüklendi, aylık filtre aktif.');
-});
 // ====================== AYLIK FİLTRELEME - DÜZELTİLMİŞ FİNAL ======================
 let allData = [];
 
