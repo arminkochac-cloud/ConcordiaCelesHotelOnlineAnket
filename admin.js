@@ -935,49 +935,47 @@ function loadDataWithMonthFilter() {
     renderDashboard(data);
     console.log('✅ Tüm veriler yüklendi, aylık filtre aktif.');
 });
-// ====================== AYLIK FİLTRELEME - FİNAL ======================
+// ====================== AYLIK FİLTRELEME - DÜZELTİLMİŞ FİNAL ======================
 let allData = [];
 
 function loadDataWithMonthFilter() {
     fetchData().then(data => {
-        allData = data;                    // Tüm veriyi globalde sakla
-        renderDashboard(data);             // İlk başta tüm veriyi göster
+        allData = data;
+        console.log('✅ Toplam veri yüklendi:', allData.length);
+        renderDashboard(data);           // İlk başta tüm veriyi göster
     });
 }
 
-function filterByMonth() {
-    const selectedMonth = document.getElementById('monthFilter').value;
-    
-    if (!selectedMonth || !allData.length) {
-        renderDashboard(allData);
-        return;
-    }
-
-    const filteredData = allData.filter(row => {
-        if (!row.date && !row.tarih) return false;
-        const dateStr = (row.date || row.tarih || "").toString();
-        return dateStr.includes(selectedMonth);
-    });
-
-    renderDashboard(filteredData);
-}
-// Ay filtresi değiştiğinde çalışacak fonksiyon
 function filterByMonth() {
     const selectedMonth = document.getElementById('monthFilter').value;
     
     if (!selectedMonth) {
-        renderDashboard(allData);        // Tüm veriyi göster
+        renderDashboard(allData);
         return;
     }
 
     const filtered = allData.filter(row => {
-        if (!row.date) return false;
-        const dateStr = row.date.toString();
-        return dateStr.includes(selectedMonth);   // Örn: "2026-04" arar
+        const dateField = row.tarih || row.date || row.Tarih || '';
+        const dateStr = dateField.toString();
+        
+        // Farklı tarih formatlarını yakala
+        if (dateStr.includes(selectedMonth)) return true;
+        if (dateStr.includes(selectedMonth.replace('-', '.'))) return true;
+        
+        // "25.03.2026" formatını da kontrol et
+        const yearMonth = selectedMonth.replace('-', '');
+        if (dateStr.includes(yearMonth)) return true;
+        
+        return false;
     });
 
+    console.log(`📅 ${selectedMonth} için ${filtered.length} kayıt bulundu`);
     renderDashboard(filtered);
 }
 
-// Mevcut fetchData fonksiyonunun sonunda loadDataWithMonthFilter() çağır
-// veya admin.html yüklendiğinde bu fonksiyonu çağır
+// ====================== SAYFA YÜKLENDİĞİNDE ÇAĞIR ======================
+document.addEventListener('DOMContentLoaded', function() {
+    // ... mevcut kodların ...
+
+    loadDataWithMonthFilter();   // ← Bu satır önemli
+});
