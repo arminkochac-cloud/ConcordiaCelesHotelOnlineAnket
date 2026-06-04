@@ -925,3 +925,34 @@ window.renderDashboardInternal = renderDashboard;
 window.renderDeptDetailInternal = renderDeptDetail;
 
 console.log('✅ Tüm fonksiyonlar tanımlandı!');
+// ====================== AYLIK FİLTRELEME (YENİ EKLENDİ) ======================
+let allData = []; // Tüm veriyi saklamak için
+
+// Verileri ilk yüklediğinde çağır
+function loadDataWithMonthFilter() {
+    fetchData().then(data => {
+        allData = data;           // Tüm veriyi globalde sakla
+        renderDashboard(data);    // İlk başta tüm veriyi göster
+    });
+}
+
+// Ay filtresi değiştiğinde çalışacak fonksiyon
+function filterByMonth() {
+    const selectedMonth = document.getElementById('monthFilter').value;
+    
+    if (!selectedMonth) {
+        renderDashboard(allData);        // Tüm veriyi göster
+        return;
+    }
+
+    const filtered = allData.filter(row => {
+        if (!row.date) return false;
+        const dateStr = row.date.toString();
+        return dateStr.includes(selectedMonth);   // Örn: "2026-04" arar
+    });
+
+    renderDashboard(filtered);
+}
+
+// Mevcut fetchData fonksiyonunun sonunda loadDataWithMonthFilter() çağır
+// veya admin.html yüklendiğinde bu fonksiyonu çağır
