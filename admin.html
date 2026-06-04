@@ -811,23 +811,17 @@
                     <option value="1">Bugün</option>
                 </select>
                 <!-- AY FİLTRESİ -->
-<div class="filter-group" style="margin: 15px 0;">
-    <label for="monthFilter"><strong>Ay Seç:</strong></label>
-    <select id="monthFilter" onchange="filterByMonth()">
+<div style="margin: 15px 0 10px;">
+    <label><strong>Ay Seç:</strong></label><br>
+    <select id="monthFilter" onchange="filterByMonth()" style="padding:8px 12px; font-size:15px;">
         <option value="">Tüm Aylar</option>
-        <option value="2026-01">Ocak 2026</option>
-        <option value="2026-02">Şubat 2026</option>
         <option value="2026-03">Mart 2026</option>
         <option value="2026-04">Nisan 2026</option>
         <option value="2026-05">Mayıs 2026</option>
         <option value="2026-06">Haziran 2026</option>
         <option value="2026-07">Temmuz 2026</option>
-        <option value="2026-08">Ağustos 2026</option>
-        <option value="2026-09">Eylül 2026</option>
-        <option value="2026-10">Ekim 2026</option>
-        <option value="2026-11">Kasım 2026</option>
-        <option value="2026-12">Aralık 2026</option>
     </select>
+</div>
 </div>
 
                 <button class="btn-green no-print" onclick="loadAndRenderData()">🔄 Yenile</button>
