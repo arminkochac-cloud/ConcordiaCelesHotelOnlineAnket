@@ -931,11 +931,36 @@ let allData = []; // Tüm veriyi saklamak için
 // Verileri ilk yüklediğinde çağır
 function loadDataWithMonthFilter() {
     fetchData().then(data => {
-        allData = data;           // Tüm veriyi globalde sakla
-        renderDashboard(data);    // İlk başta tüm veriyi göster
+    allData = data;
+    renderDashboard(data);
+    console.log('✅ Tüm veriler yüklendi, aylık filtre aktif.');
+});
+// ====================== AYLIK FİLTRELEME - FİNAL ======================
+let allData = [];
+
+function loadDataWithMonthFilter() {
+    fetchData().then(data => {
+        allData = data;                    // Tüm veriyi globalde sakla
+        renderDashboard(data);             // İlk başta tüm veriyi göster
     });
 }
 
+function filterByMonth() {
+    const selectedMonth = document.getElementById('monthFilter').value;
+    
+    if (!selectedMonth || !allData.length) {
+        renderDashboard(allData);
+        return;
+    }
+
+    const filteredData = allData.filter(row => {
+        if (!row.date && !row.tarih) return false;
+        const dateStr = (row.date || row.tarih || "").toString();
+        return dateStr.includes(selectedMonth);
+    });
+
+    renderDashboard(filteredData);
+}
 // Ay filtresi değiştiğinde çalışacak fonksiyon
 function filterByMonth() {
     const selectedMonth = document.getElementById('monthFilter').value;
